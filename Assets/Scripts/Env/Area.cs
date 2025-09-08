@@ -2,5 +2,10 @@ using UnityEngine;
 
 public class Area : MonoBehaviour
 {
-    public AreaTag[] areaTags;
+    [SerializeField] private AreaTag[] areaTags_;
+
+    public AreaTag[] AreaTags
+    {
+        get { return areaTags_; }
+    }
 }

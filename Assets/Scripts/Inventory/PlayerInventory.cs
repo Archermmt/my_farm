@@ -1,30 +1,10 @@
 public class PlayerInventory : BaseInventory
 {
-    public void AddItem(ItemData item)
+    public void AddItem(ItemData item_data)
     {
-        if (!GetContainer(ContainerType.ToolBar).AddItem(item))
+        if (!GetContainer(ContainerType.ToolBar).AddItem(item_data))
         {
-            GetContainer(ContainerType.Backpack).AddItem(item);
+            GetContainer(ContainerType.Backpack).AddItem(item_data);
         }
-    }
-
-    public Slot FindSelectSlot()
-    {
-        return GetContainer(ContainerType.ToolBar).FindSelectedSlot();
-    }
-
-    private void UpdateInventory(bool sort, bool deselect)
-    {
-        UpdateContainers(sort, deselect);
-    }
-
-    private void OnEnable()
-    {
-        EventHandler.UpdateInventoryEvent += UpdateInventory;
-    }
-
-    private void OnDisable()
-    {
-        EventHandler.UpdateInventoryEvent -= UpdateInventory;
     }
 }

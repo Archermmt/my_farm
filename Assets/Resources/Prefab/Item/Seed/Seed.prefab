@@ -18,7 +18,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 5485029832335576484, guid: ae4353ece9de5492f8d09dcf0eadf52d, type: 3}
       propertyPath: m_Name
-      value: Common
+      value: Seed
       objectReference: {fileID: 0}
     - target: {fileID: 5920643902792057711, guid: ae4353ece9de5492f8d09dcf0eadf52d, type: 3}
       propertyPath: m_LocalPosition.x
@@ -64,7 +64,8 @@ PrefabInstance:
       propertyPath: item_name
       value: Acorn
       objectReference: {fileID: 0}
-    m_RemovedComponents: []
+    m_RemovedComponents:
+    - {fileID: 8461236395484111858, guid: ae4353ece9de5492f8d09dcf0eadf52d, type: 3}
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
     m_AddedComponents: []

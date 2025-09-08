@@ -637,7 +637,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 1bd9ae34be1784d51916a1719276ef62, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  containers:
+  containers_:
   - {fileID: 1359804993}
   - {fileID: 1176868061}
   - {fileID: 1487020910}
@@ -757,247 +757,199 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 79f0c7ac4d90c49ee96346d04f3f4be1, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  items:
+  items_:
   - type: 0
     name: Acorn
-    description: Acorn
+    description: acorn
     sprite: {fileID: 21300000, guid: 730e572c78cf0244ca0db36bb8f3af7f, type: 3}
-    pickable: 1
-    dropable: 1
+    dropRadius: 2
     useRadius: 1
     price: 15
     value: 10
-    energy: 0
+  - type: 1
+    name: Pumpkin
+    description: pumpkin
+    sprite: {fileID: 21300000, guid: f0d720006ae6c9e468cc99a9f1713ba1, type: 3}
+    dropRadius: 2
+    useRadius: 0
+    price: 20
+    value: 16
+  - type: 1
+    name: Sweetcorn
+    description: sweetcorn
+    sprite: {fileID: 21300000, guid: 081b5033ea188cb48b5d44b99ab920bc, type: 3}
+    dropRadius: 2
+    useRadius: 0
+    price: 20
+    value: 16
+  - type: 3
+    name: WateringCan
+    description: watering can
+    sprite: {fileID: 21300136, guid: 853ac38383c680342ac7e688bf29b197, type: 3}
+    dropRadius: 0
+    useRadius: 1
+    price: 50
+    value: 36
+  - type: 3
+    name: Hoe
+    description: hoe
+    sprite: {fileID: 21300052, guid: 853ac38383c680342ac7e688bf29b197, type: 3}
+    dropRadius: 0
+    useRadius: 1
+    price: 50
+    value: 36
+  - type: 3
+    name: Axe
+    description: axe
+    sprite: {fileID: 21300010, guid: 853ac38383c680342ac7e688bf29b197, type: 3}
+    dropRadius: 0
+    useRadius: 1
+    price: 50
+    value: 36
   - type: 0
     name: ParsnipSeeds
-    description: ParsnipSeeds
+    description: parsnip seeds
     sprite: {fileID: 21300000, guid: 7da78110e28e0f74aaa3ef4a41f4c0ed, type: 3}
-    pickable: 1
-    dropable: 1
+    dropRadius: 2
     useRadius: 1
     price: 15
     value: 10
-    energy: 0
+  - type: 1
+    name: Parsnip
+    description: parsnip
+    sprite: {fileID: 21300000, guid: 0a1268bf801d5304ebf16458d7309ac1, type: 3}
+    dropRadius: 2
+    useRadius: 0
+    price: 20
+    value: 16
+  - type: 2
+    name: Wood
+    description: wood
+    sprite: {fileID: 21300000, guid: e26dc0d638731ec47abe9c4b3cae62ac, type: 3}
+    dropRadius: 2
+    useRadius: -1
+    price: 10
+    value: 5
   - type: 0
     name: PineCone
     description: PineCone
     sprite: {fileID: 21300000, guid: 5eb84bf51d351da428f95a1296f6a397, type: 3}
-    pickable: 1
-    dropable: 1
+    dropRadius: 2
     useRadius: 1
     price: 15
     value: 10
-    energy: 0
-  - type: 1
-    name: Parsnip
-    description: Parsnip
-    sprite: {fileID: 21300000, guid: 0a1268bf801d5304ebf16458d7309ac1, type: 3}
-    pickable: 1
-    dropable: 1
-    useRadius: 1
-    price: 20
-    value: 15
-    energy: 5
-  - type: 1
-    name: Pumpkin
-    description: Pumpkin
-    sprite: {fileID: 21300000, guid: f0d720006ae6c9e468cc99a9f1713ba1, type: 3}
-    pickable: 1
-    dropable: 1
-    useRadius: 1
-    price: 20
-    value: 15
-    energy: 5
-  - type: 1
-    name: Sweetcorn
-    description: Sweetcorn
-    sprite: {fileID: 21300000, guid: 081b5033ea188cb48b5d44b99ab920bc, type: 3}
-    pickable: 1
-    dropable: 1
-    useRadius: 1
-    price: 20
-    value: 15
-    energy: 5
-  - type: 3
-    name: WateringCan
-    description: WateringCan
-    sprite: {fileID: 21300136, guid: 853ac38383c680342ac7e688bf29b197, type: 3}
-    pickable: 1
-    dropable: 0
-    useRadius: 1
-    price: 50
-    value: 30
-    energy: 0
-  - type: 3
-    name: Heo
-    description: Heo
-    sprite: {fileID: 21300052, guid: 853ac38383c680342ac7e688bf29b197, type: 3}
-    pickable: 1
-    dropable: 0
-    useRadius: 1
-    price: 50
-    value: 30
-    energy: 0
-  - type: 3
-    name: Axe
-    description: Axe
-    sprite: {fileID: 21300010, guid: 853ac38383c680342ac7e688bf29b197, type: 3}
-    pickable: 1
-    dropable: 0
-    useRadius: 1
-    price: 50
-    value: 30
-    energy: 0
-  - type: 3
-    name: Basket
-    description: Basket
-    sprite: {fileID: 21300504, guid: 853ac38383c680342ac7e688bf29b197, type: 3}
-    pickable: 1
-    dropable: 0
-    useRadius: 1
-    price: 50
-    value: 30
-    energy: 0
-  - type: 3
-    name: Pickaxe
-    description: Pickaxe
-    sprite: {fileID: 21300094, guid: 853ac38383c680342ac7e688bf29b197, type: 3}
-    pickable: 1
-    dropable: 0
-    useRadius: 1
-    price: 50
-    value: 30
-    energy: 0
-  - type: 3
-    name: Scythe
-    description: Scythe
-    sprite: {fileID: 21300506, guid: 853ac38383c680342ac7e688bf29b197, type: 3}
-    pickable: 1
-    dropable: 0
-    useRadius: 1
-    price: 50
-    value: 30
-    energy: 0
-  - type: 2
-    name: Wood
-    description: Wood
-    sprite: {fileID: 21300000, guid: e26dc0d638731ec47abe9c4b3cae62ac, type: 3}
-    pickable: 1
-    dropable: 1
-    useRadius: 1
-    price: 10
-    value: 5
-    energy: 0
-  - type: 2
-    name: Stone
-    description: Stone
-    sprite: {fileID: 21300000, guid: 7700e9e59e6f58e4598ea8f2e5a84cc1, type: 3}
-    pickable: 1
-    dropable: 1
-    useRadius: 1
-    price: 10
-    value: 5
-    energy: 0
-  - type: 2
-    name: Weed1
-    description: Weed1
-    sprite: {fileID: 21300000, guid: 25925800440b0e84f9533a314ddca6b5, type: 3}
-    pickable: 1
-    dropable: 1
-    useRadius: 1
-    price: 10
-    value: 5
-    energy: 0
-  - type: 5
-    name: SmallRock
-    description: SmallRock
-    sprite: {fileID: 21300000, guid: 4fb548784c08c2c40b86a99493efa98d, type: 3}
-    pickable: 0
-    dropable: 0
-    useRadius: 1
-    price: 0
-    value: 0
-    energy: 0
-  - type: 5
-    name: BigRock
-    description: BigRock
-    sprite: {fileID: 21300000, guid: ffd3a07e9702a614284d1e5a4be9f532, type: 3}
-    pickable: 0
-    dropable: 0
-    useRadius: 1
-    price: 0
-    value: 0
-    energy: 0
   - type: 5
     name: CanyonOakStump
-    description: CanyonOakStump
+    description: stump of canyon oak
     sprite: {fileID: 7154603021615155856, guid: d241c496741a12d4290e12ba81dd6724, type: 3}
-    pickable: 0
-    dropable: 0
-    useRadius: 1
+    dropRadius: 0
+    useRadius: -1
     price: 0
     value: 0
-    energy: 0
   - type: 5
     name: BlueSpruceStump
-    description: BlueSpruceStump
+    description: stump of bllue spruce
     sprite: {fileID: -341119608263849502, guid: 5d22327a2a3d2a049a8a59a708d527fe, type: 3}
-    pickable: 0
-    dropable: 0
-    useRadius: 1
+    dropRadius: 0
+    useRadius: -1
     price: 0
     value: 0
-    energy: 0
+  - type: 3
+    name: Basket
+    description: basket
+    sprite: {fileID: 21300504, guid: 853ac38383c680342ac7e688bf29b197, type: 3}
+    dropRadius: 0
+    useRadius: 1
+    price: 50
+    value: 36
+  - type: 3
+    name: Pickaxe
+    description: pickaxe
+    sprite: {fileID: 21300094, guid: 853ac38383c680342ac7e688bf29b197, type: 3}
+    dropRadius: 0
+    useRadius: 1
+    price: 50
+    value: 36
+  - type: 5
+    name: SmallRock
+    description: small rock
+    sprite: {fileID: 21300000, guid: 4fb548784c08c2c40b86a99493efa98d, type: 3}
+    dropRadius: 0
+    useRadius: -1
+    price: 0
+    value: 0
+  - type: 2
+    name: Stone
+    description: stone
+    sprite: {fileID: 21300000, guid: 7700e9e59e6f58e4598ea8f2e5a84cc1, type: 3}
+    dropRadius: 2
+    useRadius: -1
+    price: 10
+    value: 5
+  - type: 5
+    name: BigRock
+    description: big rock
+    sprite: {fileID: 21300000, guid: ffd3a07e9702a614284d1e5a4be9f532, type: 3}
+    dropRadius: 0
+    useRadius: -1
+    price: 0
+    value: 0
+  - type: 3
+    name: Scythe
+    description: scythe
+    sprite: {fileID: 21300506, guid: 853ac38383c680342ac7e688bf29b197, type: 3}
+    dropRadius: 0
+    useRadius: 1
+    price: 50
+    value: 36
   - type: 4
     name: Grass1
-    description: Grass1
+    description: grass1
     sprite: {fileID: 21300000, guid: 207ad99171e171b418bcaaa396d5a6f6, type: 3}
-    pickable: 0
-    dropable: 0
-    useRadius: 1
+    dropRadius: 0
+    useRadius: -1
     price: 0
     value: 0
-    energy: 0
   - type: 4
     name: Grass2
-    description: Grass2
+    description: grass2
     sprite: {fileID: 21300000, guid: e452dd2aa629f624390a9ba516a7c47e, type: 3}
-    pickable: 0
-    dropable: 0
-    useRadius: 1
+    dropRadius: 0
+    useRadius: -1
     price: 0
     value: 0
-    energy: 0
+  - type: 2
+    name: Weed1
+    description: weed
+    sprite: {fileID: 21300000, guid: 25925800440b0e84f9533a314ddca6b5, type: 3}
+    dropRadius: 2
+    useRadius: -1
+    price: 10
+    value: 5
   - type: 4
     name: Cactus
-    description: Cactus
+    description: cactus
     sprite: {fileID: 21300000, guid: 37e09848a493a0a4b89a743f73f75963, type: 3}
-    pickable: 0
-    dropable: 0
-    useRadius: 1
+    dropRadius: 0
+    useRadius: -1
     price: 0
     value: 0
-    energy: 0
   - type: 6
     name: Chair
-    description: Chair
+    description: chair
     sprite: {fileID: 21300000, guid: 2a61f48c8f2dfed4da6f2f8e2485ee15, type: 3}
-    pickable: 0
-    dropable: 0
-    useRadius: 1
+    dropRadius: 0
+    useRadius: -1
     price: 200
     value: 150
-    energy: 0
   - type: 6
     name: Table
-    description: Table
+    description: table
     sprite: {fileID: 21300000, guid: 60f7a57556be87841a8cabc94054df28, type: 3}
-    pickable: 0
-    dropable: 0
-    useRadius: 1
+    dropRadius: 0
+    useRadius: -1
     price: 300
-    value: 250
-    energy: 0
+    value: 200
 --- !u!4 &359293843
 Transform:
   m_ObjectHideFlags: 0
@@ -50583,7 +50535,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ee71b1fd27a474db396df815feb9310b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  areaTags: 00000000
+  areaTags_: 00000000
 --- !u!1 &437958433
 GameObject:
   m_ObjectHideFlags: 0
@@ -50926,7 +50878,7 @@ TilemapRenderer:
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
   m_GameObject: {fileID: 617564682}
-  m_Enabled: 0
+  m_Enabled: 1
   m_CastShadows: 0
   m_ReceiveShadows: 0
   m_DynamicOccludee: 1
@@ -92455,7 +92407,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ee71b1fd27a474db396df815feb9310b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  areaTags: 02000000
+  areaTags_: 02000000
 --- !u!1 &708315663
 GameObject:
   m_ObjectHideFlags: 0
@@ -92787,9 +92739,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: da2fc9b178bf14bb3bf7e00bafe17e40, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  runSpeed: 5
-  walkSpeed: 3
-  inventory: {fileID: 248831787}
+  runSpeed_: 5
+  walkSpeed_: 3
+  inventory_: {fileID: 248831787}
 --- !u!210 &1103264479
 SortingGroup:
   m_ObjectHideFlags: 0
@@ -100853,7 +100805,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: ee71b1fd27a474db396df815feb9310b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  areaTags: 01000000
+  areaTags_: 01000000
 --- !u!1 &1176868056
 GameObject:
   m_ObjectHideFlags: 0
@@ -100969,9 +100921,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5437e86a06ffa4f2e9fddb2690579e27, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  containerType: 1
-  max_capacity: 12
-  start_capacity: 12
+  containerType_: 1
+  max_capacity_: 12
+  start_capacity_: 12
 --- !u!1 &1279967473
 GameObject:
   m_ObjectHideFlags: 0
@@ -101230,9 +101182,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 18756abec904d4bb6b3103b6a42e6307, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  containerType: 0
-  max_capacity: 12
-  start_capacity: 12
+  containerType_: 0
+  max_capacity_: 12
+  start_capacity_: 12
 --- !u!1 &1487020905
 GameObject:
   m_ObjectHideFlags: 0
@@ -101346,9 +101298,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 5437e86a06ffa4f2e9fddb2690579e27, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  containerType: 2
-  max_capacity: 36
-  start_capacity: 12
+  containerType_: 2
+  max_capacity_: 36
+  start_capacity_: 12
 --- !u!1 &2071057751
 GameObject:
   m_ObjectHideFlags: 0
@@ -101472,7 +101424,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: f641e2d9b58dc45f7a9c378fe42e9cc6, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  swapClipsList:
+  swapClipsList_:
   - srcClips:
     - {fileID: 7400000, guid: a1848a63d3d5a43889d933e5a5c94da0, type: 2}
     - {fileID: 7400000, guid: 54a120ffd01054e878b3be42b0c1355b, type: 2}

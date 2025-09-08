@@ -12,7 +12,7 @@ public class SwapClips
 
 public class AnimationSwapper : MonoBehaviour
 {
-    public SwapClips[] swapClipsList;
+    [SerializeField] private SwapClips[] swapClipsList_;
     private Dictionary<AnimationTag, List<KeyValuePair<AnimationClip, AnimationClip>>> swapAnimations_;
     private Dictionary<AnimationTag, List<KeyValuePair<AnimationClip, AnimationClip>>> restoreAnimations_;
     private Animator animator_;
@@ -42,7 +42,7 @@ public class AnimationSwapper : MonoBehaviour
         animator_ = GetComponent<Animator>();
         swapAnimations_ = new Dictionary<AnimationTag, List<KeyValuePair<AnimationClip, AnimationClip>>>();
         restoreAnimations_ = new Dictionary<AnimationTag, List<KeyValuePair<AnimationClip, AnimationClip>>>();
-        foreach (SwapClips clips in swapClipsList)
+        foreach (SwapClips clips in swapClipsList_)
         {
             swapAnimations_[clips.animationTag] = new List<KeyValuePair<AnimationClip, AnimationClip>>();
             restoreAnimations_[clips.animationTag] = new List<KeyValuePair<AnimationClip, AnimationClip>>();

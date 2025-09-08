@@ -5,16 +5,24 @@ using UnityEngine.EventSystems;
 
 public class Slot : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndDragHandler, IPointerEnterHandler, IPointerExitHandler, IPointerClickHandler
 {
-  public Image highlight;
-  public Image mask;
-  public Image itemImg;
-  public TextMeshProUGUI number;
-  public int capacity = 99;
-  private ItemData itemData_;
+  [SerializeField] private Image highlight_;
+  [SerializeField] private Image mask_;
+  [SerializeField] private Image itemImg_;
+  [SerializeField] private TextMeshProUGUI number_;
+  [SerializeField] private int capacity_ = 99;
+  private ItemData itemMeta_;
   private GameObject dragging_;
   private Sprite emptySprite_;
+  private Transform owner_;
+  private ContainerType holderType_;
   private int current_ = 0;
   private bool selected_ = false;
+
+  public void Setup(Transform owner, ContainerType container_type)
+  {
+    owner_ = owner;
+    holderType_ = container_type;
+  }
 
   public int GetSurplus(ItemData item_data = null)
   {
@@ -24,65 +32,74 @@ public class Slot : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndDragHand
     }
     if (current_ == 0)
     {
-      return capacity;
+      return capacity_;
     }
     if (item_data == null)
     {
-      return current_ < capacity ? capacity - current_ : 0;
+      return current_ < capacity_ ? capacity_ - current_ : 0;
     }
-    if (current_ > 0 && current_ < capacity && item_data.name == itemData_.name)
+    if (current_ > 0 && current_ < capacity_ && item_data.name == itemMeta_.name)
     {
-      return capacity - current_;
+      return capacity_ - current_;
     }
     return 0;
   }
 
   public void SetItem(ItemData item_data, int amount = 1)
   {
-    itemData_ = item_data;
+    itemMeta_ = item_data;
     current_ = amount;
-    itemImg.sprite = item_data.sprite;
-    number.text = current_.ToString();
+    itemImg_.sprite = item_data.sprite;
+    number_.text = current_.ToString();
   }
 
   public void Swap(Slot other)
   {
+    Transform otherOwner = other.Owner;
+    ContainerType otherHolderType = other.HolderType;
+    other.Setup(owner_, holderType_);
+    Setup(otherOwner, otherHolderType);
     if (other.Current == 0)
     {
-      other.SetItem(itemData_, current_);
+      other.SetItem(itemMeta_, current_);
       Empty();
-      EventHandler.CallUpdateInventory(true, true);
+      UpdateContainer(true, true);
+      if (other.Owner != owner_ || other.HolderType != holderType_)
+      {
+        other.UpdateContainer(true, true);
+      }
     }
     else if (other.Current > 0)
     {
-      ItemData otherItem = other.ItemData;
-      int amount = other.Current;
-      other.SetItem(itemData_, current_);
-      SetItem(otherItem, amount);
+      ItemData otherItemMeta = other.ItemMeta;
+      int otherCurrent = other.Current;
+      other.SetItem(itemMeta_, current_);
+      SetItem(otherItemMeta, otherCurrent);
     }
   }
 
   public void CopyFrom(Slot other)
   {
-    SetItem(other.ItemData, other.Current);
+    Setup(other.Owner, other.HolderType);
+    SetItem(other.ItemMeta, other.Current);
   }
 
   public int IncreaseAmount(int amount = 1)
   {
-    current_ = current_ + amount > capacity ? capacity : current_ + amount;
-    number.text = current_.ToString();
+    current_ = current_ + amount > capacity_ ? capacity_ : current_ + amount;
+    number_.text = current_.ToString();
     return GetSurplus();
   }
 
   public int DecreaseAmount(int amount = 1)
   {
     current_ = current_ - amount < 0 ? 0 : current_ - amount;
-    number.text = current_.ToString();
+    number_.text = current_.ToString();
     if (current_ == 0)
     {
       Deselect();
       Empty();
-      EventHandler.CallUpdateInventory(true, true);
+      UpdateContainer(true, true);
     }
     return GetSurplus();
   }
@@ -92,8 +109,8 @@ public class Slot : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndDragHand
     if (current_ >= 0 && !selected_)
     {
       selected_ = true;
-      highlight.color = new Color(1, 1, 1, 1);
-      EventHandler.CallUpdateHands();
+      highlight_.color = new Color(1, 1, 1, 1);
+      EventHandler.CallUpdateHands(owner_, holderType_);
     }
   }
 
@@ -102,42 +119,42 @@ public class Slot : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndDragHand
     if (current_ >= 0 && selected_)
     {
       selected_ = false;
-      highlight.color = new Color(0, 0, 0, 0);
-      EventHandler.CallUpdateHands();
+      highlight_.color = new Color(0, 0, 0, 0);
+      EventHandler.CallUpdateHands(owner_, holderType_);
     }
   }
 
   public void Enable()
   {
-    mask.color = new Color(0, 0, 0, 0);
+    mask_.color = new Color(0, 0, 0, 0);
     current_ = 0;
-    number.text = "";
+    number_.text = "";
   }
 
   public void Disable()
   {
-    mask.color = new Color(1, 1, 1, 1);
+    mask_.color = new Color(1, 1, 1, 1);
     current_ = -1;
-    number.text = "";
+    number_.text = "";
   }
 
   public void Empty()
   {
     current_ = 0;
     selected_ = false;
-    highlight.color = new Color(0, 0, 0, 0);
-    itemImg.sprite = emptySprite_;
-    number.text = "";
+    highlight_.color = new Color(0, 0, 0, 0);
+    itemImg_.sprite = emptySprite_;
+    number_.text = "";
   }
 
   public void OnBeginDrag(PointerEventData eventData)
   {
-    if (itemData_ != null)
+    if (itemMeta_ != null)
     {
       Player.Instance.Freeze();
       GameObject prefab = Resources.Load<GameObject>("Prefab/Item/Dragged");
       dragging_ = Instantiate(prefab, transform);
-      dragging_.GetComponent<Image>().sprite = itemData_.sprite;
+      dragging_.GetComponent<Image>().sprite = itemMeta_.sprite;
       Select();
     }
   }
@@ -158,24 +175,22 @@ public class Slot : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndDragHand
       Slot dst_slot = eventData.pointerCurrentRaycast.gameObject.GetComponent<Slot>();
       Swap(dst_slot);
     }
-    else if (itemData_ != null && itemData_.dropable)
-    {
-      DropItemAtMouse();
-    }
     Deselect();
     Player.Instance.Unfreeze();
   }
 
   public void OnPointerEnter(PointerEventData eventData)
   {
+    EnvManager.Instance.Freeze();
     if (current_ > 0)
     {
-      ItemManager.Instance.CommentItem(itemData_, transform);
+      ItemManager.Instance.CommentItem(itemMeta_, transform);
     }
   }
 
   public void OnPointerExit(PointerEventData eventData)
   {
+    EnvManager.Instance.Unfreeze();
     ItemManager.Instance.UnCommentItem();
   }
 
@@ -183,34 +198,31 @@ public class Slot : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndDragHand
   {
     if (eventData.button == PointerEventData.InputButton.Left)
     {
-      EventHandler.CallUpdateInventory(false, true);
       if (selected_)
       {
         Deselect();
       }
       else if (current_ > 0)
       {
+        UpdateContainer(false, true);
         Select();
       }
     }
   }
 
-  public Item DropItemAtMouse()
-  {
-    Item item = ItemManager.Instance.CreateItemAtMouse(itemData_);
-    EnvManager.Instance.AddItem(item);
-    DecreaseAmount();
-    return item;
-  }
-
   private void Awake()
   {
-    emptySprite_ = itemImg.sprite;
+    emptySprite_ = itemImg_.sprite;
   }
 
-  public ItemData ItemData
+  private void UpdateContainer(bool sort, bool deselect)
   {
-    get { return itemData_; }
+    EventHandler.CallUpdateInventory(owner_, holderType_, sort, deselect);
+  }
+
+  public ItemData ItemMeta
+  {
+    get { return itemMeta_; }
   }
 
   public int Current
@@ -221,5 +233,15 @@ public class Slot : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndDragHand
   public bool Selected
   {
     get { return selected_; }
+  }
+
+  public Transform Owner
+  {
+    get { return owner_; }
+  }
+
+  public ContainerType HolderType
+  {
+    get { return holderType_; }
   }
 }

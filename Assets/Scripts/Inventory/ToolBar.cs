@@ -5,9 +5,9 @@ public class ToolBar : Container
     private RectTransform rect_;
     private bool at_bottom_ = true;
 
-    protected override void Awake()
+    public override void Setup(Transform owner)
     {
-        base.Awake();
+        base.Setup(owner);
         rect_ = GetComponent<RectTransform>();
     }
 

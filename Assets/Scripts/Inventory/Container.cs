@@ -3,24 +3,40 @@ using UnityEngine;
 
 public class Container : MonoBehaviour
 {
-    public ContainerType containerType;
-    public int max_capacity;
-    public int start_capacity;
+    [SerializeField] private ContainerType containerType_;
+    [SerializeField] private int max_capacity_;
+    [SerializeField] private int start_capacity_;
     private Transform transform_;
     private List<Slot> slots_;
     private GameObject slot_prefab_;
     private int current_;
 
-    public bool AddItem(ItemData item)
+    public virtual void Setup(Transform owner)
     {
-        Slot slot = FindSlot(item);
+        slots_ = new List<Slot>();
+        GameObject slot_prefab = Resources.Load<GameObject>("Prefab/Slot");
+        for (int i = 0; i < max_capacity_; i++)
+        {
+            Slot slot = Instantiate(slot_prefab, gameObject.transform).GetComponent<Slot>();
+            slot.Setup(owner, containerType_);
+            slot.Disable();
+            slots_.Add(slot);
+        }
+        current_ = 0;
+        IncreaseCapacity(start_capacity_);
+    }
+
+
+    public bool AddItem(ItemData item_data)
+    {
+        Slot slot = FindSlot(item_data);
         if (slot == null)
         {
             return false;
         }
         if (slot.Current == 0)
         {
-            slot.SetItem(item);
+            slot.SetItem(item_data);
         }
         else
         {
@@ -29,11 +45,11 @@ public class Container : MonoBehaviour
         return true;
     }
 
-    public Slot FindSlot(ItemData item, int amount = 1)
+    public Slot FindSlot(ItemData item_data, int amount = 1)
     {
         foreach (Slot slot in slots_)
         {
-            if (slot.GetSurplus(item) >= amount)
+            if (slot.GetSurplus(item_data) >= amount)
             {
                 return slot;
             }
@@ -86,26 +102,6 @@ public class Container : MonoBehaviour
         }
     }
 
-    protected virtual void Awake()
-    {
-        transform_ = gameObject.transform;
-        slot_prefab_ = Resources.Load<GameObject>("Prefab/Slot");
-        Setup();
-    }
-
-    protected void Setup()
-    {
-        slots_ = new List<Slot>();
-        for (int i = 0; i < max_capacity; i++)
-        {
-            Slot slot = Instantiate(slot_prefab_, transform_).GetComponent<Slot>();
-            slot.Disable();
-            slots_.Add(slot);
-        }
-        current_ = 0;
-        IncreaseCapacity(start_capacity);
-    }
-
     protected void IncreaseCapacity(int capacity)
     {
         for (int i = 0; i < capacity; i++)
@@ -136,5 +132,10 @@ public class Container : MonoBehaviour
     public int Current
     {
         get { return current_; }
+    }
+
+    public ContainerType Type
+    {
+        get { return containerType_; }
     }
 }

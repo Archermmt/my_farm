@@ -3,14 +3,22 @@ public enum Direction
     Up,
     Down,
     Left,
-    Right
+    Right,
+    Around
 }
 
-public enum HumanAction
+public enum Action
 {
     Idle,
     Walk,
-    Run
+    Run,
+    DropItem,
+    UseItem
+}
+
+public enum AnimationTag
+{
+    Carry
 }
 
 public enum ContainerType
@@ -19,7 +27,6 @@ public enum ContainerType
     Pocket,
     Backpack
 }
-
 
 public enum ItemType
 {
@@ -32,9 +39,14 @@ public enum ItemType
     Furniture,
 }
 
-public enum AnimationTag
+public enum ItemStatus
 {
-    Carry
+    Dropable,
+    GridUsable,
+    ItemUsable,
+    GridUnusable,
+    PosUnusable,
+    None
 }
 
 public enum AreaTag
@@ -42,6 +54,16 @@ public enum AreaTag
     Basic,
     Diggable,
     Dropable,
+    Dug,
+}
+
+public enum CursorMode
+{
+    ValidGrid,
+    ValidPos,
+    Invalid,
+    Mask,
+    Mute
 }
 
 public static class Settings

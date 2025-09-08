@@ -4,18 +4,16 @@ using UnityEngine;
 
 public class ItemManager : Singleton<ItemManager>
 {
-    public ItemData[] items;
+    [SerializeField] private ItemData[] items_;
     private Dictionary<string, ItemData> itemsMap_;
-    private Camera camera_;
     private GameObject textbox_;
     private Dictionary<string, Transform> holdersMap_;
 
     protected override void Awake()
     {
         base.Awake();
-        camera_ = Camera.main;
         itemsMap_ = new Dictionary<string, ItemData>();
-        foreach (ItemData item in items)
+        foreach (ItemData item in items_)
         {
             itemsMap_.Add(item.name, item);
         }
@@ -27,13 +25,14 @@ public class ItemManager : Singleton<ItemManager>
         return itemsMap_[name];
     }
 
-    public ItemData RandomItem()
+    public ItemData RandomItem(List<ItemType> types = null)
     {
         System.Random rand = new System.Random();
+        List<ItemType> v_types = types == null ? new List<ItemType> { ItemType.Seed, ItemType.Food, ItemType.Object } : types;
         List<ItemData> allowed_items = new List<ItemData>();
         foreach (ItemData item in itemsMap_.Values)
         {
-            if (item.type == ItemType.Seed || item.type == ItemType.Food || item.type == ItemType.Object)
+            if (v_types.Contains(item.type))
             {
                 allowed_items.Add(item);
             }
@@ -41,13 +40,13 @@ public class ItemManager : Singleton<ItemManager>
         return allowed_items[rand.Next(allowed_items.Count)];
     }
 
-    public Item CreateItemInWorld(ItemData item_data, Vector3 world_pos, Transform holder = null)
+    public Item CreateItem(ItemData item_data, Vector3 world_pos, Transform holder = null)
     {
         GameObject prefab;
         prefab = Resources.Load<GameObject>("Prefab/Item/" + item_data.type.ToString() + "/" + item_data.name);
         if (!prefab)
         {
-            prefab = Resources.Load<GameObject>("Prefab/Item/" + item_data.type.ToString() + "/Common");
+            prefab = Resources.Load<GameObject>("Prefab/Item/" + item_data.type.ToString() + "/" + item_data.type.ToString());
         }
         if (!prefab)
         {
@@ -79,12 +78,6 @@ public class ItemManager : Singleton<ItemManager>
         }
         item_obj.name = "Gen_" + item_data.name + "_" + cnt;
         return item_obj.GetComponent<Item>();
-    }
-
-
-    public Item CreateItemAtMouse(ItemData item_data, Transform holder = null)
-    {
-        return CreateItemInWorld(item_data, CameraUtils.MouseToWorld(camera_), holder);
     }
 
     public void CommentItem(ItemData item_data, Transform item_transform)

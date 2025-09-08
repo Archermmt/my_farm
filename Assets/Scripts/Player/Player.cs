@@ -3,12 +3,12 @@ using UnityEngine;
 
 public class Player : Singleton<Player>
 {
-    public float runSpeed = 5f;
-    public float walkSpeed = 3f;
-    public PlayerInventory inventory;
+    [SerializeField] private float runSpeed_ = 5f;
+    [SerializeField] private float walkSpeed_ = 3f;
+    [SerializeField] private PlayerInventory inventory_;
     private bool freezed_ = false;
     private Direction direction_ = Direction.Down;
-    private HumanAction action_ = HumanAction.Idle;
+    private Action action_ = Action.Idle;
     private Rigidbody2D rigidBody_;
     private SpriteRenderer hands_;
     private Animator[] animators_;
@@ -21,6 +21,7 @@ public class Player : Singleton<Player>
         base.Awake();
         rigidBody_ = GetComponent<Rigidbody2D>();
         animators_ = GetComponentsInChildren<Animator>();
+        inventory_.Setup(transform);
         animationSwappers_ = GetComponentsInChildren<AnimationSwapper>();
         Transform hands_transform = transform.Find("Hands");
         hands_ = hands_transform.GetComponent<SpriteRenderer>();
@@ -32,32 +33,32 @@ public class Player : Singleton<Player>
     {
         UpdateAnimators();
         EventHandler.UpdateHandsEvent += UpdateHands;
+        EventHandler.UpdateInventoryEvent += UpdateInventory;
     }
 
     private void OnDisable()
     {
         EventHandler.UpdateHandsEvent -= UpdateHands;
+        EventHandler.UpdateInventoryEvent -= UpdateInventory;
     }
 
     private void Update()
     {
-        if (carried_.Key != null && !freezed_)
+        /*
+        if (!freezed_ && carried_.Key != null)
         {
+            Action action = Action.Idle;
             if (Input.GetMouseButtonDown(0))
             {
-                if (carried_.Key.Dropable)
-                    DropItem(carried_.Key, carried_.Value);
-                else
-                    UseItem(carried_.Key, carried_.Value);
+                action = Action.DropItem;
             }
-            else if (Input.GetMouseButtonDown(1))
+            else if (Input.GetMouseButtonDown(0))
             {
-                if (carried_.Key.Usable)
-                    UseItem(carried_.Key, carried_.Value);
-                else
-                    DropItem(carried_.Key, carried_.Value);
+                action = Action.UseItem;
             }
+            ProcessCarried(action);
         }
+        */
         InputTest();
     }
 
@@ -65,40 +66,66 @@ public class Player : Singleton<Player>
     {
         if (!freezed_)
         {
-            float horizontal = Input.GetAxisRaw("Horizontal");
-            float vertical = Input.GetAxisRaw("Vertical");
-            Vector2 movement = new Vector2(horizontal, vertical).normalized;
-            float speed;
-            if (movement == Vector2.zero)
+            ProcessMovement();
+        }
+    }
+
+    private void ProcessMovement()
+    {
+        float horizontal = Input.GetAxisRaw("Horizontal");
+        float vertical = Input.GetAxisRaw("Vertical");
+        Vector2 movement = new Vector2(horizontal, vertical).normalized;
+        float speed;
+        if (movement == Vector2.zero)
+        {
+            action_ = Action.Idle;
+            speed = 0;
+        }
+        else
+        {
+            // set speed
+            if (Input.GetKey(KeyCode.LeftShift) || Input.GetKey(KeyCode.RightShift))
             {
-                action_ = HumanAction.Idle;
-                speed = 0;
+                action_ = Action.Walk;
+                speed = walkSpeed_;
             }
             else
             {
-                // set speed
-                if (Input.GetKey(KeyCode.LeftShift) || Input.GetKey(KeyCode.RightShift))
-                {
-                    action_ = HumanAction.Walk;
-                    speed = walkSpeed;
-                }
-                else
-                {
-                    action_ = HumanAction.Run;
-                    speed = runSpeed;
-                }
-                // set direction
-                if (movement.x > 0)
-                    direction_ = Direction.Right;
-                else if (movement.x < 0)
-                    direction_ = Direction.Left;
-                else if (movement.y < 0)
-                    direction_ = Direction.Down;
-                else
-                    direction_ = Direction.Up;
+                action_ = Action.Run;
+                speed = runSpeed_;
             }
-            UpdateAnimators();
-            rigidBody_.MovePosition(rigidBody_.position + movement * speed * Time.deltaTime);
+            // set direction
+            if (movement.x > 0)
+                direction_ = Direction.Right;
+            else if (movement.x < 0)
+                direction_ = Direction.Left;
+            else if (movement.y < 0)
+                direction_ = Direction.Down;
+            else
+                direction_ = Direction.Up;
+        }
+        UpdateAnimators();
+        rigidBody_.MovePosition(rigidBody_.position + movement * speed * Time.deltaTime);
+    }
+
+    private void ProcessCarried(Action action)
+    {
+        List<Cursor> cursors = EnvManager.Instance.CheckItem(carried_.Key, transform.position, CameraUtils.MouseToWorld(camera_));
+        if (cursors != null && cursors.Count > 0)
+        {
+            foreach (Cursor cursor in cursors)
+            {
+                if (action == Action.DropItem && cursor.HasStatus(ItemStatus.Dropable))
+                {
+                    EnvManager.Instance.DropItem(carried_.Key, cursor);
+                    carried_.Value.DecreaseAmount();
+                }
+                else if (action == Action.UseItem && (cursor.HasStatus(ItemStatus.GridUsable) || cursor.HasStatus(ItemStatus.ItemUsable)))
+                {
+                    int use_amount = EnvManager.Instance.UseItem(carried_.Key, cursor);
+                    carried_.Value.DecreaseAmount(use_amount);
+                }
+            }
         }
     }
 
@@ -127,45 +154,48 @@ public class Player : Singleton<Player>
         }
     }
 
-    private void UpdateHands()
+    private void UpdateHands(Transform owner, ContainerType container_type)
     {
-        Slot slot = inventory.FindSelectSlot();
-        if (slot != null && slot.ItemData.dropable)
+        if (owner == transform && container_type == ContainerType.ToolBar)
         {
-            hands_.sprite = slot.ItemData.sprite;
-            hands_.color = new Color(1f, 1f, 1f, 1f);
-            SwapAnimations(AnimationTag.Carry);
-        }
-        else
-        {
-            hands_.sprite = null;
-            hands_.color = new Color(1f, 1f, 1f, 0f);
-            RestoreAnimations(AnimationTag.Carry);
-        }
-        if (!freezed_ && slot != null)
-        {
-            Item item = ItemManager.Instance.CreateItemInWorld(slot.ItemData, transform.position, transform);
-            item.gameObject.SetActive(false);
-            carried_ = new KeyValuePair<Item, Slot>(item, slot);
-        }
-        else
-        {
-            if (carried_.Key != null)
+            Slot slot = inventory_.GetContainer(container_type).FindSelectedSlot();
+            if (!freezed_ && slot != null)
             {
-                Destroy(carried_.Key);
+                Item item = ItemManager.Instance.CreateItem(slot.ItemMeta, transform.position, transform);
+                item.gameObject.SetActive(false);
+                carried_ = new KeyValuePair<Item, Slot>(item, slot);
             }
-            carried_ = new KeyValuePair<Item, Slot>(null, null);
+            else
+            {
+                if (carried_.Key != null)
+                {
+                    Destroy(carried_.Key);
+                }
+                carried_ = new KeyValuePair<Item, Slot>(null, null);
+            }
+            if (carried_.Key != null && carried_.Key.DropRadius > 0)
+            {
+                hands_.sprite = carried_.Key.Meta.sprite;
+                hands_.color = new Color(1f, 1f, 1f, 1f);
+                SwapAnimations(AnimationTag.Carry);
+                EnvManager.Instance.Unfreeze();
+            }
+            else
+            {
+                hands_.sprite = null;
+                hands_.color = new Color(1f, 1f, 1f, 0f);
+                RestoreAnimations(AnimationTag.Carry);
+                EnvManager.Instance.Freeze();
+            }
         }
     }
 
-    private void DropItem(Item item, Slot slot)
+    private void UpdateInventory(Transform owner, ContainerType container_type, bool sort, bool deselect)
     {
-        slot.DropItemAtMouse();
-    }
-
-    private void UseItem(Item item, Slot slot)
-    {
-        Debug.Log("UseItem is not suuported");
+        if (owner == transform)
+        {
+            inventory_.GetContainer(container_type).UpdateSlots(sort, deselect);
+        }
     }
 
     // TMINFO:debug only
@@ -174,8 +204,17 @@ public class Player : Singleton<Player>
         // pick item test
         if (Input.GetKeyDown(KeyCode.P))
         {
-            ItemData item = ItemManager.Instance.RandomItem();
-            inventory.AddItem(item);
+            ItemData item_data = ItemManager.Instance.RandomItem();
+            inventory_.AddItem(item_data);
+        }
+        else if (Input.GetKeyDown(KeyCode.T))
+        {
+            ItemData item_data = ItemManager.Instance.FindItem("Hoe");
+            inventory_.AddItem(item_data);
+        }
+        else if (Input.GetKeyDown(KeyCode.C) && carried_.Key != null)
+        {
+            ProcessCarried(Action.UseItem);
         }
     }
 
@@ -189,7 +228,7 @@ public class Player : Singleton<Player>
         freezed_ = true;
         foreach (Animator animator in animators_)
         {
-            animator.SetInteger("action", (int)HumanAction.Idle);
+            animator.SetInteger("action", (int)Action.Idle);
         }
     }
 

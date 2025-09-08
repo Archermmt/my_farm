@@ -3,15 +3,23 @@ using UnityEngine;
 
 public class BaseInventory : MonoBehaviour
 {
-    public Container[] containers;
+    [SerializeField] private Container[] containers_;
     private Dictionary<ContainerType, Container> containersMap_;
+
+    public void Setup(Transform owner)
+    {
+        foreach (Container container in containersMap_.Values)
+        {
+            container.Setup(owner);
+        }
+    }
 
     public Container GetContainer(ContainerType type)
     {
         return containersMap_[type];
     }
 
-    protected void UpdateContainers(bool sort, bool deselect, ContainerType[] types = null)
+    public void UpdateContainers(bool sort, bool deselect, ContainerType[] types = null)
     {
         if (types == null)
         {
@@ -35,9 +43,9 @@ public class BaseInventory : MonoBehaviour
     private void Awake()
     {
         containersMap_ = new Dictionary<ContainerType, Container>();
-        foreach (Container container in containers)
+        foreach (Container container in containers_)
         {
-            containersMap_.Add(container.containerType, container);
+            containersMap_.Add(container.Type, container);
         }
     }
 }

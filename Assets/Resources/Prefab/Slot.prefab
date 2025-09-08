@@ -93,11 +93,11 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 502effb6240f04017b5c9dc43b166b66, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  highlight: {fileID: 8222048567128133800}
-  mask: {fileID: 127444357170800671}
-  itemImg: {fileID: 5959115830927617553}
-  number: {fileID: 5223541649254533357}
-  capacity: 99
+  highlight_: {fileID: 8222048567128133800}
+  mask_: {fileID: 127444357170800671}
+  itemImg_: {fileID: 5959115830927617553}
+  number_: {fileID: 5223541649254533357}
+  capacity_: 99
 --- !u!225 &8952472297331587153
 CanvasGroup:
   m_ObjectHideFlags: 0

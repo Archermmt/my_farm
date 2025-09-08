@@ -73010,9 +73010,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 79ab18680f04743f99b1af1371d43112, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  triggerBy: Player
-  maskObj: {fileID: 1083479406}
-  dst_order: 9
+  triggerBy_: Player
+  maskObj_: {fileID: 1083479406}
+  dst_order_: 9
 --- !u!61 &1115464121
 BoxCollider2D:
   m_ObjectHideFlags: 0
@@ -82072,9 +82072,9 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 79ab18680f04743f99b1af1371d43112, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  triggerBy: Player
-  maskObj: {fileID: 1083479406}
-  dst_order: 9
+  triggerBy_: Player
+  maskObj_: {fileID: 1083479406}
+  dst_order_: 9
 --- !u!1 &1966721094
 GameObject:
   m_ObjectHideFlags: 0
