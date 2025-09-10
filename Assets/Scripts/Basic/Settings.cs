@@ -55,6 +55,7 @@ public enum AreaTag
     Diggable,
     Dropable,
     Dug,
+    Watered,
 }
 
 public enum CursorMode

@@ -1,5 +1,4 @@
 using System.Collections.Generic;
-using System.Text;
 using UnityEngine;
 
 [System.Serializable]
@@ -28,6 +27,7 @@ public class Item : MonoBehaviour
     private ItemData meta_;
     private SpriteRenderer renderer_;
     private BoxCollider2D collider_;
+    private List<ItemStatus> statusList_;
 
     public void SetItem(ItemData item_data)
     {
@@ -46,18 +46,18 @@ public class Item : MonoBehaviour
         }
     }
 
-    public virtual (Vector3, Vector3) GetScope(EnvGrid center, EnvGrid start, Vector3 pos, Vector3 grid_min, Vector3 grid_max)
+    public virtual (Vector3, Vector3) GetScope(AreaGrid center, AreaGrid start, Vector3 pos, Vector3 grid_min, Vector3 grid_max)
     {
-        if ((UseRadius > 0 && GridUsable(start)) || DropRadius == 0)
+        if (dropRadius == 0 || (useRadius > 0 && GridUsable(start)))
         {
-            return GetScopeByRadius(center, pos, grid_min, grid_max, UseRadius);
+            return GetScopeByRadius(center, pos, grid_min, grid_max, useRadius);
         }
-        return GetScopeByRadius(center, pos, grid_min, grid_max, DropRadius);
+        return GetScopeByRadius(center, pos, grid_min, grid_max, dropRadius);
     }
 
-    protected (Vector3, Vector3) GetScopeByRadius(EnvGrid center, Vector3 pos, Vector3 grid_min, Vector3 grid_max, float radius, bool around = true)
+    protected (Vector3, Vector3) GetScopeByRadius(AreaGrid center, Vector3 pos, Vector3 grid_min, Vector3 grid_max, float radius, bool around = true)
     {
-        Vector3 center_pos = center.Position;
+        Vector3 center_pos = center.position;
         Vector3 min, max;
         float diff_width = pos.x - center_pos.x;
         float diff_height = pos.y - center_pos.y;
@@ -95,35 +95,51 @@ public class Item : MonoBehaviour
         return (min, max);
     }
 
-    public virtual (List<Vector3>, List<ItemStatus>) EffectEnv(List<EnvGrid> grids, EnvGrid start, Vector3 pos, Vector3 min, Vector3 max)
+    public virtual List<Vector3> EffectEnv(List<AreaGrid> grids, AreaGrid start, Vector3 pos, Vector3 min, Vector3 max)
     {
+        statusList_ = new List<ItemStatus>();
         List<Vector3> positions = new List<Vector3>();
-        List<ItemStatus> status_list = new List<ItemStatus>();
-        if (UseRadius > 0 && GridUsable(start))
+        if (useRadius > 0 && GridUsable(start))
         {
-            positions.Add(start.Position);
-            status_list.Add(grids.Contains(start) ? ItemStatus.GridUsable : ItemStatus.GridUnusable);
+            positions.Add(start.GetCenter());
+            AddStatus(grids.Contains(start) ? ItemStatus.GridUsable : ItemStatus.GridUnusable);
         }
-        else if (DropRadius > 0 && GridDropable(start))
+        else if (dropRadius > 0 && GridDropable(start))
         {
             positions.Add(pos);
-            bool dropable = pos.x > min.x && pos.x < max.x && pos.y > min.y && pos.y < max.y;
-            status_list.Add(dropable ? ItemStatus.Dropable : ItemStatus.PosUnusable);
+            float s_size = Settings.gridCellSize;
+            bool dropable = pos.x > min.x && pos.x < max.x + s_size && pos.y > min.y && pos.y < max.y + s_size;
+            AddStatus(dropable ? ItemStatus.Dropable : ItemStatus.PosUnusable);
         }
         else
         {
             positions.Add(pos);
-            status_list.Add(ItemStatus.PosUnusable);
+            AddStatus(ItemStatus.PosUnusable);
         }
-        return (positions, status_list);
+        return positions;
     }
 
-    protected virtual bool GridDropable(EnvGrid grid)
+    public virtual int Apply(List<Cursor> cursors)
+    {
+        return 0;
+    }
+
+    protected void AddStatus(ItemStatus status)
+    {
+        statusList_.Add(status);
+    }
+
+    public bool HasStatus(ItemStatus status)
+    {
+        return statusList_ != null && statusList_.Contains(status);
+    }
+
+    protected virtual bool GridDropable(AreaGrid grid)
     {
         return grid.HasTag(AreaTag.Dropable);
     }
 
-    protected virtual bool GridUsable(EnvGrid grid)
+    protected virtual bool GridUsable(AreaGrid grid)
     {
         return true;
     }
@@ -133,27 +149,32 @@ public class Item : MonoBehaviour
         return transform.name + " : " + meta_.ToString();
     }
 
-    public ItemData Meta
+    public ItemData meta
     {
         get { return meta_; }
     }
 
-    public virtual int PickRadius
+    public List<ItemStatus> statusList
+    {
+        get { return statusList_; }
+    }
+
+    public virtual int pickRadius
     {
         get { return 0; }
     }
 
-    public virtual int DropRadius
+    public virtual int dropRadius
     {
         get { return meta_.dropRadius; }
     }
 
-    public virtual int UseRadius
+    public virtual int useRadius
     {
         get { return meta_.useRadius; }
     }
 
-    public virtual int EffectNum
+    public virtual int effectNum
     {
         get { return 1; }
     }

@@ -45,7 +45,7 @@ public class BaseInventory : MonoBehaviour
         containersMap_ = new Dictionary<ContainerType, Container>();
         foreach (Container container in containers_)
         {
-            containersMap_.Add(container.Type, container);
+            containersMap_.Add(container.containerType, container);
         }
     }
 }

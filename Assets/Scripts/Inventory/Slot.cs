@@ -55,24 +55,24 @@ public class Slot : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndDragHand
 
   public void Swap(Slot other)
   {
-    Transform otherOwner = other.Owner;
-    ContainerType otherHolderType = other.HolderType;
+    Transform otherOwner = other.owner;
+    ContainerType otherHolderType = other.holderType;
     other.Setup(owner_, holderType_);
     Setup(otherOwner, otherHolderType);
-    if (other.Current == 0)
+    if (other.current == 0)
     {
       other.SetItem(itemMeta_, current_);
       Empty();
       UpdateContainer(true, true);
-      if (other.Owner != owner_ || other.HolderType != holderType_)
+      if (other.owner != owner_ || other.holderType != holderType_)
       {
         other.UpdateContainer(true, true);
       }
     }
-    else if (other.Current > 0)
+    else if (other.current > 0)
     {
-      ItemData otherItemMeta = other.ItemMeta;
-      int otherCurrent = other.Current;
+      ItemData otherItemMeta = other.itemMeta;
+      int otherCurrent = other.current;
       other.SetItem(itemMeta_, current_);
       SetItem(otherItemMeta, otherCurrent);
     }
@@ -80,8 +80,8 @@ public class Slot : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndDragHand
 
   public void CopyFrom(Slot other)
   {
-    Setup(other.Owner, other.HolderType);
-    SetItem(other.ItemMeta, other.Current);
+    Setup(other.owner, other.holderType);
+    SetItem(other.itemMeta, other.current);
   }
 
   public int IncreaseAmount(int amount = 1)
@@ -181,7 +181,7 @@ public class Slot : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndDragHand
 
   public void OnPointerEnter(PointerEventData eventData)
   {
-    EnvManager.Instance.Freeze();
+    GridManager.Instance.Freeze();
     if (current_ > 0)
     {
       ItemManager.Instance.CommentItem(itemMeta_, transform);
@@ -190,7 +190,7 @@ public class Slot : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndDragHand
 
   public void OnPointerExit(PointerEventData eventData)
   {
-    EnvManager.Instance.Unfreeze();
+    GridManager.Instance.Unfreeze();
     ItemManager.Instance.UnCommentItem();
   }
 
@@ -220,27 +220,27 @@ public class Slot : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndDragHand
     EventHandler.CallUpdateInventory(owner_, holderType_, sort, deselect);
   }
 
-  public ItemData ItemMeta
+  public ItemData itemMeta
   {
     get { return itemMeta_; }
   }
 
-  public int Current
+  public int current
   {
     get { return current_; }
   }
 
-  public bool Selected
+  public bool selected
   {
     get { return selected_; }
   }
 
-  public Transform Owner
+  public Transform owner
   {
     get { return owner_; }
   }
 
-  public ContainerType HolderType
+  public ContainerType holderType
   {
     get { return holderType_; }
   }

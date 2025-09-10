@@ -44,7 +44,6 @@ public class Player : Singleton<Player>
 
     private void Update()
     {
-        /*
         if (!freezed_ && carried_.Key != null)
         {
             Action action = Action.Idle;
@@ -52,13 +51,12 @@ public class Player : Singleton<Player>
             {
                 action = Action.DropItem;
             }
-            else if (Input.GetMouseButtonDown(0))
+            else if (Input.GetMouseButtonDown(1))
             {
                 action = Action.UseItem;
             }
             ProcessCarried(action);
         }
-        */
         InputTest();
     }
 
@@ -110,22 +108,20 @@ public class Player : Singleton<Player>
 
     private void ProcessCarried(Action action)
     {
-        List<Cursor> cursors = EnvManager.Instance.CheckItem(carried_.Key, transform.position, CameraUtils.MouseToWorld(camera_));
+        List<Cursor> cursors = GridManager.Instance.CheckItem(carried_.Key, transform.position, CameraUtils.MouseToWorld(camera_));
         if (cursors != null && cursors.Count > 0)
         {
-            foreach (Cursor cursor in cursors)
+            if (action == Action.DropItem && carried_.Key.HasStatus(ItemStatus.Dropable))
             {
-                if (action == Action.DropItem && cursor.HasStatus(ItemStatus.Dropable))
-                {
-                    EnvManager.Instance.DropItem(carried_.Key, cursor);
-                    carried_.Value.DecreaseAmount();
-                }
-                else if (action == Action.UseItem && (cursor.HasStatus(ItemStatus.GridUsable) || cursor.HasStatus(ItemStatus.ItemUsable)))
-                {
-                    int use_amount = EnvManager.Instance.UseItem(carried_.Key, cursor);
-                    carried_.Value.DecreaseAmount(use_amount);
-                }
+                int drop_amount = GridManager.Instance.DropItem(carried_.Key, cursors);
+                carried_.Value.DecreaseAmount(drop_amount);
             }
+            else if (action == Action.UseItem && (carried_.Key.HasStatus(ItemStatus.GridUsable) || carried_.Key.HasStatus(ItemStatus.ItemUsable)))
+            {
+                int use_amount = GridManager.Instance.UseItem(carried_.Key, cursors);
+                carried_.Value.DecreaseAmount(use_amount);
+            }
+
         }
     }
 
@@ -161,7 +157,7 @@ public class Player : Singleton<Player>
             Slot slot = inventory_.GetContainer(container_type).FindSelectedSlot();
             if (!freezed_ && slot != null)
             {
-                Item item = ItemManager.Instance.CreateItem(slot.ItemMeta, transform.position, transform);
+                Item item = ItemManager.Instance.CreateItem(slot.itemMeta, transform.position, transform);
                 item.gameObject.SetActive(false);
                 carried_ = new KeyValuePair<Item, Slot>(item, slot);
             }
@@ -173,19 +169,19 @@ public class Player : Singleton<Player>
                 }
                 carried_ = new KeyValuePair<Item, Slot>(null, null);
             }
-            if (carried_.Key != null && carried_.Key.DropRadius > 0)
+            if (carried_.Key != null && carried_.Key.dropRadius > 0)
             {
-                hands_.sprite = carried_.Key.Meta.sprite;
+                hands_.sprite = carried_.Key.meta.sprite;
                 hands_.color = new Color(1f, 1f, 1f, 1f);
                 SwapAnimations(AnimationTag.Carry);
-                EnvManager.Instance.Unfreeze();
+                GridManager.Instance.Unfreeze();
             }
             else
             {
                 hands_.sprite = null;
                 hands_.color = new Color(1f, 1f, 1f, 0f);
                 RestoreAnimations(AnimationTag.Carry);
-                EnvManager.Instance.Freeze();
+                GridManager.Instance.Freeze();
             }
         }
     }
@@ -209,8 +205,10 @@ public class Player : Singleton<Player>
         }
         else if (Input.GetKeyDown(KeyCode.T))
         {
-            ItemData item_data = ItemManager.Instance.FindItem("Hoe");
-            inventory_.AddItem(item_data);
+            ItemData hoe = ItemManager.Instance.FindItem("Hoe");
+            ItemData water_can = ItemManager.Instance.FindItem("WaterCan");
+            inventory_.AddItem(hoe);
+            inventory_.AddItem(water_can);
         }
         else if (Input.GetKeyDown(KeyCode.C) && carried_.Key != null)
         {

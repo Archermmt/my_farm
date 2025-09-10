@@ -4,37 +4,50 @@ using UnityEngine;
 using UnityEngine.Tilemaps;
 
 [System.Serializable]
-public class EnvGrid
+public class AreaGrid
 {
     private Vector3 position_;
     private Vector2Int coord_;
-    private List<AreaTag> areaTags_;
+    private Dictionary<AreaTag, int> areaTags_;
     private Dictionary<Vector3, Item> items_;
 
-    public EnvGrid(Vector3 position, Vector2Int coord)
+    public AreaGrid(Vector3 position, Vector2Int coord)
     {
         position_ = position;
         coord_ = coord;
-        areaTags_ = new List<AreaTag>();
+        areaTags_ = new Dictionary<AreaTag, int>();
         items_ = new Dictionary<Vector3, Item>();
     }
 
-    public void AddTag(AreaTag tag)
+    public Vector3 GetCenter()
     {
-        if (!areaTags_.Contains(tag))
+        return new Vector3(position_.x + Settings.gridCellSize / 2, position_.y + Settings.gridCellSize / 2, position_.z);
+    }
+
+    public void AddTag(AreaTag tag, int duration = 0)
+    {
+        if (!areaTags_.ContainsKey(tag))
         {
-            areaTags_.Add(tag);
+            areaTags_[tag] = duration;
+        }
+    }
+
+    public void IncreaseTag(AreaTag tag, int inc = 1)
+    {
+        if (areaTags_.ContainsKey(tag))
+        {
+            areaTags_[tag] += inc;
         }
     }
 
     public bool HasTag(AreaTag tag)
     {
-        return areaTags_.Contains(tag);
+        return areaTags_.ContainsKey(tag);
     }
 
     public void RemoveTag(AreaTag tag)
     {
-        if (areaTags_.Contains(tag))
+        if (areaTags_.ContainsKey(tag))
         {
             areaTags_.Remove(tag);
         }
@@ -65,22 +78,22 @@ public class EnvGrid
         }
     }
 
-    public Vector3 Position
+    public Vector3 position
     {
         get { return position_; }
     }
 
-    public Vector2Int Coord
+    public Vector2Int coord
     {
         get { return coord_; }
     }
 
-    public List<AreaTag> AreaTags
+    public Dictionary<AreaTag, int> areaTags
     {
         get { return areaTags_; }
     }
 
-    public Dictionary<Vector3, Item> Items
+    public Dictionary<Vector3, Item> items
     {
         get { return items_; }
     }
@@ -91,9 +104,9 @@ public class EnvGrid
         if (areaTags_ != null && areaTags_.Count > 0)
         {
             str += " <" + areaTags_.Count + " Tags>:";
-            foreach (AreaTag tag in areaTags_)
+            foreach (KeyValuePair<AreaTag, int> pair in areaTags_)
             {
-                str += tag.ToString() + ",";
+                str += pair.Key.ToString() + "|" + pair.Value.ToString() + ",";
             }
         }
         if (items_ != null && items_.Count > 0)
@@ -109,13 +122,15 @@ public class EnvGrid
 }
 
 
-public class EnvManager : Singleton<EnvManager>
+public class GridManager : Singleton<GridManager>
 {
-    private EnvGrid[,] envGrids_;
+    private AreaGrid[,] envGrids_;
     private Grid grid_;
     private Vector3Int start_, end_;
     private List<Cursor> envCursors_;
     private List<Cursor> maskCursors_;
+    private Transform layersHolder_;
+    private List<Transform> layers_;
     private bool freezed_;
 
     protected override void Awake()
@@ -123,11 +138,12 @@ public class EnvManager : Singleton<EnvManager>
         base.Awake();
         envCursors_ = new List<Cursor>();
         maskCursors_ = new List<Cursor>();
+        layers_ = new List<Transform>();
         freezed_ = false;
-        ParseGrids();
+        ParseAreas();
     }
 
-    public EnvGrid GridAt(int x, int y)
+    public AreaGrid GridAt(int x, int y)
     {
         if (x >= envGrids_.GetLength(0) || y >= envGrids_.GetLength(1))
         {
@@ -136,27 +152,31 @@ public class EnvManager : Singleton<EnvManager>
         return envGrids_[x, y];
     }
 
-    public EnvGrid GetGrid(Vector3 world_pos)
+    public AreaGrid GetGrid(Vector3 world_pos)
     {
-        Vector3 rounded_pos = new Vector3(Mathf.Round(world_pos.x), Mathf.Round(world_pos.y), world_pos.z);
-        Vector3Int cell_pos = grid_.WorldToCell(rounded_pos);
+        Vector3Int cell_pos = grid_.WorldToCell(world_pos);
         return GridAt(cell_pos.x - start_.x, cell_pos.y - start_.y);
     }
 
-    public Item DropItem(Item item, Cursor cursor)
+    public int DropItem(Item item, List<Cursor> cursors)
     {
-        Item new_item = ItemManager.Instance.CreateItem(item.Meta, cursor.transform.position);
-        EnvGrid grid = GetGrid(cursor.transform.position);
-        grid.AddItem(new_item);
-        return new_item;
+        foreach (Cursor cursor in cursors)
+        {
+            Item new_item = ItemManager.Instance.CreateItem(item.meta, cursor.transform.position);
+            AreaGrid grid = GetGrid(cursor.transform.position);
+            grid.AddItem(new_item);
+            cursor.SetMode(CursorMode.Mute);
+        }
+        return cursors.Count;
     }
 
-    public int UseItem(Item item, Cursor cursor)
+    public int UseItem(Item item, List<Cursor> cursors)
     {
-        EnvGrid grid = GetGrid(cursor.transform.position);
-        Debug.Log("[TMINFO] use item!! " + item + " @ " + cursor);
-        Debug.Log("grid " + grid);
-        return 0;
+        foreach (Cursor cursor in cursors)
+        {
+            cursor.SetMode(CursorMode.Mute);
+        }
+        return item.Apply(cursors);
     }
 
     public Cursor GetEnvCursor(int idx)
@@ -165,7 +185,7 @@ public class EnvManager : Singleton<EnvManager>
         {
             GameObject prefab = Resources.Load<GameObject>("Prefab/Env/Cursor");
             Assert.AreNotEqual(prefab, null, "Can not find cursor prefab");
-            GameObject cursor_obj = Instantiate(prefab, transform);
+            GameObject cursor_obj = Instantiate(prefab, transform.Find("EnvCursors").transform);
             cursor_obj.name = "EnvCursor_" + envCursors_.Count.ToString();
             envCursors_.Add(cursor_obj.GetComponent<Cursor>());
         }
@@ -178,12 +198,32 @@ public class EnvManager : Singleton<EnvManager>
         {
             GameObject prefab = Resources.Load<GameObject>("Prefab/Env/Cursor");
             Assert.AreNotEqual(prefab, null, "Can not find cursor prefab");
-            GameObject cursor_obj = Instantiate(prefab, transform);
+            GameObject cursor_obj = Instantiate(prefab, transform.Find("MaskCursors").transform);
             cursor_obj.GetComponent<Cursor>().SetMode(CursorMode.Mask);
             cursor_obj.name = "MaskCursor_" + maskCursors_.Count.ToString();
             maskCursors_.Add(cursor_obj.GetComponent<Cursor>());
         }
         return maskCursors_[idx];
+    }
+
+    public Transform GetLayer(AreaTag tag)
+    {
+        foreach (Transform layer in layers_)
+        {
+            if (layer.GetComponent<Area>().HasTag(tag))
+            {
+                return layer;
+            }
+        }
+        GameObject prefab = Resources.Load<GameObject>("Prefab/Env/Layer");
+        Assert.AreNotEqual(prefab, null, "Can not find cursor prefab");
+        GameObject layer_obj = Instantiate(prefab, layersHolder_);
+        layer_obj.GetComponent<Area>().AddTag(tag);
+        layer_obj.name = "Layer_" + tag.ToString();
+        TilemapRenderer render = layer_obj.GetComponent<TilemapRenderer>();
+        render.sortingOrder += layers_.Count;
+        layers_.Add(layer_obj.transform);
+        return layer_obj.transform;
     }
 
     public List<Cursor> CheckItem(Item item, Vector3 anchor, Vector3 world_pos)
@@ -192,47 +232,45 @@ public class EnvManager : Singleton<EnvManager>
         {
             return new List<Cursor>();
         }
-        EnvGrid center = GetGrid(anchor);
+        AreaGrid center = GetGrid(anchor);
         if (center == null)
         {
             return new List<Cursor>();
         }
-        EnvGrid start = GetGrid(world_pos);
+        AreaGrid start = GetGrid(world_pos);
         if (start == null)
         {
             return new List<Cursor>();
         }
 
         (Vector3 min, Vector3 max) = item.GetScope(center, start, world_pos, start_, end_);
-        List<EnvGrid> grids = ExpandGrids(center, min, max);
+        List<AreaGrid> grids = ExpandGrids(center, min, max);
         for (int i = 0; i < grids.Count; i++)
         {
-            GetMaskCursor(i).MoveTo(grids[i].Position, CursorMode.Mask);
+            GetMaskCursor(i).MoveTo(grids[i].GetCenter(), CursorMode.Mask);
         }
         for (int i = grids.Count; i < maskCursors_.Count; i++)
         {
             GetMaskCursor(i).SetMode(CursorMode.Mute);
         }
-        (List<Vector3> positions, List<ItemStatus> status_list) = item.EffectEnv(grids, start, world_pos, min, max);
+        List<Vector3> positions = item.EffectEnv(grids, start, world_pos, min, max);
         List<Cursor> cursors = new List<Cursor>();
         for (int i = 0; i < positions.Count; i++)
         {
             Cursor cursor = GetEnvCursor(i);
-            cursor.Reset();
-            if (status_list.Contains(ItemStatus.GridUsable))
+            if (item.HasStatus(ItemStatus.GridUsable))
             {
                 cursor.MoveTo(positions[i], CursorMode.ValidGrid);
             }
-            else if (status_list.Contains(ItemStatus.ItemUsable))
-            {
-                cursor.MoveTo(positions[i], CursorMode.ValidPos);
-                cursor.SetItem(GetGrid(positions[i]).FindItem(positions[i]));
-            }
-            else if (status_list.Contains(ItemStatus.Dropable))
+            else if (item.HasStatus(ItemStatus.ItemUsable))
             {
                 cursor.MoveTo(positions[i], CursorMode.ValidPos);
             }
-            else if (status_list.Contains(ItemStatus.GridUnusable))
+            else if (item.HasStatus(ItemStatus.Dropable))
+            {
+                cursor.MoveTo(positions[i], CursorMode.ValidPos);
+            }
+            else if (item.HasStatus(ItemStatus.GridUnusable))
             {
                 cursor.MoveTo(positions[i], CursorMode.Invalid);
             }
@@ -240,7 +278,6 @@ public class EnvManager : Singleton<EnvManager>
             {
                 cursor.MoveTo(positions[i], CursorMode.Invalid);
             }
-            cursor.SetStatusList(status_list);
             cursors.Add(cursor);
         }
         for (int i = positions.Count; i < envCursors_.Count; i++)
@@ -268,21 +305,23 @@ public class EnvManager : Singleton<EnvManager>
         freezed_ = false;
     }
 
-    private void ParseGrids()
+    private void ParseAreas()
     {
         Transform parent = GameObject.FindGameObjectWithTag("Areas").transform;
         grid_ = parent.GetComponent<Grid>();
-        Tilemap basicMap = parent.Find("Basic").GetComponent<Tilemap>();
+        layersHolder_ = parent.Find("Layers").transform;
+        Transform masks = parent.Find("Masks").transform;
+        Tilemap basicMap = masks.Find("Basic").GetComponent<Tilemap>();
         basicMap.CompressBounds();
         start_ = basicMap.cellBounds.min;
         end_ = basicMap.cellBounds.max;
-        envGrids_ = new EnvGrid[end_.x - start_.x, end_.y - start_.y];
+        envGrids_ = new AreaGrid[end_.x - start_.x, end_.y - start_.y];
         foreach (Vector3Int pos in basicMap.cellBounds.allPositionsWithin)
         {
             Vector2Int coord = new Vector2Int(pos.x - start_.x, pos.y - start_.y);
-            envGrids_[coord.x, coord.y] = new EnvGrid(pos, coord);
+            envGrids_[coord.x, coord.y] = new AreaGrid(pos, coord);
         }
-        foreach (Transform child in parent)
+        foreach (Transform child in masks)
         {
             Tilemap tilemap = child.GetComponent<Tilemap>();
             tilemap.CompressBounds();
@@ -294,7 +333,7 @@ public class EnvManager : Singleton<EnvManager>
                 {
                     continue;
                 }
-                foreach (AreaTag tag in area.AreaTags)
+                foreach (AreaTag tag in area.areaTags)
                 {
                     envGrids_[pos.x - start_.x, pos.y - start_.y].AddTag(tag);
                 }
@@ -302,21 +341,21 @@ public class EnvManager : Singleton<EnvManager>
         }
     }
 
-    private List<EnvGrid> ExpandGrids(EnvGrid start, Vector3 min, Vector3 max, bool include_start = true)
+    private List<AreaGrid> ExpandGrids(AreaGrid start, Vector3 min, Vector3 max, bool include_start = true)
     {
-        List<EnvGrid> grids = new List<EnvGrid>();
-        List<EnvGrid> frontier = new List<EnvGrid> { start };
+        List<AreaGrid> grids = new List<AreaGrid>();
+        List<AreaGrid> frontier = new List<AreaGrid> { start };
         while (frontier.Count > 0)
         {
-            EnvGrid current = frontier[0];
+            AreaGrid current = frontier[0];
             grids.Add(current);
             frontier.RemoveAt(0);
-            int x = current.Coord.x;
-            int y = current.Coord.y;
-            List<EnvGrid> next_grids = new List<EnvGrid> { GridAt(x, y - 1), GridAt(x + 1, y), GridAt(x, y + 1), GridAt(x - 1, y) };
-            foreach (EnvGrid grid in next_grids)
+            int x = current.coord.x;
+            int y = current.coord.y;
+            List<AreaGrid> next_grids = new List<AreaGrid> { GridAt(x, y - 1), GridAt(x + 1, y), GridAt(x, y + 1), GridAt(x - 1, y) };
+            foreach (AreaGrid grid in next_grids)
             {
-                if (grid == null || grid.Position.x < min.x || grid.Position.x > max.x || grid.Position.y < min.y || grid.Position.y > max.y)
+                if (grid == null || grid.position.x < min.x || grid.position.x > max.x || grid.position.y < min.y || grid.position.y > max.y)
                 {
                     continue;
                 }

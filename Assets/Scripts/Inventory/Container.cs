@@ -34,7 +34,7 @@ public class Container : MonoBehaviour
         {
             return false;
         }
-        if (slot.Current == 0)
+        if (slot.current == 0)
         {
             slot.SetItem(item_data);
         }
@@ -61,7 +61,7 @@ public class Container : MonoBehaviour
     {
         foreach (Slot slot in slots_)
         {
-            if (slot.Selected)
+            if (slot.selected)
             {
                 return slot;
             }
@@ -76,7 +76,7 @@ public class Container : MonoBehaviour
             List<Slot> used_slots = new List<Slot>();
             for (int i = 0; i < current_; i++)
             {
-                if (slots_[i].Current > 0)
+                if (slots_[i].current > 0)
                 {
                     used_slots.Add(slots_[i]);
                 }
@@ -129,12 +129,12 @@ public class Container : MonoBehaviour
         return slots_[idx];
     }
 
-    public int Current
+    public int current
     {
         get { return current_; }
     }
 
-    public ContainerType Type
+    public ContainerType containerType
     {
         get { return containerType_; }
     }

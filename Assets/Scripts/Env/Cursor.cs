@@ -10,26 +10,12 @@ public class Cursor : MonoBehaviour
     private SpriteRenderer render_;
     private Sprite disabledSprite_;
     private CursorMode mode_;
-    private Item item_;
-    private List<ItemStatus> statusList_;
 
     private void Awake()
     {
         render_ = GetComponent<SpriteRenderer>();
         disabledSprite_ = render_.sprite;
         mode_ = CursorMode.Mute;
-        Reset();
-    }
-
-    public bool HasStatus(ItemStatus status)
-    {
-        return statusList_ != null && statusList_.Contains(status);
-    }
-
-    public void Reset()
-    {
-        item_ = null;
-        statusList_ = new List<ItemStatus>();
     }
 
     public void MoveTo(Vector3 pos, CursorMode mode)
@@ -72,50 +58,17 @@ public class Cursor : MonoBehaviour
         mode_ = mode;
     }
 
-    public void AddStatus(ItemStatus status)
-    {
-        if (statusList_ == null)
-        {
-            statusList_ = new List<ItemStatus>();
-        }
-        if (!statusList_.Contains(status))
-        {
-            statusList_.Add(status);
-        }
-    }
 
-    public void SetStatusList(List<ItemStatus> status_list)
-    {
-        statusList_ = status_list;
-    }
 
-    public void SetItem(Item item)
-    {
-        item_ = item;
-    }
 
     public override string ToString()
     {
-        string str = "Cursor[" + mode_.ToString() + "]:";
-        if (statusList_ != null && statusList_.Count > 0)
-        {
-            str += " <" + statusList_.Count + " Status>:";
-            foreach (ItemStatus status in statusList_)
-            {
-                str += status.ToString() + ",";
-            }
-        }
+        string str = "Cursor[" + mode_.ToString() + "] @ " + transform.position;
         return str;
     }
 
-
-    public CursorMode Mode
+    public CursorMode mode
     {
         get { return mode_; }
-    }
-
-    public List<ItemStatus> StatusList
-    {
-        get { return statusList_; }
     }
 }

@@ -1,6 +1,6 @@
 %YAML 1.1
 %TAG !u! tag:unity3d.com,2011:
---- !u!1001 &9185346170704668022
+--- !u!1001 &3777195588103696407
 PrefabInstance:
   m_ObjectHideFlags: 0
   serializedVersion: 2
@@ -50,7 +50,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 3560587696587991490, guid: a81e90811d564432b9b08afae3981c59, type: 3}
       propertyPath: m_Name
-      value: Hoe
+      value: WaterCan
       objectReference: {fileID: 0}
     - target: {fileID: 8066352930840180117, guid: a81e90811d564432b9b08afae3981c59, type: 3}
       propertyPath: m_SpriteTilingProperty.oldSize.y
@@ -59,7 +59,7 @@ PrefabInstance:
     - target: {fileID: 9168213489573328710, guid: a81e90811d564432b9b08afae3981c59, type: 3}
       propertyPath: m_Sprite
       value: 
-      objectReference: {fileID: 21300052, guid: 853ac38383c680342ac7e688bf29b197, type: 3}
+      objectReference: {fileID: 21300136, guid: 853ac38383c680342ac7e688bf29b197, type: 3}
     m_RemovedComponents:
     - {fileID: 4926657454578510066, guid: a81e90811d564432b9b08afae3981c59, type: 3}
     m_RemovedGameObjects: []
@@ -67,24 +67,24 @@ PrefabInstance:
     m_AddedComponents:
     - targetCorrespondingSourceObject: {fileID: 3560587696587991490, guid: a81e90811d564432b9b08afae3981c59, type: 3}
       insertIndex: -1
-      addedObject: {fileID: -6496372427620638250}
+      addedObject: {fileID: -7521294837711586246}
   m_SourcePrefab: {fileID: 100100000, guid: a81e90811d564432b9b08afae3981c59, type: 3}
---- !u!1 &5625374201836227764 stripped
+--- !u!1 &361120278259374549 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 3560587696587991490, guid: a81e90811d564432b9b08afae3981c59, type: 3}
-  m_PrefabInstance: {fileID: 9185346170704668022}
+  m_PrefabInstance: {fileID: 3777195588103696407}
   m_PrefabAsset: {fileID: 0}
---- !u!114 &-6496372427620638250
+--- !u!114 &-7521294837711586246
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 5625374201836227764}
+  m_GameObject: {fileID: 361120278259374549}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 821ef978b25574e29a185b2f1a8ec991, type: 3}
+  m_Script: {fileID: 11500000, guid: e34fbc8f50a344a16979b9b31da80a7c, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   item_name_: 
-  dugTile_: {fileID: 11400000, guid: 6025de385598641bd92cac7bc2342a29, type: 2}
+  wateredTile_: {fileID: 11400000, guid: 34ebd6254780349ba88672871900d015, type: 2}
