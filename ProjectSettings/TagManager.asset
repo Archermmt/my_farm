@@ -5,7 +5,7 @@ TagManager:
   serializedVersion: 3
   tags:
   - Items
-  - Areas
+  - Fields
   layers:
   - Default
   - TransparentFX

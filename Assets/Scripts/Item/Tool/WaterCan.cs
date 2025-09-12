@@ -1,24 +1,21 @@
 using UnityEngine;
 using System.Collections.Generic;
-using UnityEngine.Tilemaps;
 
 public class WaterCan : Tool
 {
     [SerializeField] private RuleTile wateredTile_;
 
-    protected override bool GridUsable(AreaGrid grid)
+    protected override bool GridUsable(FieldGrid grid)
     {
-        return grid.HasTag(AreaTag.Dug);
+        return grid.HasTag(FieldTag.Dug) && !grid.HasTag(FieldTag.Watered);
     }
 
     public override int Apply(List<Cursor> cursors)
     {
-        Tilemap layer = GridManager.Instance.GetLayer(AreaTag.Watered).GetComponent<Tilemap>();
+        Field field = FieldManager.Instance.GetField(FieldTag.Watered);
         foreach (Cursor cursor in cursors)
         {
-            Vector3 pos = cursor.transform.position;
-            GridManager.Instance.GetGrid(pos).AddTag(AreaTag.Watered);
-            layer.SetTile(new Vector3Int((int)(pos.x - Settings.gridCellSize / 2), (int)(pos.y - Settings.gridCellSize / 2), 0), wateredTile_);
+            field.AddTile(cursor.transform.position, wateredTile_, FieldTag.Watered);
         }
         return 0;
     }

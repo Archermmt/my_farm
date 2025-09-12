@@ -1,25 +1,24 @@
 using UnityEngine;
 using System.Collections.Generic;
-using UnityEngine.Tilemaps;
 
 public class Hoe : Tool
 {
   [SerializeField] private RuleTile dugTile_;
 
-  protected override bool GridUsable(AreaGrid grid)
+  protected override bool GridUsable(FieldGrid grid)
   {
-    return grid.HasTag(AreaTag.Diggable);
+    return grid.HasTag(FieldTag.Diggable) && !grid.HasTag(FieldTag.Dug);
   }
 
   public override int Apply(List<Cursor> cursors)
   {
-    Tilemap layer = GridManager.Instance.GetLayer(AreaTag.Dug).GetComponent<Tilemap>();
+    Field field = FieldManager.Instance.GetField(FieldTag.Dug);
     foreach (Cursor cursor in cursors)
     {
-      Vector3 pos = cursor.transform.position;
-      GridManager.Instance.GetGrid(pos).AddTag(AreaTag.Dug);
-      layer.SetTile(new Vector3Int((int)(pos.x - Settings.gridCellSize / 2), (int)(pos.y - Settings.gridCellSize / 2), 0), dugTile_);
+      field.AddTile(cursor.transform.position, dugTile_, FieldTag.Dug);
     }
     return 0;
   }
+
+  public override AnimationTag animationTag { get { return AnimationTag.Hoe; } }
 }

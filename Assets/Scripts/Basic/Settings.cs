@@ -13,12 +13,15 @@ public enum Action
     Walk,
     Run,
     DropItem,
-    UseItem
+    UseItem,
+    HoldItem
 }
 
 public enum AnimationTag
 {
-    Carry
+    Carry,
+    Tool,
+    Hoe
 }
 
 public enum ContainerType
@@ -46,10 +49,11 @@ public enum ItemStatus
     ItemUsable,
     GridUnusable,
     PosUnusable,
+    Holding,
     None
 }
 
-public enum AreaTag
+public enum FieldTag
 {
     Basic,
     Diggable,

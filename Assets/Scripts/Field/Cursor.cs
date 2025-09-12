@@ -1,4 +1,3 @@
-using System.Collections.Generic;
 using UnityEngine;
 
 public class Cursor : MonoBehaviour
@@ -58,17 +57,11 @@ public class Cursor : MonoBehaviour
         mode_ = mode;
     }
 
-
-
-
     public override string ToString()
     {
         string str = "Cursor[" + mode_.ToString() + "] @ " + transform.position;
         return str;
     }
 
-    public CursorMode mode
-    {
-        get { return mode_; }
-    }
+    public CursorMode mode { get { return mode_; } }
 }

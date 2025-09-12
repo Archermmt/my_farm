@@ -6,15 +6,21 @@ public class Player : Singleton<Player>
     [SerializeField] private float runSpeed_ = 5f;
     [SerializeField] private float walkSpeed_ = 3f;
     [SerializeField] private PlayerInventory inventory_;
+    // basic
     private bool freezed_ = false;
-    private Direction direction_ = Direction.Down;
-    private Action action_ = Action.Idle;
+    private Camera camera_;
     private Rigidbody2D rigidBody_;
-    private SpriteRenderer hands_;
+    // movement
+    private Direction direction_ = Direction.Down;
+    // hands
+    private Transform hands_;
+    private SpriteRenderer handsRender_;
+    private KeyValuePair<Item, Slot> carried_;
+    private Dictionary<string, Item> carriedCache_;
+    // animation
+    private Action action_ = Action.Idle;
     private Animator[] animators_;
     private AnimationSwapper[] animationSwappers_;
-    private Camera camera_;
-    private KeyValuePair<Item, Slot> carried_;
 
     protected override void Awake()
     {
@@ -23,10 +29,11 @@ public class Player : Singleton<Player>
         animators_ = GetComponentsInChildren<Animator>();
         inventory_.Setup(transform);
         animationSwappers_ = GetComponentsInChildren<AnimationSwapper>();
-        Transform hands_transform = transform.Find("Hands");
-        hands_ = hands_transform.GetComponent<SpriteRenderer>();
+        hands_ = transform.Find("Hands");
+        handsRender_ = hands_.GetComponent<SpriteRenderer>();
         camera_ = Camera.main;
         carried_ = new KeyValuePair<Item, Slot>(null, null);
+        carriedCache_ = new Dictionary<string, Item>();
     }
 
     private void OnEnable()
@@ -44,7 +51,7 @@ public class Player : Singleton<Player>
 
     private void Update()
     {
-        if (!freezed_ && carried_.Key != null)
+        if (carried_.Key != null)
         {
             Action action = Action.Idle;
             if (Input.GetMouseButtonDown(0))
@@ -52,6 +59,10 @@ public class Player : Singleton<Player>
                 action = Action.DropItem;
             }
             else if (Input.GetMouseButtonDown(1))
+            {
+                action = Action.HoldItem;
+            }
+            else if (Input.GetMouseButtonUp(1))
             {
                 action = Action.UseItem;
             }
@@ -108,20 +119,41 @@ public class Player : Singleton<Player>
 
     private void ProcessCarried(Action action)
     {
-        List<Cursor> cursors = GridManager.Instance.CheckItem(carried_.Key, transform.position, CameraUtils.MouseToWorld(camera_));
-        if (cursors != null && cursors.Count > 0)
+        List<Cursor> cursors = FieldManager.Instance.CheckItem(carried_.Key, transform.position, MouseUtils.MouseToWorld(camera_));
+        if (cursors.Count > 0)
         {
             if (action == Action.DropItem && carried_.Key.HasStatus(ItemStatus.Dropable))
             {
-                int drop_amount = GridManager.Instance.DropItem(carried_.Key, cursors);
+                int drop_amount = FieldManager.Instance.DropItem(carried_.Key, cursors);
                 carried_.Value.DecreaseAmount(drop_amount);
             }
-            else if (action == Action.UseItem && (carried_.Key.HasStatus(ItemStatus.GridUsable) || carried_.Key.HasStatus(ItemStatus.ItemUsable)))
+            else if (action == Action.HoldItem && (carried_.Key.HasStatus(ItemStatus.GridUsable) || carried_.Key.HasStatus(ItemStatus.ItemUsable)))
             {
-                int use_amount = GridManager.Instance.UseItem(carried_.Key, cursors);
-                carried_.Value.DecreaseAmount(use_amount);
+                Tool tool = (Tool)carried_.Key;
+                direction_ = MouseUtils.GetDirection(camera_, transform.position);
+                tool.Hold(direction_);
+                SwapAnimations(tool.animationTag);
+                foreach (Animator animator in animators_)
+                {
+                    animator.SetInteger("direction", (int)direction_);
+                }
+                Freeze();
             }
-
+            else if (action == Action.UseItem && carried_.Key.HasStatus(ItemStatus.Holding))
+            {
+                Tool tool = (Tool)carried_.Key;
+                int use_amount = FieldManager.Instance.UseItem(tool, cursors);
+                tool.Unhold();
+                carried_.Value.DecreaseAmount(use_amount);
+                /*
+                foreach (Animator animator in animators_)
+                {
+                    animator.SetTrigger("useTool");
+                }
+                */
+                RestoreAnimations(tool.animationTag);
+                Unfreeze();
+            }
         }
     }
 
@@ -154,34 +186,41 @@ public class Player : Singleton<Player>
     {
         if (owner == transform && container_type == ContainerType.ToolBar)
         {
+            if (carried_.Key != null)
+            {
+                carried_.Key.gameObject.SetActive(false);
+                carried_.Key.transform.parent = hands_.Find("Cache");
+            }
             Slot slot = inventory_.GetContainer(container_type).FindSelectedSlot();
             if (!freezed_ && slot != null)
             {
-                Item item = ItemManager.Instance.CreateItem(slot.itemMeta, transform.position, transform);
+                string item_unique = slot.itemMeta.Unique();
+                if (!carriedCache_.ContainsKey(item_unique))
+                {
+                    carriedCache_[item_unique] = ItemManager.Instance.CreateItem(slot.itemMeta, transform.position, hands_.Find("Cache"));
+                }
+                Item item = carriedCache_[item_unique];
                 item.gameObject.SetActive(false);
+                item.transform.parent = hands_;
                 carried_ = new KeyValuePair<Item, Slot>(item, slot);
             }
             else
             {
-                if (carried_.Key != null)
-                {
-                    Destroy(carried_.Key);
-                }
                 carried_ = new KeyValuePair<Item, Slot>(null, null);
             }
             if (carried_.Key != null && carried_.Key.dropRadius > 0)
             {
-                hands_.sprite = carried_.Key.meta.sprite;
-                hands_.color = new Color(1f, 1f, 1f, 1f);
+                handsRender_.sprite = carried_.Key.meta.sprite;
+                handsRender_.color = new Color(1f, 1f, 1f, 1f);
                 SwapAnimations(AnimationTag.Carry);
-                GridManager.Instance.Unfreeze();
+                FieldManager.Instance.Unfreeze();
             }
             else
             {
-                hands_.sprite = null;
-                hands_.color = new Color(1f, 1f, 1f, 0f);
+                handsRender_.sprite = null;
+                handsRender_.color = new Color(1f, 1f, 1f, 0f);
                 RestoreAnimations(AnimationTag.Carry);
-                GridManager.Instance.Freeze();
+                FieldManager.Instance.Freeze();
             }
         }
     }
@@ -212,6 +251,7 @@ public class Player : Singleton<Player>
         }
         else if (Input.GetKeyDown(KeyCode.C) && carried_.Key != null)
         {
+            ProcessCarried(Action.HoldItem);
             ProcessCarried(Action.UseItem);
         }
     }

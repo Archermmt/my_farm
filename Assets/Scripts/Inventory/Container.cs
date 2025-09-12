@@ -129,13 +129,7 @@ public class Container : MonoBehaviour
         return slots_[idx];
     }
 
-    public int current
-    {
-        get { return current_; }
-    }
+    public int current { get { return current_; } }
 
-    public ContainerType containerType
-    {
-        get { return containerType_; }
-    }
+    public ContainerType containerType { get { return containerType_; } }
 }

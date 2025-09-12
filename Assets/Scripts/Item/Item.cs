@@ -19,6 +19,11 @@ public class ItemData
         str += "P " + price.ToString() + "/" + value.ToString();
         return str;
     }
+
+    public string Unique()
+    {
+        return type.ToString() + "::" + name;
+    }
 }
 
 public class Item : MonoBehaviour
@@ -46,8 +51,13 @@ public class Item : MonoBehaviour
         }
     }
 
-    public virtual (Vector3, Vector3) GetScope(AreaGrid center, AreaGrid start, Vector3 pos, Vector3 grid_min, Vector3 grid_max)
+    public virtual (Vector3, Vector3) GetScope(FieldGrid center, Vector3 pos, Vector3 grid_min, Vector3 grid_max)
     {
+        FieldGrid start = FieldManager.Instance.GetGrid(pos);
+        if (start == null)
+        {
+            return (Vector3.zero, Vector3.zero);
+        }
         if (dropRadius == 0 || (useRadius > 0 && GridUsable(start)))
         {
             return GetScopeByRadius(center, pos, grid_min, grid_max, useRadius);
@@ -55,54 +65,52 @@ public class Item : MonoBehaviour
         return GetScopeByRadius(center, pos, grid_min, grid_max, dropRadius);
     }
 
-    protected (Vector3, Vector3) GetScopeByRadius(AreaGrid center, Vector3 pos, Vector3 grid_min, Vector3 grid_max, float radius, bool around = true)
+    protected (Vector3, Vector3) GetScopeByRadius(FieldGrid center, Vector3 pos, Vector3 grid_min, Vector3 grid_max, float radius, Direction direct = Direction.Around)
     {
-        Vector3 center_pos = center.position;
-        Vector3 min, max;
-        float diff_width = pos.x - center_pos.x;
-        float diff_height = pos.y - center_pos.y;
-        if (around)
+        Vector3 c_pos = center.position;
+        Vector3 min = Vector3.zero;
+        Vector3 max = Vector3.zero;
+        if (direct == Direction.Around)
         {
-            min = new Vector3(Mathf.Max(center_pos.x - radius, grid_min.x), Mathf.Max(center_pos.y - radius, grid_min.y), center_pos.z);
-            max = new Vector3(Mathf.Min(center_pos.x + radius, grid_max.x), Mathf.Min(center_pos.y + radius, grid_max.y), center_pos.z);
+            min = new Vector3(Mathf.Max(c_pos.x - radius, grid_min.x), Mathf.Max(c_pos.y - radius, grid_min.y), c_pos.z);
+            max = new Vector3(Mathf.Min(c_pos.x + radius, grid_max.x), Mathf.Min(c_pos.y + radius, grid_max.y), c_pos.z);
         }
-        else if (Mathf.Abs(diff_height) >= Mathf.Abs(diff_width))
+        else if (direct == Direction.Up)
         {
-            if (diff_height < 0)
-            {
-                min = new Vector3(Mathf.Max(center_pos.x - radius, grid_min.x), Mathf.Max(center_pos.y - radius, grid_min.y), center_pos.z);
-                max = new Vector3(Mathf.Min(center_pos.x + radius, grid_max.x), Mathf.Min(center_pos.y - 1, grid_max.y), center_pos.z);
-            }
-            else
-            {
-                min = new Vector3(Mathf.Max(center_pos.x - radius, grid_min.x), Mathf.Max(center_pos.y + 1, grid_min.y), center_pos.z);
-                max = new Vector3(Mathf.Min(center_pos.x + radius, grid_max.x), Mathf.Min(center_pos.y + radius, grid_max.y), center_pos.z);
-            }
+            min = new Vector3(Mathf.Max(c_pos.x - radius, grid_min.x), Mathf.Max(c_pos.y + 1, grid_min.y), c_pos.z);
+            max = new Vector3(Mathf.Min(c_pos.x + radius, grid_max.x), Mathf.Min(c_pos.y + radius, grid_max.y), c_pos.z);
         }
-        else
+        else if (direct == Direction.Down)
         {
-            if (diff_width < 0)
-            {
-                min = new Vector3(Mathf.Max(center_pos.x - radius, grid_min.x), Mathf.Max(center_pos.y - radius, grid_min.y), center_pos.z);
-                max = new Vector3(Mathf.Min(center_pos.x - 1, grid_max.x), Mathf.Min(center_pos.y + radius, grid_max.y), center_pos.z);
-            }
-            else
-            {
-                min = new Vector3(Mathf.Max(center_pos.x + 1, grid_min.x), Mathf.Max(center_pos.y - radius, grid_min.y), center_pos.z);
-                max = new Vector3(Mathf.Min(center_pos.x + radius, grid_max.x), Mathf.Min(center_pos.y + radius, grid_max.y), center_pos.z);
-            }
+            min = new Vector3(Mathf.Max(c_pos.x - radius, grid_min.x), Mathf.Max(c_pos.y - radius, grid_min.y), c_pos.z);
+            max = new Vector3(Mathf.Min(c_pos.x + radius, grid_max.x), Mathf.Min(c_pos.y - 1, grid_max.y), c_pos.z);
+        }
+        else if (direct == Direction.Left)
+        {
+            min = new Vector3(Mathf.Max(c_pos.x - radius, grid_min.x), Mathf.Max(c_pos.y - radius, grid_min.y), c_pos.z);
+            max = new Vector3(Mathf.Min(c_pos.x - 1, grid_max.x), Mathf.Min(c_pos.y + radius, grid_max.y), c_pos.z);
+        }
+        else if (direct == Direction.Right)
+        {
+            min = new Vector3(Mathf.Max(c_pos.x + 1, grid_min.x), Mathf.Max(c_pos.y - radius, grid_min.y), c_pos.z);
+            max = new Vector3(Mathf.Min(c_pos.x + radius, grid_max.x), Mathf.Min(c_pos.y + radius, grid_max.y), c_pos.z);
         }
         return (min, max);
     }
 
-    public virtual List<Vector3> EffectEnv(List<AreaGrid> grids, AreaGrid start, Vector3 pos, Vector3 min, Vector3 max)
+    public virtual List<Vector3> EffectField(List<FieldGrid> grids, Vector3 pos, Vector3 min, Vector3 max)
     {
-        statusList_ = new List<ItemStatus>();
+        if (!HasStatus(ItemStatus.Holding))
+        {
+            statusList_ = new List<ItemStatus>();
+        }
         List<Vector3> positions = new List<Vector3>();
+        FieldGrid start = FieldManager.Instance.GetGrid(pos);
         if (useRadius > 0 && GridUsable(start))
         {
             positions.Add(start.GetCenter());
             AddStatus(grids.Contains(start) ? ItemStatus.GridUsable : ItemStatus.GridUnusable);
+
         }
         else if (dropRadius > 0 && GridDropable(start))
         {
@@ -124,9 +132,17 @@ public class Item : MonoBehaviour
         return 0;
     }
 
-    protected void AddStatus(ItemStatus status)
+    public void AddStatus(ItemStatus status)
     {
         statusList_.Add(status);
+    }
+
+    public void RemoveStatus(ItemStatus status)
+    {
+        if (statusList_.Contains(status))
+        {
+            statusList_.Remove(status);
+        }
     }
 
     public bool HasStatus(ItemStatus status)
@@ -134,48 +150,44 @@ public class Item : MonoBehaviour
         return statusList_ != null && statusList_.Contains(status);
     }
 
-    protected virtual bool GridDropable(AreaGrid grid)
+    protected virtual bool GridDropable(FieldGrid grid)
     {
-        return grid.HasTag(AreaTag.Dropable);
+        return grid.HasTag(FieldTag.Dropable);
     }
 
-    protected virtual bool GridUsable(AreaGrid grid)
+    protected virtual bool GridUsable(FieldGrid grid)
+    {
+        return true;
+    }
+
+    protected virtual bool ItemUsable(Item other)
     {
         return true;
     }
 
     public override string ToString()
     {
-        return transform.name + " : " + meta_.ToString();
+        string str = transform.name + " : " + meta_.ToString();
+        if (statusList_.Count > 0)
+        {
+            str += "<" + statusList_.Count.ToString() + " Status>:";
+            foreach (ItemStatus status in statusList_)
+            {
+                str += status.ToString() + ",";
+            }
+        }
+        return str;
     }
 
-    public ItemData meta
-    {
-        get { return meta_; }
-    }
+    public ItemData meta { get { return meta_; } }
 
-    public List<ItemStatus> statusList
-    {
-        get { return statusList_; }
-    }
+    public List<ItemStatus> statusList { get { return statusList_; } }
 
-    public virtual int pickRadius
-    {
-        get { return 0; }
-    }
+    public virtual int pickRadius { get { return 0; } }
 
-    public virtual int dropRadius
-    {
-        get { return meta_.dropRadius; }
-    }
+    public virtual int dropRadius { get { return meta_.dropRadius; } }
 
-    public virtual int useRadius
-    {
-        get { return meta_.useRadius; }
-    }
+    public virtual int useRadius { get { return meta_.useRadius; } }
 
-    public virtual int effectNum
-    {
-        get { return 1; }
-    }
+    public virtual int effectNum { get { return 1; } }
 }

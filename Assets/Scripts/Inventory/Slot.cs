@@ -181,7 +181,7 @@ public class Slot : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndDragHand
 
   public void OnPointerEnter(PointerEventData eventData)
   {
-    GridManager.Instance.Freeze();
+    FieldManager.Instance.Freeze();
     if (current_ > 0)
     {
       ItemManager.Instance.CommentItem(itemMeta_, transform);
@@ -190,7 +190,7 @@ public class Slot : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndDragHand
 
   public void OnPointerExit(PointerEventData eventData)
   {
-    GridManager.Instance.Unfreeze();
+    FieldManager.Instance.Unfreeze();
     ItemManager.Instance.UnCommentItem();
   }
 
@@ -220,28 +220,13 @@ public class Slot : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndDragHand
     EventHandler.CallUpdateInventory(owner_, holderType_, sort, deselect);
   }
 
-  public ItemData itemMeta
-  {
-    get { return itemMeta_; }
-  }
+  public ItemData itemMeta { get { return itemMeta_; } }
 
-  public int current
-  {
-    get { return current_; }
-  }
+  public int current { get { return current_; } }
 
-  public bool selected
-  {
-    get { return selected_; }
-  }
+  public bool selected { get { return selected_; } }
 
-  public Transform owner
-  {
-    get { return owner_; }
-  }
+  public Transform owner { get { return owner_; } }
 
-  public ContainerType holderType
-  {
-    get { return holderType_; }
-  }
+  public ContainerType holderType { get { return holderType_; } }
 }
