@@ -1,3 +1,4 @@
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -21,12 +22,14 @@ public class Player : Singleton<Player>
     private Action action_ = Action.Idle;
     private Animator[] animators_;
     private AnimationSwapper[] animationSwappers_;
+    private WaitForSeconds useToolPause_;
 
     protected override void Awake()
     {
         base.Awake();
         rigidBody_ = GetComponent<Rigidbody2D>();
         animators_ = GetComponentsInChildren<Animator>();
+        useToolPause_ = new WaitForSeconds(Settings.useToolPause);
         inventory_.Setup(transform);
         animationSwappers_ = GetComponentsInChildren<AnimationSwapper>();
         hands_ = transform.Find("Hands");
@@ -66,7 +69,7 @@ public class Player : Singleton<Player>
             {
                 action = Action.UseItem;
             }
-            ProcessCarried(action);
+            //ProcessCarried(action);
         }
         InputTest();
     }
@@ -131,31 +134,45 @@ public class Player : Singleton<Player>
             {
                 Tool tool = (Tool)carried_.Key;
                 direction_ = MouseUtils.GetDirection(camera_, transform.position);
+                action_ = Action.Idle;
                 tool.Hold(direction_);
                 SwapAnimations(tool.animationTag);
                 foreach (Animator animator in animators_)
                 {
                     animator.SetInteger("direction", (int)direction_);
+                    animator.SetInteger("action", (int)action_);
                 }
                 Freeze();
             }
             else if (action == Action.UseItem && carried_.Key.HasStatus(ItemStatus.Holding))
             {
-                Tool tool = (Tool)carried_.Key;
-                int use_amount = FieldManager.Instance.UseItem(tool, cursors);
-                tool.Unhold();
-                carried_.Value.DecreaseAmount(use_amount);
-                /*
-                foreach (Animator animator in animators_)
-                {
-                    animator.SetTrigger("useTool");
-                }
-                */
-                RestoreAnimations(tool.animationTag);
-                Unfreeze();
+                StartCoroutine(UseToolRoutine((Tool)carried_.Key, cursors));
             }
         }
     }
+
+    private IEnumerator UseToolRoutine(Tool tool, List<Cursor> cursors)
+    {
+        tool.Unhold();
+        int use_amount = FieldManager.Instance.UseItem(tool, cursors);
+        foreach (Animator animator in animators_)
+        {
+            Debug.Log("[TMINFO] set trigger for " + animator);
+            animator.SetTrigger("useTool");
+        }
+        yield return useToolPause_;
+        /*
+        RestoreAnimations(tool.animationTag);
+        foreach (Animator animator in animators_)
+        {
+            animator.SetInteger("direction", (int)direction_);
+            animator.SetInteger("action", (int)action_);
+        }
+        */
+        Unfreeze();
+        carried_.Value.DecreaseAmount(use_amount);
+    }
+
 
     private void UpdateAnimators()
     {

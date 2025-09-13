@@ -57,6 +57,8 @@ public class Tool : Item
   public override List<Vector3> EffectField(List<FieldGrid> grids, Vector3 pos, Vector3 min, Vector3 max)
   {
     if (!HasStatus(ItemStatus.Holding)) { return base.EffectField(grids, pos, min, max); }
+    int level = GetHoldingLevel();
+    if (level == 0) { return base.EffectField(grids, pos, min, max); }
     List<Vector3> positions = new List<Vector3>();
     foreach (FieldGrid grid in grids)
     {

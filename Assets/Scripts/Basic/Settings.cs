@@ -75,4 +75,7 @@ public static class Settings
 {
     // Tilemap
     public const float gridCellSize = 1f;
+
+    // animation
+    public static float useToolPause = 0.35f;
 }
