@@ -69,7 +69,7 @@ public class Player : Singleton<Player>
             {
                 action = Action.UseItem;
             }
-            //ProcessCarried(action);
+            ProcessCarried(action);
         }
         InputTest();
     }
@@ -130,19 +130,14 @@ public class Player : Singleton<Player>
                 int drop_amount = FieldManager.Instance.DropItem(carried_.Key, cursors);
                 carried_.Value.DecreaseAmount(drop_amount);
             }
-            else if (action == Action.HoldItem && (carried_.Key.HasStatus(ItemStatus.GridUsable) || carried_.Key.HasStatus(ItemStatus.ItemUsable)))
+            else if (action == Action.HoldItem && !carried_.Key.HasStatus(ItemStatus.Holding) && (carried_.Key.HasStatus(ItemStatus.GridUsable) || carried_.Key.HasStatus(ItemStatus.ItemUsable)))
             {
-                Tool tool = (Tool)carried_.Key;
-                direction_ = MouseUtils.GetDirection(camera_, transform.position);
-                action_ = Action.Idle;
-                tool.Hold(direction_);
-                SwapAnimations(tool.animationTag);
-                foreach (Animator animator in animators_)
-                {
-                    animator.SetInteger("direction", (int)direction_);
-                    animator.SetInteger("action", (int)action_);
-                }
                 Freeze();
+                direction_ = MouseUtils.GetDirection(camera_, transform.position);
+                action_ = Action.HoldItem;
+                Tool tool = (Tool)carried_.Key;
+                tool.Hold(direction_);
+                UpdateAnimators();
             }
             else if (action == Action.UseItem && carried_.Key.HasStatus(ItemStatus.Holding))
             {
@@ -157,20 +152,13 @@ public class Player : Singleton<Player>
         int use_amount = FieldManager.Instance.UseItem(tool, cursors);
         foreach (Animator animator in animators_)
         {
-            Debug.Log("[TMINFO] set trigger for " + animator);
             animator.SetTrigger("useTool");
         }
         yield return useToolPause_;
-        /*
-        RestoreAnimations(tool.animationTag);
-        foreach (Animator animator in animators_)
-        {
-            animator.SetInteger("direction", (int)direction_);
-            animator.SetInteger("action", (int)action_);
-        }
-        */
-        Unfreeze();
+        action_ = Action.Idle;
+        UpdateAnimators();
         carried_.Value.DecreaseAmount(use_amount);
+        Unfreeze();
     }
 
 
@@ -207,6 +195,7 @@ public class Player : Singleton<Player>
             {
                 carried_.Key.gameObject.SetActive(false);
                 carried_.Key.transform.parent = hands_.Find("Cache");
+                RestoreAnimations(carried_.Key.animationTag);
             }
             Slot slot = inventory_.GetContainer(container_type).FindSelectedSlot();
             if (!freezed_ && slot != null)
@@ -225,18 +214,20 @@ public class Player : Singleton<Player>
             {
                 carried_ = new KeyValuePair<Item, Slot>(null, null);
             }
-            if (carried_.Key != null && carried_.Key.dropRadius > 0)
+            if (carried_.Key != null)
             {
-                handsRender_.sprite = carried_.Key.meta.sprite;
-                handsRender_.color = new Color(1f, 1f, 1f, 1f);
-                SwapAnimations(AnimationTag.Carry);
+                if (carried_.Key.animationTag == AnimationTag.Carry)
+                {
+                    handsRender_.sprite = carried_.Key.meta.sprite;
+                    handsRender_.color = new Color(1f, 1f, 1f, 1f);
+                }
+                SwapAnimations(carried_.Key.animationTag);
                 FieldManager.Instance.Unfreeze();
             }
             else
             {
                 handsRender_.sprite = null;
                 handsRender_.color = new Color(1f, 1f, 1f, 0f);
-                RestoreAnimations(AnimationTag.Carry);
                 FieldManager.Instance.Freeze();
             }
         }

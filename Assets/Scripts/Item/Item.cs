@@ -8,8 +8,6 @@ public class ItemData
     public string name;
     public string description;
     public Sprite sprite;
-    public int dropRadius = 2;
-    public int useRadius = -1;
     public int price = 0;
     public int value = 0;
 
@@ -29,10 +27,11 @@ public class ItemData
 public class Item : MonoBehaviour
 {
     [SerializeField] private string item_name_;
+    protected Direction direction_;
     private ItemData meta_;
     private SpriteRenderer renderer_;
     private BoxCollider2D collider_;
-    private List<ItemStatus> statusList_;
+    private HashSet<ItemStatus> statusSet_;
 
     public void SetItem(ItemData item_data)
     {
@@ -45,86 +44,56 @@ public class Item : MonoBehaviour
     {
         renderer_ = GetComponent<SpriteRenderer>();
         collider_ = GetComponent<BoxCollider2D>();
+        statusSet_ = new HashSet<ItemStatus>();
+        direction_ = Direction.Around;
         if (item_name_.Length > 0)
         {
             SetItem(ItemManager.Instance.FindItem(item_name_));
         }
     }
 
-    public virtual (Vector3, Vector3) GetScope(FieldGrid center, Vector3 pos, Vector3 grid_min, Vector3 grid_max)
-    {
-        FieldGrid start = FieldManager.Instance.GetGrid(pos);
-        if (start == null)
-        {
-            return (Vector3.zero, Vector3.zero);
-        }
-        if (dropRadius == 0 || (useRadius > 0 && GridUsable(start)))
-        {
-            return GetScopeByRadius(center, pos, grid_min, grid_max, useRadius);
-        }
-        return GetScopeByRadius(center, pos, grid_min, grid_max, dropRadius);
-    }
-
-    protected (Vector3, Vector3) GetScopeByRadius(FieldGrid center, Vector3 pos, Vector3 grid_min, Vector3 grid_max, float radius, Direction direct = Direction.Around)
+    public virtual (Vector3, Vector3) GetScope(FieldGrid center, Vector3 grid_min, Vector3 grid_max)
     {
         Vector3 c_pos = center.position;
         Vector3 min = Vector3.zero;
         Vector3 max = Vector3.zero;
-        if (direct == Direction.Around)
+        Vector2Int range = GetScopeRange();
+        int near = (range.x - 1) / 2;
+        int far = direction_ == Direction.Around ? (range.y - 1) / 2 : range.y;
+        if (direction_ == Direction.Around)
         {
-            min = new Vector3(Mathf.Max(c_pos.x - radius, grid_min.x), Mathf.Max(c_pos.y - radius, grid_min.y), c_pos.z);
-            max = new Vector3(Mathf.Min(c_pos.x + radius, grid_max.x), Mathf.Min(c_pos.y + radius, grid_max.y), c_pos.z);
+            min = new Vector3(Mathf.Max(c_pos.x - near, grid_min.x), Mathf.Max(c_pos.y - far, grid_min.y), c_pos.z);
+            max = new Vector3(Mathf.Min(c_pos.x + near, grid_max.x), Mathf.Min(c_pos.y + far, grid_max.y), c_pos.z);
         }
-        else if (direct == Direction.Up)
+        else if (direction_ == Direction.Up)
         {
-            min = new Vector3(Mathf.Max(c_pos.x - radius, grid_min.x), Mathf.Max(c_pos.y + 1, grid_min.y), c_pos.z);
-            max = new Vector3(Mathf.Min(c_pos.x + radius, grid_max.x), Mathf.Min(c_pos.y + radius, grid_max.y), c_pos.z);
+            min = new Vector3(Mathf.Max(c_pos.x - near, grid_min.x), Mathf.Max(c_pos.y + 1, grid_min.y), c_pos.z);
+            max = new Vector3(Mathf.Min(c_pos.x + near, grid_max.x), Mathf.Min(c_pos.y + far, grid_max.y), c_pos.z);
         }
-        else if (direct == Direction.Down)
+        else if (direction_ == Direction.Down)
         {
-            min = new Vector3(Mathf.Max(c_pos.x - radius, grid_min.x), Mathf.Max(c_pos.y - radius, grid_min.y), c_pos.z);
-            max = new Vector3(Mathf.Min(c_pos.x + radius, grid_max.x), Mathf.Min(c_pos.y - 1, grid_max.y), c_pos.z);
+            min = new Vector3(Mathf.Max(c_pos.x - near, grid_min.x), Mathf.Max(c_pos.y - far, grid_min.y), c_pos.z);
+            max = new Vector3(Mathf.Min(c_pos.x + near, grid_max.x), Mathf.Min(c_pos.y - 1, grid_max.y), c_pos.z);
         }
-        else if (direct == Direction.Left)
+        else if (direction_ == Direction.Left)
         {
-            min = new Vector3(Mathf.Max(c_pos.x - radius, grid_min.x), Mathf.Max(c_pos.y - radius, grid_min.y), c_pos.z);
-            max = new Vector3(Mathf.Min(c_pos.x - 1, grid_max.x), Mathf.Min(c_pos.y + radius, grid_max.y), c_pos.z);
+            min = new Vector3(Mathf.Max(c_pos.x - far, grid_min.x), Mathf.Max(c_pos.y - near, grid_min.y), c_pos.z);
+            max = new Vector3(Mathf.Min(c_pos.x - 1, grid_max.x), Mathf.Min(c_pos.y + near, grid_max.y), c_pos.z);
         }
-        else if (direct == Direction.Right)
+        else if (direction_ == Direction.Right)
         {
-            min = new Vector3(Mathf.Max(c_pos.x + 1, grid_min.x), Mathf.Max(c_pos.y - radius, grid_min.y), c_pos.z);
-            max = new Vector3(Mathf.Min(c_pos.x + radius, grid_max.x), Mathf.Min(c_pos.y + radius, grid_max.y), c_pos.z);
+            min = new Vector3(Mathf.Max(c_pos.x + 1, grid_min.x), Mathf.Max(c_pos.y - near, grid_min.y), c_pos.z);
+            max = new Vector3(Mathf.Min(c_pos.x + far, grid_max.x), Mathf.Min(c_pos.y + near, grid_max.y), c_pos.z);
         }
         return (min, max);
     }
 
-    public virtual List<Vector3> EffectField(List<FieldGrid> grids, Vector3 pos, Vector3 min, Vector3 max)
+    public virtual List<Vector3> EffectField(List<FieldGrid> grids, FieldGrid start, Vector3 pos, Vector3 min, Vector3 max)
     {
-        if (!HasStatus(ItemStatus.Holding))
-        {
-            statusList_ = new List<ItemStatus>();
-        }
-        List<Vector3> positions = new List<Vector3>();
-        FieldGrid start = FieldManager.Instance.GetGrid(pos);
-        if (useRadius > 0 && GridUsable(start))
-        {
-            positions.Add(start.GetCenter());
-            AddStatus(grids.Contains(start) ? ItemStatus.GridUsable : ItemStatus.GridUnusable);
-
-        }
-        else if (dropRadius > 0 && GridDropable(start))
-        {
-            positions.Add(pos);
-            float s_size = Settings.gridCellSize;
-            bool dropable = pos.x > min.x && pos.x < max.x + s_size && pos.y > min.y && pos.y < max.y + s_size;
-            AddStatus(dropable ? ItemStatus.Dropable : ItemStatus.PosUnusable);
-        }
-        else
-        {
-            positions.Add(pos);
-            AddStatus(ItemStatus.PosUnusable);
-        }
-        return positions;
+        ResetStatus();
+        bool dropable = Dropable(start) && grids.Contains(start);
+        AddStatus(dropable ? ItemStatus.Dropable : ItemStatus.ItemUnusable);
+        return new List<Vector3> { pos };
     }
 
     public virtual int Apply(List<Cursor> cursors)
@@ -132,46 +101,46 @@ public class Item : MonoBehaviour
         return 0;
     }
 
-    public void AddStatus(ItemStatus status)
+    protected void ResetStatus()
     {
-        statusList_.Add(status);
-    }
-
-    public void RemoveStatus(ItemStatus status)
-    {
-        if (statusList_.Contains(status))
-        {
-            statusList_.Remove(status);
-        }
+        statusSet_ = new HashSet<ItemStatus>();
     }
 
     public bool HasStatus(ItemStatus status)
     {
-        return statusList_ != null && statusList_.Contains(status);
+        return statusSet_ != null && statusSet_.Contains(status);
     }
 
-    protected virtual bool GridDropable(FieldGrid grid)
+    protected void AddStatus(ItemStatus status)
+    {
+        statusSet_.Add(status);
+    }
+
+    protected void RemoveStatus(ItemStatus status)
+    {
+        if (statusSet_.Contains(status))
+        {
+            statusSet_.Remove(status);
+        }
+    }
+
+    protected virtual Vector2Int GetScopeRange()
+    {
+        return new Vector2Int(5, 5);
+    }
+
+    protected virtual bool Dropable(FieldGrid grid)
     {
         return grid.HasTag(FieldTag.Dropable);
-    }
-
-    protected virtual bool GridUsable(FieldGrid grid)
-    {
-        return true;
-    }
-
-    protected virtual bool ItemUsable(Item other)
-    {
-        return true;
     }
 
     public override string ToString()
     {
         string str = transform.name + " : " + meta_.ToString();
-        if (statusList_.Count > 0)
+        if (statusSet_.Count > 0)
         {
-            str += "<" + statusList_.Count.ToString() + " Status>:";
-            foreach (ItemStatus status in statusList_)
+            str += "<" + statusSet_.Count.ToString() + " Status>:";
+            foreach (ItemStatus status in statusSet_)
             {
                 str += status.ToString() + ",";
             }
@@ -179,15 +148,9 @@ public class Item : MonoBehaviour
         return str;
     }
 
+    public virtual AnimationTag animationTag { get { return AnimationTag.Carry; } }
+
     public ItemData meta { get { return meta_; } }
 
-    public List<ItemStatus> statusList { get { return statusList_; } }
-
-    public virtual int pickRadius { get { return 0; } }
-
-    public virtual int dropRadius { get { return meta_.dropRadius; } }
-
-    public virtual int useRadius { get { return meta_.useRadius; } }
-
-    public virtual int effectNum { get { return 1; } }
+    public virtual bool pickable { get { return true; } }
 }

@@ -7,7 +7,7 @@ public class WaterCan : Tool
 
     protected override bool GridUsable(FieldGrid grid)
     {
-        return grid.HasTag(FieldTag.Dug) && !grid.HasTag(FieldTag.Watered);
+        return grid.HasTag(FieldTag.Dug);
     }
 
     public override int Apply(List<Cursor> cursors)
@@ -19,4 +19,6 @@ public class WaterCan : Tool
         }
         return 0;
     }
+
+    public override AnimationTag animationTag { get { return AnimationTag.WaterCan; } }
 }

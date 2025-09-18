@@ -119,7 +119,7 @@ public class FieldManager : Singleton<FieldManager>
         {
             return new List<Cursor>();
         }
-        (Vector3 min, Vector3 max) = item.GetScope(center, world_pos, start_, end_);
+        (Vector3 min, Vector3 max) = item.GetScope(center, start_, end_);
         if (min == max && min == Vector3.zero)
         {
             return new List<Cursor>();
@@ -133,7 +133,12 @@ public class FieldManager : Singleton<FieldManager>
         {
             GetMaskCursor(i).SetMode(CursorMode.Mute);
         }
-        List<Vector3> positions = item.EffectField(grids, world_pos, min, max);
+        FieldGrid start = GetGrid(world_pos);
+        if (start == null)
+        {
+            return new List<Cursor>();
+        }
+        List<Vector3> positions = item.EffectField(grids, start, world_pos, min, max);
         List<Cursor> cursors = new List<Cursor>();
         for (int i = 0; i < positions.Count; i++)
         {

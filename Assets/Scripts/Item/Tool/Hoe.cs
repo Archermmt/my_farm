@@ -7,7 +7,7 @@ public class Hoe : Tool
 
   protected override bool GridUsable(FieldGrid grid)
   {
-    return grid.HasTag(FieldTag.Diggable) && !grid.HasTag(FieldTag.Dug);
+    return grid.HasTag(FieldTag.Diggable) && !grid.HasTag(FieldTag.Dug) && grid.items.Count == 0;
   }
 
   public override int Apply(List<Cursor> cursors)

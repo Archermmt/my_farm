@@ -20,8 +20,8 @@ public enum Action
 public enum AnimationTag
 {
     Carry,
-    Tool,
-    Hoe
+    Hoe,
+    WaterCan
 }
 
 public enum ContainerType
@@ -48,7 +48,7 @@ public enum ItemStatus
     GridUsable,
     ItemUsable,
     GridUnusable,
-    PosUnusable,
+    ItemUnusable,
     Holding,
     None
 }
@@ -77,5 +77,5 @@ public static class Settings
     public const float gridCellSize = 1f;
 
     // animation
-    public static float useToolPause = 0.35f;
+    public static float useToolPause = 0.5f;
 }
