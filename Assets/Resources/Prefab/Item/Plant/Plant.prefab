@@ -1,6 +1,6 @@
 %YAML 1.1
 %TAG !u! tag:unity3d.com,2011:
---- !u!1001 &8449425073838149898
+--- !u!1001 &7503478150196114998
 PrefabInstance:
   m_ObjectHideFlags: 0
   serializedVersion: 2
@@ -11,14 +11,14 @@ PrefabInstance:
     - target: {fileID: 165238595618001696, guid: ae4353ece9de5492f8d09dcf0eadf52d, type: 3}
       propertyPath: m_Sprite
       value: 
-      objectReference: {fileID: 21300000, guid: 730e572c78cf0244ca0db36bb8f3af7f, type: 3}
+      objectReference: {fileID: 7193783865090184285, guid: 5a1df36ac90cfa242908df77f9674580, type: 3}
     - target: {fileID: 1334881297446752755, guid: ae4353ece9de5492f8d09dcf0eadf52d, type: 3}
-      propertyPath: m_SpriteTilingProperty.pivot.y
-      value: 0
+      propertyPath: m_SpriteTilingProperty.oldSize.y
+      value: 2
       objectReference: {fileID: 0}
     - target: {fileID: 5485029832335576484, guid: ae4353ece9de5492f8d09dcf0eadf52d, type: 3}
       propertyPath: m_Name
-      value: Seed
+      value: Plant
       objectReference: {fileID: 0}
     - target: {fileID: 5920643902792057711, guid: ae4353ece9de5492f8d09dcf0eadf52d, type: 3}
       propertyPath: m_LocalPosition.x
@@ -60,10 +60,6 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
-    - target: {fileID: 8461236395484111858, guid: ae4353ece9de5492f8d09dcf0eadf52d, type: 3}
-      propertyPath: item_name
-      value: Acorn
-      objectReference: {fileID: 0}
     m_RemovedComponents:
     - {fileID: 8461236395484111858, guid: ae4353ece9de5492f8d09dcf0eadf52d, type: 3}
     m_RemovedGameObjects: []
@@ -71,24 +67,33 @@ PrefabInstance:
     m_AddedComponents:
     - targetCorrespondingSourceObject: {fileID: 5485029832335576484, guid: ae4353ece9de5492f8d09dcf0eadf52d, type: 3}
       insertIndex: -1
-      addedObject: {fileID: 2653564629590201053}
+      addedObject: {fileID: 3424636914233648278}
   m_SourcePrefab: {fileID: 100100000, guid: ae4353ece9de5492f8d09dcf0eadf52d, type: 3}
---- !u!1 &4133423491962543278 stripped
+--- !u!1 &2611815160969460626 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 5485029832335576484, guid: ae4353ece9de5492f8d09dcf0eadf52d, type: 3}
-  m_PrefabInstance: {fileID: 8449425073838149898}
+  m_PrefabInstance: {fileID: 7503478150196114998}
   m_PrefabAsset: {fileID: 0}
---- !u!114 &2653564629590201053
+--- !u!114 &3424636914233648278
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 4133423491962543278}
+  m_GameObject: {fileID: 2611815160969460626}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 3781e914ceaa84a899d08fcba977d73b, type: 3}
+  m_Script: {fileID: 11500000, guid: 9aa3eb985993c4ed2a2ea991d3336aca, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  item_name_: ParsnipSeed
-  cropName_: ParsnipCrop
+  item_name_: 
+  fadeInSecond_: 0.25
+  fadeOutSecond_: 0.35
+  fadeOutAlpha_: 0.45
+  fadeTargets_: []
+  growthPeriods_: 
+  growthSprites_: []
+  growthDay_: 0
+  nudgeTargets_:
+  - Player
+  nudgePauseSecs_: 0.04

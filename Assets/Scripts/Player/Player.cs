@@ -2,11 +2,11 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Player : Singleton<Player>
-{
+public class Player : Singleton<Player> {
     [SerializeField] private float runSpeed_ = 5f;
     [SerializeField] private float walkSpeed_ = 3f;
     [SerializeField] private PlayerInventory inventory_;
+    [SerializeField] private float useToolPauseSecs_ = 0.5f;
     // basic
     private bool freezed_ = false;
     private Camera camera_;
@@ -24,12 +24,11 @@ public class Player : Singleton<Player>
     private AnimationSwapper[] animationSwappers_;
     private WaitForSeconds useToolPause_;
 
-    protected override void Awake()
-    {
+    protected override void Awake() {
         base.Awake();
         rigidBody_ = GetComponent<Rigidbody2D>();
         animators_ = GetComponentsInChildren<Animator>();
-        useToolPause_ = new WaitForSeconds(Settings.useToolPause);
+        useToolPause_ = new WaitForSeconds(useToolPauseSecs_);
         inventory_.Setup(transform);
         animationSwappers_ = GetComponentsInChildren<AnimationSwapper>();
         hands_ = transform.Find("Hands");
@@ -39,34 +38,25 @@ public class Player : Singleton<Player>
         carriedCache_ = new Dictionary<string, Item>();
     }
 
-    private void OnEnable()
-    {
-        UpdateAnimators();
+    private void OnEnable() {
+        UpdateAnimators(direction_, action_);
         EventHandler.UpdateHandsEvent += UpdateHands;
         EventHandler.UpdateInventoryEvent += UpdateInventory;
     }
 
-    private void OnDisable()
-    {
+    private void OnDisable() {
         EventHandler.UpdateHandsEvent -= UpdateHands;
         EventHandler.UpdateInventoryEvent -= UpdateInventory;
     }
 
-    private void Update()
-    {
-        if (carried_.Key != null)
-        {
+    private void Update() {
+        if (carried_.Key != null) {
             Action action = Action.Idle;
-            if (Input.GetMouseButtonDown(0))
-            {
+            if (Input.GetMouseButtonDown(0)) {
                 action = Action.DropItem;
-            }
-            else if (Input.GetMouseButtonDown(1))
-            {
+            } else if (Input.GetMouseButtonDown(1)) {
                 action = Action.HoldItem;
-            }
-            else if (Input.GetMouseButtonUp(1))
-            {
+            } else if (Input.GetMouseButtonUp(1)) {
                 action = Action.UseItem;
             }
             ProcessCarried(action);
@@ -74,35 +64,26 @@ public class Player : Singleton<Player>
         InputTest();
     }
 
-    private void FixedUpdate()
-    {
-        if (!freezed_)
-        {
+    private void FixedUpdate() {
+        if (!freezed_) {
             ProcessMovement();
         }
     }
 
-    private void ProcessMovement()
-    {
+    private void ProcessMovement() {
         float horizontal = Input.GetAxisRaw("Horizontal");
         float vertical = Input.GetAxisRaw("Vertical");
         Vector2 movement = new Vector2(horizontal, vertical).normalized;
         float speed;
-        if (movement == Vector2.zero)
-        {
+        if (movement == Vector2.zero) {
             action_ = Action.Idle;
             speed = 0;
-        }
-        else
-        {
+        } else {
             // set speed
-            if (Input.GetKey(KeyCode.LeftShift) || Input.GetKey(KeyCode.RightShift))
-            {
+            if (Input.GetKey(KeyCode.LeftShift) || Input.GetKey(KeyCode.RightShift)) {
                 action_ = Action.Walk;
                 speed = walkSpeed_;
-            }
-            else
-            {
+            } else {
                 action_ = Action.Run;
                 speed = runSpeed_;
             }
@@ -116,116 +97,99 @@ public class Player : Singleton<Player>
             else
                 direction_ = Direction.Up;
         }
-        UpdateAnimators();
+        UpdateAnimators(direction_, action_);
         rigidBody_.MovePosition(rigidBody_.position + movement * speed * Time.deltaTime);
     }
 
-    private void ProcessCarried(Action action)
-    {
+    private void ProcessCarried(Action action) {
         List<Cursor> cursors = FieldManager.Instance.CheckItem(carried_.Key, transform.position, MouseUtils.MouseToWorld(camera_));
-        if (cursors.Count > 0)
-        {
-            if (action == Action.DropItem && carried_.Key.HasStatus(ItemStatus.Dropable))
-            {
+        if (cursors.Count > 0) {
+            if (action == Action.DropItem && carried_.Key.HasStatus(ItemStatus.Dropable)) {
                 int drop_amount = FieldManager.Instance.DropItem(carried_.Key, cursors);
                 carried_.Value.DecreaseAmount(drop_amount);
-            }
-            else if (action == Action.HoldItem && !carried_.Key.HasStatus(ItemStatus.Holding) && (carried_.Key.HasStatus(ItemStatus.GridUsable) || carried_.Key.HasStatus(ItemStatus.ItemUsable)))
-            {
+            } else if (action == Action.HoldItem && !carried_.Key.HasStatus(ItemStatus.Holding) && (carried_.Key.HasStatus(ItemStatus.GridUsable) || carried_.Key.HasStatus(ItemStatus.ItemUsable))) {
                 Freeze();
-                direction_ = MouseUtils.GetDirection(camera_, transform.position);
-                action_ = Action.HoldItem;
-                Tool tool = (Tool)carried_.Key;
-                tool.Hold(direction_);
-                UpdateAnimators();
-            }
-            else if (action == Action.UseItem && carried_.Key.HasStatus(ItemStatus.Holding))
-            {
-                StartCoroutine(UseToolRoutine((Tool)carried_.Key, cursors));
+                if (carried_.Key.meta.type == ItemType.Tool || carried_.Key.meta.type == ItemType.Seed) {
+                    direction_ = MouseUtils.GetDirection(camera_, transform.position);
+                    carried_.Key.Hold(direction_);
+                    if (carried_.Key.meta.type == ItemType.Tool) {
+                        UpdateAnimators(direction_, Action.HoldItem);
+                    } else {
+                        UpdateAnimators(direction_, Action.Idle);
+                    }
+                } else {
+                    carried_.Key.Hold(Direction.Around);
+                }
+            } else if (action == Action.UseItem && carried_.Key.HasStatus(ItemStatus.Holding)) {
+                carried_.Key.Unhold();
+                int use_amount = FieldManager.Instance.UseItem(carried_.Key, cursors, carried_.Value.current);
+                if (carried_.Key.meta.type == ItemType.Tool) {
+                    StartCoroutine(UseToolRoutine((Tool)carried_.Key, cursors));
+                } else {
+                    Unfreeze();
+                }
+                carried_.Value.DecreaseAmount(use_amount);
             }
         }
     }
 
-    private IEnumerator UseToolRoutine(Tool tool, List<Cursor> cursors)
-    {
-        tool.Unhold();
-        int use_amount = FieldManager.Instance.UseItem(tool, cursors);
-        foreach (Animator animator in animators_)
-        {
+    private IEnumerator UseToolRoutine(Tool tool, List<Cursor> cursors) {
+        foreach (Animator animator in animators_) {
             animator.SetTrigger("useTool");
         }
         yield return useToolPause_;
-        action_ = Action.Idle;
-        UpdateAnimators();
-        carried_.Value.DecreaseAmount(use_amount);
+        UpdateAnimators(direction_, Action.Idle);
         Unfreeze();
     }
 
 
-    private void UpdateAnimators()
-    {
-        foreach (Animator animator in animators_)
-        {
-            animator.SetInteger("direction", (int)direction_);
-            animator.SetInteger("action", (int)action_);
+    private void UpdateAnimators(Direction direct, Action act) {
+        foreach (Animator animator in animators_) {
+            animator.SetInteger("direction", (int)direct);
+            animator.SetInteger("action", (int)act);
         }
     }
 
-    private void SwapAnimations(AnimationTag animation_tag)
-    {
-        foreach (AnimationSwapper swapper in animationSwappers_)
-        {
+    private void SwapAnimations(AnimationTag animation_tag) {
+        foreach (AnimationSwapper swapper in animationSwappers_) {
             swapper.Swap(animation_tag);
         }
     }
 
-    private void RestoreAnimations(AnimationTag animation_tag)
-    {
-        foreach (AnimationSwapper swapper in animationSwappers_)
-        {
+    private void RestoreAnimations(AnimationTag animation_tag) {
+        foreach (AnimationSwapper swapper in animationSwappers_) {
             swapper.Restore(animation_tag);
         }
     }
 
-    private void UpdateHands(Transform owner, ContainerType container_type)
-    {
-        if (owner == transform && container_type == ContainerType.ToolBar)
-        {
-            if (carried_.Key != null)
-            {
+    private void UpdateHands(Transform owner, ContainerType container_type) {
+        if (owner == transform && container_type == ContainerType.ToolBar) {
+            if (carried_.Key != null) {
                 carried_.Key.gameObject.SetActive(false);
                 carried_.Key.transform.parent = hands_.Find("Cache");
                 RestoreAnimations(carried_.Key.animationTag);
             }
             Slot slot = inventory_.GetContainer(container_type).FindSelectedSlot();
-            if (!freezed_ && slot != null)
-            {
+            if (!freezed_ && slot != null) {
                 string item_unique = slot.itemMeta.Unique();
-                if (!carriedCache_.ContainsKey(item_unique))
-                {
+                if (!carriedCache_.ContainsKey(item_unique)) {
                     carriedCache_[item_unique] = ItemManager.Instance.CreateItem(slot.itemMeta, transform.position, hands_.Find("Cache"));
                 }
                 Item item = carriedCache_[item_unique];
                 item.gameObject.SetActive(false);
                 item.transform.parent = hands_;
                 carried_ = new KeyValuePair<Item, Slot>(item, slot);
-            }
-            else
-            {
+            } else {
                 carried_ = new KeyValuePair<Item, Slot>(null, null);
             }
-            if (carried_.Key != null)
-            {
-                if (carried_.Key.animationTag == AnimationTag.Carry)
-                {
+            if (carried_.Key != null) {
+                if (carried_.Key.animationTag == AnimationTag.Carry) {
                     handsRender_.sprite = carried_.Key.meta.sprite;
                     handsRender_.color = new Color(1f, 1f, 1f, 1f);
                 }
                 SwapAnimations(carried_.Key.animationTag);
                 FieldManager.Instance.Unfreeze();
-            }
-            else
-            {
+            } else {
                 handsRender_.sprite = null;
                 handsRender_.color = new Color(1f, 1f, 1f, 0f);
                 FieldManager.Instance.Freeze();
@@ -233,53 +197,48 @@ public class Player : Singleton<Player>
         }
     }
 
-    private void UpdateInventory(Transform owner, ContainerType container_type, bool sort, bool deselect)
-    {
-        if (owner == transform)
-        {
+    private void UpdateInventory(Transform owner, ContainerType container_type, bool sort, bool deselect) {
+        if (owner == transform) {
             inventory_.GetContainer(container_type).UpdateSlots(sort, deselect);
         }
     }
 
     // TMINFO:debug only
-    private void InputTest()
-    {
+    private void InputTest() {
         // pick item test
-        if (Input.GetKeyDown(KeyCode.P))
-        {
-            ItemData item_data = ItemManager.Instance.RandomItem();
-            inventory_.AddItem(item_data);
-        }
-        else if (Input.GetKeyDown(KeyCode.T))
-        {
+        if (Input.GetKeyDown(KeyCode.P)) {
             ItemData hoe = ItemManager.Instance.FindItem("Hoe");
             ItemData water_can = ItemManager.Instance.FindItem("WaterCan");
+            ItemData seed = ItemManager.Instance.FindItem("ParsnipSeed");
             inventory_.AddItem(hoe);
             inventory_.AddItem(water_can);
-        }
-        else if (Input.GetKeyDown(KeyCode.C) && carried_.Key != null)
-        {
+            for (int i = 0; i < 81; i++) {
+                inventory_.AddItem(seed);
+            }
+            for (int i = 0; i < 50; i++) {
+                ItemData item_data = ItemManager.Instance.RandomItem();
+                inventory_.AddItem(item_data);
+            }
+        } else if (Input.GetKeyUp(KeyCode.T)) {
+            EventHandler.CallUpdateTime(TimeType.Day, 0, Season.Spring, 0, 0, 0, 0, 0, 0);
+        } else if (Input.GetKeyDown(KeyCode.C) && carried_.Key != null) {
             ProcessCarried(Action.HoldItem);
             ProcessCarried(Action.UseItem);
         }
     }
 
-    public Vector3 GetViewportPosition()
-    {
+    public Vector3 GetViewportPosition() {
         return camera_.WorldToViewportPoint(transform.position);
     }
 
-    public void Freeze()
-    {
+    public void Freeze() {
         freezed_ = true;
-        foreach (Animator animator in animators_)
-        {
+        foreach (Animator animator in animators_) {
             animator.SetInteger("action", (int)Action.Idle);
         }
     }
 
-    public void Unfreeze()
-    {
+    public void Unfreeze() {
         freezed_ = false;
     }
 }

@@ -1,5 +1,4 @@
-public enum Direction
-{
+public enum Direction {
     Up,
     Down,
     Left,
@@ -7,8 +6,7 @@ public enum Direction
     Around
 }
 
-public enum Action
-{
+public enum Action {
     Idle,
     Walk,
     Run,
@@ -17,22 +15,19 @@ public enum Action
     HoldItem
 }
 
-public enum AnimationTag
-{
+public enum AnimationTag {
     Carry,
     Hoe,
     WaterCan
 }
 
-public enum ContainerType
-{
+public enum ContainerType {
     ToolBar,
     Pocket,
     Backpack
 }
 
-public enum ItemType
-{
+public enum ItemType {
     Seed,
     Food,
     Object,
@@ -42,19 +37,16 @@ public enum ItemType
     Furniture,
 }
 
-public enum ItemStatus
-{
+public enum ItemStatus {
     Dropable,
     GridUsable,
     ItemUsable,
-    GridUnusable,
-    ItemUnusable,
+    Unusable,
     Holding,
     None
 }
 
-public enum FieldTag
-{
+public enum FieldTag {
     Basic,
     Diggable,
     Dropable,
@@ -62,8 +54,7 @@ public enum FieldTag
     Watered,
 }
 
-public enum CursorMode
-{
+public enum CursorMode {
     ValidGrid,
     ValidPos,
     Invalid,
@@ -71,11 +62,25 @@ public enum CursorMode
     Mute
 }
 
-public static class Settings
-{
+public enum Season {
+    Spring,
+    Summer,
+    Autumn,
+    Winter
+}
+
+public enum TimeType {
+    Year,
+    Season,
+    Month,
+    Week,
+    Day,
+    Hour,
+    Minute,
+    Second
+}
+
+public static class Settings {
     // Tilemap
     public const float gridCellSize = 1f;
-
-    // animation
-    public static float useToolPause = 0.5f;
 }

@@ -1,23 +1,19 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Container : MonoBehaviour
-{
+public class Container : MonoBehaviour {
     [SerializeField] private ContainerType containerType_;
     [SerializeField] private int max_capacity_;
     [SerializeField] private int start_capacity_;
-    private Transform transform_;
     private List<Slot> slots_;
-    private GameObject slot_prefab_;
     private int current_;
 
-    public virtual void Setup(Transform owner)
-    {
+    public virtual void Setup(Transform owner) {
         slots_ = new List<Slot>();
         GameObject slot_prefab = Resources.Load<GameObject>("Prefab/Slot");
-        for (int i = 0; i < max_capacity_; i++)
-        {
+        for (int i = 0; i < max_capacity_; i++) {
             Slot slot = Instantiate(slot_prefab, gameObject.transform).GetComponent<Slot>();
+            slot.gameObject.name = "Slot_" + i;
             slot.Setup(owner, containerType_);
             slot.Disable();
             slots_.Add(slot);
@@ -27,96 +23,69 @@ public class Container : MonoBehaviour
     }
 
 
-    public bool AddItem(ItemData item_data)
-    {
+    public bool AddItem(ItemData item_data) {
         Slot slot = FindSlot(item_data);
-        if (slot == null)
-        {
+        if (slot == null) {
             return false;
         }
-        if (slot.current == 0)
-        {
+        if (slot.current == 0) {
             slot.SetItem(item_data);
-        }
-        else
-        {
+        } else {
             slot.IncreaseAmount();
         }
         return true;
     }
 
-    public Slot FindSlot(ItemData item_data, int amount = 1)
-    {
-        foreach (Slot slot in slots_)
-        {
-            if (slot.GetSurplus(item_data) >= amount)
-            {
+    public Slot FindSlot(ItemData item_data, int amount = 1) {
+        foreach (Slot slot in slots_) {
+            if (slot.GetSurplus(item_data) >= amount) {
                 return slot;
             }
         }
         return null;
     }
 
-    public Slot FindSelectedSlot()
-    {
-        foreach (Slot slot in slots_)
-        {
-            if (slot.selected)
-            {
+    public Slot FindSelectedSlot() {
+        foreach (Slot slot in slots_) {
+            if (slot.selected) {
                 return slot;
             }
         }
         return null;
     }
 
-    public void UpdateSlots(bool sort, bool deselect)
-    {
-        if (sort)
-        {
+    public void UpdateSlots(bool sort, bool deselect) {
+        if (sort) {
             List<Slot> used_slots = new List<Slot>();
-            for (int i = 0; i < current_; i++)
-            {
-                if (slots_[i].current > 0)
-                {
+            for (int i = 0; i < current_; i++) {
+                if (slots_[i].current > 0) {
                     used_slots.Add(slots_[i]);
                 }
             }
-            for (int i = 0; i < current_; i++)
-            {
-                if (i < used_slots.Count)
-                {
+            for (int i = 0; i < current_; i++) {
+                if (i < used_slots.Count) {
                     slots_[i].CopyFrom(used_slots[i]);
-                }
-                else
-                {
+                } else {
                     slots_[i].Empty();
                 }
             }
-        }
-        else if (deselect)
-        {
-            for (int i = 0; i < current_; i++)
-            {
+        } else if (deselect) {
+            for (int i = 0; i < current_; i++) {
                 slots_[i].Deselect();
             }
         }
     }
 
-    protected void IncreaseCapacity(int capacity)
-    {
-        for (int i = 0; i < capacity; i++)
-        {
+    protected void IncreaseCapacity(int capacity) {
+        for (int i = 0; i < capacity; i++) {
             slots_[current_].Enable();
             current_++;
         }
     }
 
-    protected void DecreaseCapacity(int capacity)
-    {
-        for (int i = 0; i < capacity; i++)
-        {
-            if (current_ < 1)
-            {
+    protected void DecreaseCapacity(int capacity) {
+        for (int i = 0; i < capacity; i++) {
+            if (current_ < 1) {
                 break;
             }
             slots_[current_].Disable();
@@ -124,8 +93,7 @@ public class Container : MonoBehaviour
         }
     }
 
-    public Slot GetSlot(int idx)
-    {
+    public Slot GetSlot(int idx) {
         return slots_[idx];
     }
 

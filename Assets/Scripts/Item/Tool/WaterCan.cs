@@ -1,21 +1,17 @@
 using UnityEngine;
 using System.Collections.Generic;
 
-public class WaterCan : Tool
-{
+public class WaterCan : Tool {
     [SerializeField] private RuleTile wateredTile_;
 
-    protected override bool GridUsable(FieldGrid grid)
-    {
+    protected override bool GridUsable(FieldGrid grid) {
         return grid.HasTag(FieldTag.Dug);
     }
 
-    public override int Apply(List<Cursor> cursors)
-    {
-        Field field = FieldManager.Instance.GetField(FieldTag.Watered);
-        foreach (Cursor cursor in cursors)
-        {
-            field.AddTile(cursor.transform.position, wateredTile_, FieldTag.Watered);
+    public override int Apply(List<Cursor> cursors, int amount) {
+        FieldLayer layer = FieldManager.Instance.GetLayer(FieldTag.Watered);
+        foreach (Cursor cursor in cursors) {
+            layer.AddGrid(cursor.grid, wateredTile_);
         }
         return 0;
     }
