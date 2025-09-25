@@ -1,12 +1,13 @@
 using System.Collections.Generic;
+using System.Data.Common;
 using NUnit.Framework;
 using UnityEngine;
-using UnityEngine.Pool;
 
 public class ItemManager : Singleton<ItemManager> {
     [SerializeField] private ItemData[] items_;
     private Dictionary<string, ItemData> itemsMap_;
-    private Dictionary<string, Transform> holdersMap_;
+    private Dictionary<SceneName, Dictionary<string, Transform>> itemHolders_;
+    private SceneName currentScene_ = SceneName.StartScene;
 
     protected override void Awake() {
         base.Awake();
@@ -14,7 +15,17 @@ public class ItemManager : Singleton<ItemManager> {
         foreach (ItemData item in items_) {
             itemsMap_.Add(item.name, item);
         }
-        holdersMap_ = ParseHolders();
+        itemHolders_ = new Dictionary<SceneName, Dictionary<string, Transform>>();
+    }
+
+    private void OnEnable() {
+        EventHandler.BeforeSceneUnloadEvent += BeforeSceneUnload;
+        EventHandler.AfterSceneLoadEvent += AfterSceneLoad;
+    }
+
+    private void OnDisable() {
+        EventHandler.BeforeSceneUnloadEvent -= BeforeSceneUnload;
+        EventHandler.AfterSceneLoadEvent -= AfterSceneLoad;
     }
 
     public ItemData FindItem(string name) {
@@ -44,12 +55,13 @@ public class ItemManager : Singleton<ItemManager> {
         Assert.AreNotEqual(prefab, null, "Can not find prefab for " + item_data.name + "(" + item_data.type.ToString() + ")");
         Transform item_holder = holder;
         if (item_holder == null) {
-            if (holdersMap_.ContainsKey(item_data.name)) {
-                item_holder = holdersMap_[item_data.name];
-            } else if (holdersMap_.ContainsKey(item_data.type.ToString())) {
-                item_holder = holdersMap_[item_data.type.ToString()];
+            Dictionary<string, Transform> holders = itemHolders_[currentScene_];
+            if (holders.ContainsKey(item_data.name)) {
+                item_holder = holders[item_data.name];
+            } else if (holders.ContainsKey(item_data.type.ToString())) {
+                item_holder = holders[item_data.type.ToString()];
             } else {
-                item_holder = holdersMap_["Item"];
+                item_holder = holders["Item"];
             }
         }
         GameObject item_obj = Instantiate(prefab, new Vector3(world_pos.x, world_pos.y - Settings.gridCellSize / 2f, world_pos.z), Quaternion.identity, item_holder);
@@ -66,12 +78,22 @@ public class ItemManager : Singleton<ItemManager> {
         return CreateItem(FindItem(item_name), world_pos, holder);
     }
 
-    private Dictionary<string, Transform> ParseHolders() {
+    private void BeforeSceneUnload(SceneName scene_name) {
+    }
+
+    private void AfterSceneLoad(SceneName scene_name) {
+        currentScene_ = scene_name;
+        if (!itemHolders_.ContainsKey(scene_name)) {
+            ParseHolders(scene_name);
+        }
+    }
+
+    private void ParseHolders(SceneName scene_name) {
         Transform parent = GameObject.FindGameObjectWithTag("Items").transform;
         Dictionary<string, Transform> item_holders = new Dictionary<string, Transform>();
         foreach (Transform child in parent) {
             item_holders[child.name] = child;
         }
-        return item_holders;
+        itemHolders_[scene_name] = item_holders;
     }
 }

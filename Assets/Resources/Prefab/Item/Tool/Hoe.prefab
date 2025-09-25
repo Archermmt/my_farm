@@ -86,5 +86,5 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 821ef978b25574e29a185b2f1a8ec991, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  item_name_: 
+  item_name_: Hoe
   dugTile_: {fileID: 11400000, guid: 6025de385598641bd92cac7bc2342a29, type: 2}

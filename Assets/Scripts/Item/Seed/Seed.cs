@@ -5,27 +5,27 @@ using UnityEngine;
 public class Seed : Item {
     [SerializeField] private string cropName_;
 
-    public override List<Vector3> EffectField(List<FieldGrid> grids, FieldGrid start, Vector3 pos) {
+    public override List<CursorMeta> GetCursorMetas(List<FieldGrid> grids, FieldGrid start, Vector3 pos) {
         ResetStatus();
         if (!HasStatus(ItemStatus.Holding)) {
             if (Plantable(start)) {
                 AddStatus(ItemStatus.GridUsable);
-                return new List<Vector3> { start.GetCenter() };
+                return new List<CursorMeta> { new CursorMeta(start.GetCenter(), start, null, CursorMode.ValidGrid) };
             }
-            return base.EffectField(grids, start, pos);
+            return base.GetCursorMetas(grids, start, pos);
         }
-        List<Vector3> positions = new List<Vector3>();
+        List<CursorMeta> metas = new List<CursorMeta>();
         List<FieldGrid> v_grids = GetHoldLevel() == 0 ? new List<FieldGrid> { start } : grids;
         int use_count = GetUseCount();
         foreach (FieldGrid grid in v_grids) {
             if (HasStatus(ItemStatus.GridUsable) && Plantable(grid)) {
-                positions.Add(grid.GetCenter());
+                metas.Add(new CursorMeta(grid.GetCenter(), grid, null, CursorMode.ValidGrid));
             }
-            if (positions.Count >= use_count) {
+            if (metas.Count >= use_count) {
                 break;
             }
         }
-        return positions;
+        return metas;
     }
 
     public override int Apply(List<Cursor> cursors, int amount) {

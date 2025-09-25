@@ -1,5 +1,20 @@
 using UnityEngine;
 
+public class CursorMeta {
+    public Vector3 position;
+    public FieldGrid grid;
+    public Item item;
+    public CursorMode mode = CursorMode.Mute;
+
+    public CursorMeta(Vector3 position, FieldGrid grid, Item item, CursorMode mode) {
+        this.position = position;
+        this.grid = grid;
+        this.item = item;
+        this.mode = mode;
+    }
+}
+
+
 public class Cursor : MonoBehaviour {
     [SerializeField] private Sprite validGridSprite_;
     [SerializeField] private Sprite validPosSprite_;
@@ -7,13 +22,18 @@ public class Cursor : MonoBehaviour {
     [SerializeField] private Sprite maskSprite_;
     private SpriteRenderer render_;
     private Sprite disabledSprite_;
-    private CursorMode mode_;
-    private FieldGrid grid_;
+    private CursorMeta meta_;
+    private CursorMode mode_ = CursorMode.Mute;
 
     private void Awake() {
         render_ = GetComponent<SpriteRenderer>();
         disabledSprite_ = render_.sprite;
-        mode_ = CursorMode.Mute;
+        meta_ = new CursorMeta(Vector3.zero, null, null, CursorMode.Mute);
+    }
+
+    public void SetMeta(CursorMeta meta) {
+        MoveTo(meta.position, meta.mode);
+        meta_ = meta;
     }
 
     public void MoveTo(Vector3 pos, CursorMode mode) {
@@ -44,20 +64,20 @@ public class Cursor : MonoBehaviour {
         mode_ = mode;
     }
 
-    public void BindGrid(FieldGrid grid) {
-        grid_ = grid;
-    }
-
-    public void UnbindGrid() {
-        grid_ = null;
-    }
-
     public override string ToString() {
         string str = "Cursor[" + mode_.ToString() + "] @ " + transform.position;
+        if (meta_.grid != null) {
+            str += ", Grid: " + meta_.grid;
+        }
+        if (meta_.item != null) {
+            str += ", Item: " + meta_.item;
+        }
         return str;
     }
 
     public CursorMode mode { get { return mode_; } }
 
-    public FieldGrid grid { get { return grid_; } }
+    public FieldGrid grid { get { return meta_.grid; } }
+
+    public Item item { get { return meta_.item; } }
 }

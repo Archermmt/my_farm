@@ -2,49 +2,50 @@ using System.Collections.Generic;
 using UnityEngine;
 
 public class Tool : Item {
-  public override List<Vector3> EffectField(List<FieldGrid> grids, FieldGrid start, Vector3 pos) {
+  public override List<CursorMeta> GetCursorMetas(List<FieldGrid> grids, FieldGrid start, Vector3 pos) {
     ResetStatus();
-    if (!HasStatus(ItemStatus.Holding)) {
+    int hold_level = GetHoldLevel();
+    if (hold_level == -1) {
       if (!grids.Contains(start)) {
         AddStatus(ItemStatus.Unusable);
-        return new List<Vector3> { pos };
+        return new List<CursorMeta> { new CursorMeta(pos, start, null, CursorMode.Invalid) };
       }
       if (GridUsable(start)) {
         AddStatus(ItemStatus.GridUsable);
-        return new List<Vector3> { pos };
+        return new List<CursorMeta> { new CursorMeta(start.GetCenter(), start, null, CursorMode.ValidGrid) };
       }
       foreach (Item item in start.items) {
-        if (ItemUsable(item)) {
+        if (item.ToolUsable(toolType, hold_level)) {
           AddStatus(ItemStatus.ItemUsable);
-          return new List<Vector3> { item.transform.position };
+          return new List<CursorMeta> { new CursorMeta(item.transform.position, start, item, CursorMode.ValidPos) };
         }
       }
       AddStatus(ItemStatus.Unusable);
-      return new List<Vector3> { pos };
+      return new List<CursorMeta> { new CursorMeta(pos, start, null, CursorMode.Invalid) };
     }
-    List<Vector3> positions = new List<Vector3>();
-    List<FieldGrid> v_grids = GetHoldLevel() == 0 ? new List<FieldGrid> { start } : grids;
+    List<CursorMeta> metas = new List<CursorMeta>();
+    List<FieldGrid> v_grids = hold_level == 0 ? new List<FieldGrid> { start } : grids;
     int use_count = GetUseCount();
     foreach (FieldGrid grid in v_grids) {
       if (HasStatus(ItemStatus.GridUsable)) {
         if (GridUsable(grid)) {
-          positions.Add(grid.GetCenter());
+          metas.Add(new CursorMeta(grid.GetCenter(), grid, null, CursorMode.ValidGrid));
         }
       } else if (HasStatus(ItemStatus.ItemUsable)) {
         foreach (Item item in grid.items) {
-          if (ItemUsable(item)) {
-            positions.Add(item.transform.position);
+          if (item.ToolUsable(toolType, hold_level)) {
+            metas.Add(new CursorMeta(item.transform.position, grid, item, CursorMode.ValidPos));
           }
-          if (positions.Count >= use_count) {
+          if (metas.Count >= use_count) {
             break;
           }
         }
       }
-      if (positions.Count >= use_count) {
+      if (metas.Count >= use_count) {
         break;
       }
     }
-    return positions;
+    return metas;
   }
 
   protected override bool Dropable(FieldGrid grid) {
@@ -52,10 +53,6 @@ public class Tool : Item {
   }
 
   protected virtual bool GridUsable(FieldGrid grid) {
-    return true;
-  }
-
-  protected virtual bool ItemUsable(Item other) {
     return true;
   }
 
@@ -76,4 +73,6 @@ public class Tool : Item {
   }
 
   protected override int holdLevelMax { get { return 4; } }
+
+  protected virtual ToolType toolType { get { return ToolType.Tool; } }
 }

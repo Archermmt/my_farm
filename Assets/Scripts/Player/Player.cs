@@ -124,7 +124,7 @@ public class Player : Singleton<Player> {
                 carried_.Key.Unhold();
                 int use_amount = FieldManager.Instance.UseItem(carried_.Key, cursors, carried_.Value.current);
                 if (carried_.Key.meta.type == ItemType.Tool) {
-                    StartCoroutine(UseToolRoutine((Tool)carried_.Key, cursors));
+                    StartCoroutine(UseToolRoutine());
                 } else {
                     Unfreeze();
                 }
@@ -133,7 +133,7 @@ public class Player : Singleton<Player> {
         }
     }
 
-    private IEnumerator UseToolRoutine(Tool tool, List<Cursor> cursors) {
+    private IEnumerator UseToolRoutine() {
         foreach (Animator animator in animators_) {
             animator.SetTrigger("useTool");
         }
@@ -207,17 +207,14 @@ public class Player : Singleton<Player> {
     private void InputTest() {
         // pick item test
         if (Input.GetKeyDown(KeyCode.P)) {
-            ItemData hoe = ItemManager.Instance.FindItem("Hoe");
-            ItemData water_can = ItemManager.Instance.FindItem("WaterCan");
-            ItemData seed = ItemManager.Instance.FindItem("ParsnipSeed");
-            inventory_.AddItem(hoe);
-            inventory_.AddItem(water_can);
+            inventory_.AddItem(ItemManager.Instance.FindItem("Hoe"));
+            inventory_.AddItem(ItemManager.Instance.FindItem("WaterCan"));
+            inventory_.AddItem(ItemManager.Instance.FindItem("Scythe"));
             for (int i = 0; i < 81; i++) {
-                inventory_.AddItem(seed);
+                inventory_.AddItem(ItemManager.Instance.FindItem("ParsnipSeed"));
             }
             for (int i = 0; i < 50; i++) {
-                ItemData item_data = ItemManager.Instance.RandomItem();
-                inventory_.AddItem(item_data);
+                inventory_.AddItem(ItemManager.Instance.RandomItem());
             }
         } else if (Input.GetKeyUp(KeyCode.T)) {
             EventHandler.CallUpdateTime(TimeType.Day, 0, Season.Spring, 0, 0, 0, 0, 0, 0);

@@ -1,5 +1,4 @@
 using System;
-using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -26,14 +25,9 @@ public class ItemData {
 public class Item : MonoBehaviour {
     [Header("Basic")]
     [SerializeField] private string item_name_;
-    [Header("Fade")]
-    [SerializeField] private float fadeInSecond_ = 0.25f;
-    [SerializeField] private float fadeOutSecond_ = 0.35f;
-    [SerializeField] private float fadeOutAlpha_ = 0.45f;
-    [SerializeField] private List<string> fadeTargets_;
     protected Direction direction_;
     private ItemData meta_;
-    private SpriteRenderer renderer_;
+    protected SpriteRenderer renderer_;
     private HashSet<ItemStatus> statusSet_;
     private DateTime holdStart_;
 
@@ -49,18 +43,6 @@ public class Item : MonoBehaviour {
         direction_ = Direction.Around;
         if (item_name_.Length > 0) {
             SetItem(ItemManager.Instance.FindItem(item_name_));
-        }
-    }
-
-    protected virtual void OnTriggerEnter2D(Collider2D collision) {
-        if (fadeTargets_ != null && fadeTargets_.Contains(collision.tag)) {
-            Debug.Log("should handle the fade out for item " + collision);
-        }
-    }
-
-    protected virtual void OnTriggerExit2D(Collider2D collision) {
-        if (fadeTargets_ != null && fadeTargets_.Contains(collision.tag)) {
-            Debug.Log("should handle the fade in for item " + collision);
         }
     }
 
@@ -90,11 +72,11 @@ public class Item : MonoBehaviour {
         return (min, max);
     }
 
-    public virtual List<Vector3> EffectField(List<FieldGrid> grids, FieldGrid start, Vector3 pos) {
+    public virtual List<CursorMeta> GetCursorMetas(List<FieldGrid> grids, FieldGrid start, Vector3 pos) {
         ResetStatus();
         bool dropable = Dropable(start) && grids.Contains(start);
         AddStatus(dropable ? ItemStatus.Dropable : ItemStatus.Unusable);
-        return new List<Vector3> { pos };
+        return new List<CursorMeta> { new CursorMeta(pos, start, null, dropable ? CursorMode.ValidPos : CursorMode.Invalid) };
     }
 
     public virtual int Apply(List<Cursor> cursors, int amount) {
@@ -111,37 +93,6 @@ public class Item : MonoBehaviour {
         RemoveStatus(ItemStatus.Holding);
         direction_ = Direction.Around;
     }
-
-    public void FadeIn() {
-        StartCoroutine(FadeInRoutine());
-    }
-
-    public void FadeOut() {
-        StartCoroutine(FadeOutRoutine());
-    }
-
-    private IEnumerator FadeInRoutine() {
-        float alpha = renderer_.color.a;
-        float distance = 1f - alpha;
-        while (1f - alpha > 0.01f) {
-            alpha = alpha + distance / fadeInSecond_ * Time.deltaTime;
-            renderer_.color = new Color(1f, 1f, 1f, alpha);
-            yield return null;
-        }
-        renderer_.color = new Color(1f, 1f, 1f, 1f);
-    }
-
-    private IEnumerator FadeOutRoutine() {
-        float alpha = renderer_.color.a;
-        float distance = alpha - fadeOutAlpha_;
-        while (alpha - fadeOutAlpha_ > 0.01f) {
-            alpha = alpha - distance / fadeOutSecond_ * Time.deltaTime;
-            renderer_.color = new Color(1f, 1f, 1f, alpha);
-            yield return null;
-        }
-        renderer_.color = new Color(1f, 1f, 1f, fadeOutAlpha_);
-    }
-
 
     protected void ChangeSprite(Sprite sprite) {
         renderer_.sprite = sprite;
@@ -185,9 +136,17 @@ public class Item : MonoBehaviour {
         return grid.HasTag(FieldTag.Dropable);
     }
 
+    public virtual bool ToolUsable(ToolType tool_type, int hold_level) {
+        return false;
+    }
+
+    public virtual ItemStatus ToolApply(ToolType tool_type, int hold_level) {
+        return ItemStatus.None;
+    }
+
     public override string ToString() {
         string str = transform.name + " : " + meta_.ToString();
-        if (statusSet_.Count > 0) {
+        if (statusSet_ != null && statusSet_.Count > 0) {
             str += "<" + statusSet_.Count.ToString() + " Status>:";
             foreach (ItemStatus status in statusSet_) {
                 str += status.ToString() + ",";

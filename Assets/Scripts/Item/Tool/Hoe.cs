@@ -17,4 +17,6 @@ public class Hoe : Tool {
   }
 
   public override AnimationTag animationTag { get { return AnimationTag.Hoe; } }
+
+  protected override ToolType toolType { get { return ToolType.Hoe; } }
 }

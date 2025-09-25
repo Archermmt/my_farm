@@ -1,0 +1,83 @@
+%YAML 1.1
+%TAG !u! tag:unity3d.com,2011:
+--- !u!1001 &612653624504423496
+PrefabInstance:
+  m_ObjectHideFlags: 0
+  serializedVersion: 2
+  m_Modification:
+    serializedVersion: 3
+    m_TransformParent: {fileID: 0}
+    m_Modifications:
+    - target: {fileID: 2611815160969460626, guid: 35de012629fa8487ab276ce8d8d301c4, type: 3}
+      propertyPath: m_Name
+      value: Grass1
+      objectReference: {fileID: 0}
+    - target: {fileID: 3424636914233648278, guid: 35de012629fa8487ab276ce8d8d301c4, type: 3}
+      propertyPath: item_name_
+      value: Grass1
+      objectReference: {fileID: 0}
+    - target: {fileID: 3424636914233648278, guid: 35de012629fa8487ab276ce8d8d301c4, type: 3}
+      propertyPath: growthPeriods_.Array.size
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 3424636914233648278, guid: 35de012629fa8487ab276ce8d8d301c4, type: 3}
+      propertyPath: growthSprites_.Array.size
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 3424636914233648278, guid: 35de012629fa8487ab276ce8d8d301c4, type: 3}
+      propertyPath: 'growthSprites_.Array.data[0]'
+      value: 
+      objectReference: {fileID: 21300000, guid: 207ad99171e171b418bcaaa396d5a6f6, type: 3}
+    - target: {fileID: 4182700415199540569, guid: 35de012629fa8487ab276ce8d8d301c4, type: 3}
+      propertyPath: m_LocalPosition.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4182700415199540569, guid: 35de012629fa8487ab276ce8d8d301c4, type: 3}
+      propertyPath: m_LocalPosition.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4182700415199540569, guid: 35de012629fa8487ab276ce8d8d301c4, type: 3}
+      propertyPath: m_LocalPosition.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4182700415199540569, guid: 35de012629fa8487ab276ce8d8d301c4, type: 3}
+      propertyPath: m_LocalRotation.w
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 4182700415199540569, guid: 35de012629fa8487ab276ce8d8d301c4, type: 3}
+      propertyPath: m_LocalRotation.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4182700415199540569, guid: 35de012629fa8487ab276ce8d8d301c4, type: 3}
+      propertyPath: m_LocalRotation.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4182700415199540569, guid: 35de012629fa8487ab276ce8d8d301c4, type: 3}
+      propertyPath: m_LocalRotation.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4182700415199540569, guid: 35de012629fa8487ab276ce8d8d301c4, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.x
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4182700415199540569, guid: 35de012629fa8487ab276ce8d8d301c4, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.y
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 4182700415199540569, guid: 35de012629fa8487ab276ce8d8d301c4, type: 3}
+      propertyPath: m_LocalEulerAnglesHint.z
+      value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 7668150496710288662, guid: 35de012629fa8487ab276ce8d8d301c4, type: 3}
+      propertyPath: m_Sprite
+      value: 
+      objectReference: {fileID: 21300000, guid: 207ad99171e171b418bcaaa396d5a6f6, type: 3}
+    - target: {fileID: 8838251497599297477, guid: 35de012629fa8487ab276ce8d8d301c4, type: 3}
+      propertyPath: m_SpriteTilingProperty.oldSize.y
+      value: 1
+      objectReference: {fileID: 0}
+    m_RemovedComponents: []
+    m_RemovedGameObjects: []
+    m_AddedGameObjects: []
+    m_AddedComponents: []
+  m_SourcePrefab: {fileID: 100100000, guid: 35de012629fa8487ab276ce8d8d301c4, type: 3}

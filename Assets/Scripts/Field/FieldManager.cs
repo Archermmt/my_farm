@@ -4,42 +4,52 @@ using UnityEngine;
 using UnityEngine.Tilemaps;
 
 public class FieldManager : Singleton<FieldManager> {
-    private FieldGrid[,] fieldGrids_;
-    private Grid grid_;
-    private Vector3Int start_, end_;
-    private List<Cursor> envCursors_;
+    private List<Cursor> fieldCursors_;
     private List<Cursor> maskCursors_;
-    private Transform layersHolder_;
-    private List<FieldLayer> layers_;
+    private Dictionary<SceneName, KeyValuePair<Vector3Int, Vector3Int>> scopes_;
+    private Dictionary<SceneName, Grid> grids_;
+    private Dictionary<SceneName, FieldGrid[,]> fieldGrids_;
+    private Dictionary<SceneName, Transform> layerHolders_;
+    private Dictionary<SceneName, List<FieldLayer>> layers_;
+    private SceneName currentScene_ = SceneName.StartScene;
     private bool freezed_;
 
     protected override void Awake() {
         base.Awake();
-        envCursors_ = new List<Cursor>();
+        fieldCursors_ = new List<Cursor>();
         maskCursors_ = new List<Cursor>();
-        layers_ = new List<FieldLayer>();
+        grids_ = new Dictionary<SceneName, Grid>();
+        scopes_ = new Dictionary<SceneName, KeyValuePair<Vector3Int, Vector3Int>>();
+        fieldGrids_ = new Dictionary<SceneName, FieldGrid[,]>();
+        layerHolders_ = new Dictionary<SceneName, Transform>();
+        layers_ = new Dictionary<SceneName, List<FieldLayer>>();
         freezed_ = false;
-        ParseFields();
     }
 
     private void OnEnable() {
         EventHandler.UpdateTimeEvent += UpdateTime;
+        EventHandler.BeforeSceneUnloadEvent += BeforeSceneUnload;
+        EventHandler.AfterSceneLoadEvent += AfterSceneLoad;
     }
 
     private void OnDisable() {
         EventHandler.UpdateTimeEvent -= UpdateTime;
+        EventHandler.BeforeSceneUnloadEvent -= BeforeSceneUnload;
+        EventHandler.AfterSceneLoadEvent -= AfterSceneLoad;
     }
 
     public FieldGrid GridAt(int x, int y) {
-        if (x >= fieldGrids_.GetLength(0) || y >= fieldGrids_.GetLength(1) || x < 0 || y < 0) {
+        FieldGrid[,] field_grids = fieldGrids_[currentScene_];
+        if (x >= field_grids.GetLength(0) || y >= field_grids.GetLength(1) || x < 0 || y < 0) {
             return null;
         }
-        return fieldGrids_[x, y];
+        return field_grids[x, y];
     }
 
     public FieldGrid GetGrid(Vector3 world_pos) {
-        Vector3Int cell_pos = grid_.WorldToCell(world_pos);
-        return GridAt(cell_pos.x - start_.x, cell_pos.y - start_.y);
+        Vector3Int cell_pos = grids_[currentScene_].WorldToCell(world_pos);
+        Vector3Int start = scopes_[currentScene_].Key;
+        return GridAt(cell_pos.x - start.x, cell_pos.y - start.y);
     }
 
     public int DropItem(Item item, List<Cursor> cursors) {
@@ -53,21 +63,22 @@ public class FieldManager : Singleton<FieldManager> {
     }
 
     public int UseItem(Item item, List<Cursor> cursors, int amount) {
+        int used = item.Apply(cursors, amount);
         foreach (Cursor cursor in cursors) {
             cursor.SetMode(CursorMode.Mute);
         }
-        return item.Apply(cursors, amount);
+        return used;
     }
 
-    public Cursor GetEnvCursor(int idx) {
-        while (idx >= envCursors_.Count) {
+    public Cursor GetFieldCursor(int idx) {
+        while (idx >= fieldCursors_.Count) {
             GameObject prefab = Resources.Load<GameObject>("Prefab/Field/Cursor");
             Assert.AreNotEqual(prefab, null, "Can not find cursor prefab");
             GameObject cursor_obj = Instantiate(prefab, transform.Find("EnvCursors").transform);
-            cursor_obj.name = "EnvCursor_" + envCursors_.Count.ToString();
-            envCursors_.Add(cursor_obj.GetComponent<Cursor>());
+            cursor_obj.name = "FieldCursor_" + fieldCursors_.Count.ToString();
+            fieldCursors_.Add(cursor_obj.GetComponent<Cursor>());
         }
-        return envCursors_[idx];
+        return fieldCursors_[idx];
     }
 
     public Cursor GetMaskCursor(int idx) {
@@ -83,7 +94,8 @@ public class FieldManager : Singleton<FieldManager> {
     }
 
     public FieldLayer GetLayer(FieldTag tag) {
-        foreach (FieldLayer layer in layers_) {
+        List<FieldLayer> layers = layers_[currentScene_];
+        foreach (FieldLayer layer in layers) {
             if (layer.fieldTag == tag) {
                 return layer;
             }
@@ -93,12 +105,12 @@ public class FieldManager : Singleton<FieldManager> {
             prefab = Resources.Load<GameObject>("Prefab/Field/Layer/FieldLayer");
         }
         Assert.AreNotEqual(prefab, null, "Can not find field prefab");
-        FieldLayer new_layer = Instantiate(prefab, layersHolder_).GetComponent<FieldLayer>();
+        FieldLayer new_layer = Instantiate(prefab, layerHolders_[currentScene_]).GetComponent<FieldLayer>();
         new_layer.SetTag(tag);
         new_layer.name = "Layer_" + tag.ToString();
         TilemapRenderer render = new_layer.transform.GetComponent<TilemapRenderer>();
-        render.sortingOrder += layers_.Count;
-        layers_.Add(new_layer);
+        render.sortingOrder += layers.Count;
+        layers.Add(new_layer);
         return new_layer;
     }
 
@@ -110,7 +122,7 @@ public class FieldManager : Singleton<FieldManager> {
         if (center == null) {
             return new List<Cursor>();
         }
-        (Vector3 min, Vector3 max) = item.GetScope(center, start_, end_);
+        (Vector3 min, Vector3 max) = item.GetScope(center, scopes_[currentScene_].Key, scopes_[currentScene_].Value);
         if (min == max && min == Vector3.zero) {
             return new List<Cursor>();
         }
@@ -125,33 +137,33 @@ public class FieldManager : Singleton<FieldManager> {
         if (start == null) {
             return new List<Cursor>();
         }
-        List<Vector3> positions = item.EffectField(grids, start, world_pos);
+        List<CursorMeta> metas = item.GetCursorMetas(grids, start, world_pos);
         List<Cursor> cursors = new List<Cursor>();
-        for (int i = 0; i < positions.Count; i++) {
-            Cursor cursor = GetEnvCursor(i);
-            cursor.UnbindGrid();
-            if (item.HasStatus(ItemStatus.GridUsable)) {
-                FieldGrid grid = GetGrid(positions[i]);
-                cursor.BindGrid(grid);
-                cursor.MoveTo(grid.GetCenter(), CursorMode.ValidGrid);
-            } else if (item.HasStatus(ItemStatus.ItemUsable)) {
-                cursor.MoveTo(positions[i], CursorMode.ValidPos);
-            } else if (item.HasStatus(ItemStatus.Dropable)) {
-                cursor.MoveTo(positions[i], CursorMode.ValidPos);
-            } else {
-                cursor.MoveTo(positions[i], CursorMode.Invalid);
-            }
+        for (int i = 0; i < metas.Count; i++) {
+            Cursor cursor = GetFieldCursor(i);
+            cursor.SetMeta(metas[i]);
             cursors.Add(cursor);
         }
-        for (int i = positions.Count; i < envCursors_.Count; i++) {
-            GetEnvCursor(i).SetMode(CursorMode.Mute);
+        for (int i = metas.Count; i < fieldCursors_.Count; i++) {
+            GetFieldCursor(i).SetMode(CursorMode.Mute);
         }
         return cursors;
     }
 
+    private void BeforeSceneUnload(SceneName scene_name) {
+    }
+
+
+    private void AfterSceneLoad(SceneName scene_name) {
+        currentScene_ = scene_name;
+        if (!layerHolders_.ContainsKey(scene_name)) {
+            ParseFields(scene_name);
+        }
+    }
+
     public void Freeze() {
         freezed_ = true;
-        foreach (Cursor cursor in envCursors_) {
+        foreach (Cursor cursor in fieldCursors_) {
             cursor.SetMode(CursorMode.Mute);
         }
         foreach (Cursor cursor in maskCursors_) {
@@ -163,20 +175,22 @@ public class FieldManager : Singleton<FieldManager> {
         freezed_ = false;
     }
 
-    private void ParseFields() {
+    private void ParseFields(SceneName scene_name) {
         Transform parent = GameObject.FindGameObjectWithTag("Fields").transform;
-        grid_ = parent.GetComponent<Grid>();
-        layersHolder_ = parent.Find("Layers").transform;
+        grids_[scene_name] = parent.GetComponent<Grid>();
+        layerHolders_[scene_name] = parent.Find("Layers").transform;
         Transform masks = parent.Find("Masks").transform;
         Tilemap basicMap = masks.Find("Basic").GetComponent<Tilemap>();
         basicMap.CompressBounds();
-        start_ = basicMap.cellBounds.min;
-        end_ = basicMap.cellBounds.max;
-        fieldGrids_ = new FieldGrid[end_.x - start_.x, end_.y - start_.y];
+        Vector3Int start = basicMap.cellBounds.min;
+        Vector3Int end = basicMap.cellBounds.max;
+        scopes_[scene_name] = new KeyValuePair<Vector3Int, Vector3Int>(start, end);
+        FieldGrid[,] field_grids = new FieldGrid[end.x - start.x, end.y - start.y];
         foreach (Vector3Int pos in basicMap.cellBounds.allPositionsWithin) {
-            Vector2Int coord = new Vector2Int(pos.x - start_.x, pos.y - start_.y);
-            fieldGrids_[coord.x, coord.y] = new FieldGrid(pos, coord);
+            Vector2Int coord = new Vector2Int(pos.x - start.x, pos.y - start.y);
+            field_grids[coord.x, coord.y] = new FieldGrid(pos, coord);
         }
+        // set field tags
         foreach (Transform child in masks) {
             Tilemap tilemap = child.GetComponent<Tilemap>();
             tilemap.CompressBounds();
@@ -184,10 +198,18 @@ public class FieldManager : Singleton<FieldManager> {
             foreach (Vector3Int pos in tilemap.cellBounds.allPositionsWithin) {
                 TileBase tile = tilemap.GetTile(pos);
                 if (tile != null) {
-                    fieldGrids_[pos.x - start_.x, pos.y - start_.y].AddTag(layer.fieldTag);
+                    field_grids[pos.x - start.x, pos.y - start.y].AddTag(layer.fieldTag);
                 }
             }
         }
+        fieldGrids_[scene_name] = field_grids;
+        // add items
+        Transform item_parent = GameObject.FindGameObjectWithTag("Items").transform;
+        foreach (Item item in item_parent.GetComponentsInChildren<Item>()) {
+            GetGrid(item.transform.position).AddItem(item);
+        }
+        // init field layers
+        layers_[scene_name] = new List<FieldLayer>();
     }
 
     private List<FieldGrid> ExpandGrids(FieldGrid start, Vector3 min, Vector3 max, bool include_start = false) {
@@ -216,7 +238,7 @@ public class FieldManager : Singleton<FieldManager> {
     }
 
     private void UpdateTime(TimeType time_type, int year, Season season, int month, int week, int day, int hour, int minute, int second) {
-        foreach (FieldLayer layer in layers_) {
+        foreach (FieldLayer layer in layers_[currentScene_]) {
             layer.UpdateTime(time_type, year, season, month, week, day, hour, minute, second);
         }
     }

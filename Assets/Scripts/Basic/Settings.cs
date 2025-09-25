@@ -18,7 +18,8 @@ public enum Action {
 public enum AnimationTag {
     Carry,
     Hoe,
-    WaterCan
+    WaterCan,
+    Scythe
 }
 
 public enum ContainerType {
@@ -37,12 +38,21 @@ public enum ItemType {
     Furniture,
 }
 
+public enum ToolType {
+    Tool,
+    Hoe,
+    WaterCan,
+    Scythe,
+    Basket,
+}
+
 public enum ItemStatus {
     Dropable,
     GridUsable,
     ItemUsable,
     Unusable,
     Holding,
+    Destroyable,
     None
 }
 
@@ -78,6 +88,13 @@ public enum TimeType {
     Hour,
     Minute,
     Second
+}
+
+public enum SceneName {
+    StartScene,
+    FarmScene,
+    FieldScene,
+    CabinScene,
 }
 
 public static class Settings {

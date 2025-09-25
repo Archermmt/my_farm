@@ -17,4 +17,6 @@ public class WaterCan : Tool {
     }
 
     public override AnimationTag animationTag { get { return AnimationTag.WaterCan; } }
+
+    protected override ToolType toolType { get { return ToolType.WaterCan; } }
 }

@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Plant : Item {
+public class Plant : Fadable {
     [Header("Growth")]
     [SerializeField] private List<int> growthPeriods_;
     [SerializeField] private List<Sprite> growthSprites_;
@@ -14,6 +14,7 @@ public class Plant : Item {
     private bool rotating_ = false;
     private WaitForSeconds nudgePause_;
     private int currentPeriod_;
+    protected int totalPeriod_;
 
     protected override void OnTriggerEnter2D(Collider2D collision) {
         if (Nudgable(collision)) {
@@ -47,6 +48,7 @@ public class Plant : Item {
         base.SetItem(item_data);
         UpdatePeriod();
         nudgePause_ = new WaitForSeconds(nudgePauseSecs_);
+        totalPeriod_ = growthPeriods_.Count;
     }
 
     public virtual void Growth() {
@@ -96,7 +98,7 @@ public class Plant : Item {
     }
 
     protected virtual bool Nudgable(Collider2D collision) {
-        return nudgeTargets_ != null && nudgeTargets_.Contains(collision.tag);
+        return gameObject.activeInHierarchy && nudgeTargets_ != null && nudgeTargets_.Contains(collision.tag);
     }
 
     protected override bool Pickable(FieldGrid grid) {
@@ -105,6 +107,17 @@ public class Plant : Item {
 
     protected override bool Dropable(FieldGrid grid) {
         return false;
+    }
+
+    public override bool ToolUsable(ToolType tool_type, int hold_level) {
+        return tool_type == ToolType.Scythe;
+    }
+
+    public override ItemStatus ToolApply(ToolType tool_type, int hold_level) {
+        if (tool_type == ToolType.Scythe) {
+            return ItemStatus.Destroyable;
+        }
+        return base.ToolApply(tool_type, hold_level);
     }
 
     public int currentPeriod { get { return currentPeriod_; } }
