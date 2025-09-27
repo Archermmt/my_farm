@@ -15,7 +15,7 @@ public class Tool : Item {
         return new List<CursorMeta> { new CursorMeta(start.GetCenter(), start, null, CursorMode.ValidGrid) };
       }
       foreach (Item item in start.items) {
-        if (item.ToolUsable(toolType, hold_level)) {
+        if (item.ToolUsable(start, toolType, hold_level)) {
           AddStatus(ItemStatus.ItemUsable);
           return new List<CursorMeta> { new CursorMeta(item.transform.position, start, item, CursorMode.ValidPos) };
         }
@@ -33,7 +33,7 @@ public class Tool : Item {
         }
       } else if (HasStatus(ItemStatus.ItemUsable)) {
         foreach (Item item in grid.items) {
-          if (item.ToolUsable(toolType, hold_level)) {
+          if (item.ToolUsable(grid, toolType, hold_level)) {
             metas.Add(new CursorMeta(item.transform.position, grid, item, CursorMode.ValidPos));
           }
           if (metas.Count >= use_count) {

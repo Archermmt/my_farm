@@ -8,12 +8,12 @@ public class Hoe : Tool {
     return grid.HasTag(FieldTag.Diggable) && !grid.HasTag(FieldTag.Dug) && grid.items.Count == 0;
   }
 
-  public override int Apply(List<Cursor> cursors, int amount) {
+  public override Dictionary<string, int> Apply(List<Cursor> cursors, int amount) {
     FieldLayer layer = FieldManager.Instance.GetLayer(FieldTag.Dug);
     foreach (Cursor cursor in cursors) {
       layer.AddGrid(cursor.grid, dugTile_);
     }
-    return 0;
+    return new Dictionary<string, int>();
   }
 
   public override AnimationTag animationTag { get { return AnimationTag.Hoe; } }

@@ -6,18 +6,13 @@ public class Scythe : Tool {
         return false;
     }
 
-    public override int Apply(List<Cursor> cursors, int amount) {
+    public override Dictionary<string, int> Apply(List<Cursor> cursors, int amount) {
         int level = GetHoldLevel();
         foreach (Cursor cursor in cursors) {
-            ItemStatus status = cursor.item.ToolApply(toolType, level);
-            if (status == ItemStatus.Destroyable) {
-                cursor.grid.RemoveItem(cursor.item);
-                Destroy(cursor.item.gameObject);
-            }
+            cursor.item.ToolApply(cursor.grid, toolType, level);
         }
-        return 0;
+        return new Dictionary<string, int>();
     }
-
 
     protected override Vector2Int GetScopeRange() {
         int level = GetHoldLevel();

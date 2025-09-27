@@ -122,13 +122,20 @@ public class Player : Singleton<Player> {
                 }
             } else if (action == Action.UseItem && carried_.Key.HasStatus(ItemStatus.Holding)) {
                 carried_.Key.Unhold();
-                int use_amount = FieldManager.Instance.UseItem(carried_.Key, cursors, carried_.Value.current);
+                Dictionary<string, int> item_amounts = FieldManager.Instance.UseItem(carried_.Key, cursors, carried_.Value.current);
                 if (carried_.Key.meta.type == ItemType.Tool) {
                     StartCoroutine(UseToolRoutine());
                 } else {
                     Unfreeze();
                 }
-                carried_.Value.DecreaseAmount(use_amount);
+                foreach (KeyValuePair<string, int> pair in item_amounts) {
+                    if (pair.Value > 0) {
+                        inventory_.AddItem(ItemManager.Instance.FindItem(pair.Key), pair.Value);
+                    } else {
+                        inventory_.RemoveItem(ItemManager.Instance.FindItem(pair.Key), -pair.Value);
+
+                    }
+                }
             }
         }
     }
@@ -210,6 +217,7 @@ public class Player : Singleton<Player> {
             inventory_.AddItem(ItemManager.Instance.FindItem("Hoe"));
             inventory_.AddItem(ItemManager.Instance.FindItem("WaterCan"));
             inventory_.AddItem(ItemManager.Instance.FindItem("Scythe"));
+            inventory_.AddItem(ItemManager.Instance.FindItem("Basket"));
             for (int i = 0; i < 81; i++) {
                 inventory_.AddItem(ItemManager.Instance.FindItem("ParsnipSeed"));
             }

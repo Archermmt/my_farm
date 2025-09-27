@@ -62,12 +62,12 @@ public class FieldManager : Singleton<FieldManager> {
         return cursors.Count;
     }
 
-    public int UseItem(Item item, List<Cursor> cursors, int amount) {
-        int used = item.Apply(cursors, amount);
+    public Dictionary<string, int> UseItem(Item item, List<Cursor> cursors, int amount) {
+        Dictionary<string, int> item_amounts = item.Apply(cursors, amount);
         foreach (Cursor cursor in cursors) {
             cursor.SetMode(CursorMode.Mute);
         }
-        return used;
+        return item_amounts;
     }
 
     public Cursor GetFieldCursor(int idx) {

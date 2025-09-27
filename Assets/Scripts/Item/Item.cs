@@ -79,8 +79,8 @@ public class Item : MonoBehaviour {
         return new List<CursorMeta> { new CursorMeta(pos, start, null, dropable ? CursorMode.ValidPos : CursorMode.Invalid) };
     }
 
-    public virtual int Apply(List<Cursor> cursors, int amount) {
-        return 0;
+    public virtual Dictionary<string, int> Apply(List<Cursor> cursors, int amount) {
+        return new Dictionary<string, int>();
     }
 
     public virtual void Hold(Direction direction) {
@@ -136,12 +136,11 @@ public class Item : MonoBehaviour {
         return grid.HasTag(FieldTag.Dropable);
     }
 
-    public virtual bool ToolUsable(ToolType tool_type, int hold_level) {
+    public virtual bool ToolUsable(FieldGrid grid, ToolType tool_type, int hold_level) {
         return false;
     }
 
-    public virtual ItemStatus ToolApply(ToolType tool_type, int hold_level) {
-        return ItemStatus.None;
+    public virtual void ToolApply(FieldGrid grid, ToolType tool_type, int hold_level) {
     }
 
     public override string ToString() {

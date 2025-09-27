@@ -28,13 +28,14 @@ public class Seed : Item {
         return metas;
     }
 
-    public override int Apply(List<Cursor> cursors, int amount) {
+    public override Dictionary<string, int> Apply(List<Cursor> cursors, int amount) {
         int crop_num = Math.Min(cursors.Count, amount);
         for (int i = 0; i < crop_num; i++) {
             Item crop = ItemManager.Instance.CreateItem(cropName_, cursors[i].grid.GetCenter());
             cursors[i].grid.AddItem(crop);
         }
-        return crop_num;
+        Dictionary<string, int> crops = new Dictionary<string, int> { { meta.name, -crop_num } };
+        return crops;
     }
 
     protected virtual bool Plantable(FieldGrid grid) {

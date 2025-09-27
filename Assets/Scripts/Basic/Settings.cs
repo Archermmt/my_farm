@@ -19,7 +19,8 @@ public enum AnimationTag {
     Carry,
     Hoe,
     WaterCan,
-    Scythe
+    Scythe,
+    Basket
 }
 
 public enum ContainerType {

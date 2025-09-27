@@ -7,7 +7,7 @@ public class DugLayer : FieldLayer {
         }
         foreach (Item item in grid.items) {
           if (item is Crop) {
-            Crop crop = (Crop)(item);
+            Crop crop = (Crop)item;
             crop.Growth();
           }
         }

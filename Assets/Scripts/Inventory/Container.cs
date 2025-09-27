@@ -23,17 +23,43 @@ public class Container : MonoBehaviour {
     }
 
 
-    public bool AddItem(ItemData item_data) {
+    public int AddItem(ItemData item_data, int amount = 1) {
         Slot slot = FindSlot(item_data);
         if (slot == null) {
-            return false;
+            return amount;
         }
+        int left = amount;
         if (slot.current == 0) {
-            slot.SetItem(item_data);
-        } else {
-            slot.IncreaseAmount();
+            slot.SetItem(item_data, 0);
         }
-        return true;
+        while (slot.GetSurplus(item_data) < left) {
+            slot.IncreaseAmount(slot.GetSurplus(item_data));
+            left -= slot.GetSurplus(item_data);
+            slot = FindSlot(item_data);
+            if (slot == null) {
+                return left;
+            }
+        }
+        slot.IncreaseAmount(left);
+        return left;
+    }
+
+    public int RemoveItem(ItemData item_data, int amount = 1) {
+        Slot slot = FindSlot(item_data);
+        if (slot == null) {
+            return amount;
+        }
+        int left = amount;
+        while (slot.current < left) {
+            slot.DecreaseAmount(slot.current);
+            left -= slot.current;
+            slot = FindSlot(item_data);
+            if (slot == null) {
+                return left;
+            }
+        }
+        slot.DecreaseAmount(left);
+        return left;
     }
 
     public Slot FindSlot(ItemData item_data, int amount = 1) {
