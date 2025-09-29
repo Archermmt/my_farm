@@ -62,8 +62,8 @@ public class FieldManager : Singleton<FieldManager> {
         return cursors.Count;
     }
 
-    public Dictionary<string, int> UseItem(Item item, List<Cursor> cursors, int amount) {
-        Dictionary<string, int> item_amounts = item.Apply(cursors, amount);
+    public Dictionary<ItemData, int> UseItem(Item item, List<Cursor> cursors, int amount) {
+        Dictionary<ItemData, int> item_amounts = item.Apply(cursors, amount);
         foreach (Cursor cursor in cursors) {
             cursor.SetMode(CursorMode.Mute);
         }
@@ -237,9 +237,9 @@ public class FieldManager : Singleton<FieldManager> {
         return grids;
     }
 
-    private void UpdateTime(TimeType time_type, int year, Season season, int month, int week, int day, int hour, int minute, int second) {
+    private void UpdateTime(TimeType time_type, TimeData time, int delta) {
         foreach (FieldLayer layer in layers_[currentScene_]) {
-            layer.UpdateTime(time_type, year, season, month, week, day, hour, minute, second);
+            layer.UpdateTime(time_type, time, delta);
         }
     }
 }

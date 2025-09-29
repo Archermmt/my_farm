@@ -1,17 +1,8 @@
-using System.Collections.Generic;
 using UnityEngine;
 
 public class Scythe : Tool {
     protected override bool GridUsable(FieldGrid grid) {
         return false;
-    }
-
-    public override Dictionary<string, int> Apply(List<Cursor> cursors, int amount) {
-        int level = GetHoldLevel();
-        foreach (Cursor cursor in cursors) {
-            cursor.item.ToolApply(cursor.grid, toolType, level);
-        }
-        return new Dictionary<string, int>();
     }
 
     protected override Vector2Int GetScopeRange() {

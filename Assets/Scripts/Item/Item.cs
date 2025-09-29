@@ -22,6 +22,7 @@ public class ItemData {
     }
 }
 
+[RequireComponent(typeof(SpriteRenderer))]
 public class Item : MonoBehaviour {
     [Header("Basic")]
     [SerializeField] private string item_name_;
@@ -79,8 +80,8 @@ public class Item : MonoBehaviour {
         return new List<CursorMeta> { new CursorMeta(pos, start, null, dropable ? CursorMode.ValidPos : CursorMode.Invalid) };
     }
 
-    public virtual Dictionary<string, int> Apply(List<Cursor> cursors, int amount) {
-        return new Dictionary<string, int>();
+    public virtual Dictionary<ItemData, int> Apply(List<Cursor> cursors, int amount) {
+        return new Dictionary<ItemData, int>();
     }
 
     public virtual void Hold(Direction direction) {
@@ -140,7 +141,8 @@ public class Item : MonoBehaviour {
         return false;
     }
 
-    public virtual void ToolApply(FieldGrid grid, ToolType tool_type, int hold_level) {
+    public virtual Dictionary<ItemData, int> ToolApply(FieldGrid grid, ToolType tool_type, int hold_level) {
+        return new Dictionary<ItemData, int>();
     }
 
     public override string ToString() {

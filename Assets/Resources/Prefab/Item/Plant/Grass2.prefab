@@ -17,6 +17,10 @@ PrefabInstance:
       value: Grass2
       objectReference: {fileID: 0}
     - target: {fileID: 3424636914233648278, guid: 35de012629fa8487ab276ce8d8d301c4, type: 3}
+      propertyPath: harvestDatas_.Array.size
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 3424636914233648278, guid: 35de012629fa8487ab276ce8d8d301c4, type: 3}
       propertyPath: growthPeriods_.Array.size
       value: 1
       objectReference: {fileID: 0}
@@ -28,6 +32,18 @@ PrefabInstance:
       propertyPath: 'growthSprites_.Array.data[0]'
       value: 
       objectReference: {fileID: 21300000, guid: e452dd2aa629f624390a9ba516a7c47e, type: 3}
+    - target: {fileID: 3424636914233648278, guid: 35de012629fa8487ab276ce8d8d301c4, type: 3}
+      propertyPath: harvestDatas_.Array.data[0].max
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 3424636914233648278, guid: 35de012629fa8487ab276ce8d8d301c4, type: 3}
+      propertyPath: harvestDatas_.Array.data[0].min
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 3424636914233648278, guid: 35de012629fa8487ab276ce8d8d301c4, type: 3}
+      propertyPath: harvestDatas_.Array.data[0].name
+      value: Weed
+      objectReference: {fileID: 0}
     - target: {fileID: 4182700415199540569, guid: 35de012629fa8487ab276ce8d8d301c4, type: 3}
       propertyPath: m_LocalPosition.x
       value: 0

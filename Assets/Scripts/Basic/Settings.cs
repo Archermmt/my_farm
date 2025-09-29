@@ -82,13 +82,15 @@ public enum Season {
 
 public enum TimeType {
     Year,
-    Season,
     Month,
-    Week,
     Day,
     Hour,
     Minute,
     Second
+}
+
+public enum EffectType {
+    Harvest
 }
 
 public enum SceneName {

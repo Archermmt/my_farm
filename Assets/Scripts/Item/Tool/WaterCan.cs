@@ -8,12 +8,12 @@ public class WaterCan : Tool {
         return grid.HasTag(FieldTag.Dug);
     }
 
-    public override Dictionary<string, int> Apply(List<Cursor> cursors, int amount) {
+    public override Dictionary<ItemData, int> Apply(List<Cursor> cursors, int amount) {
         FieldLayer layer = FieldManager.Instance.GetLayer(FieldTag.Watered);
         foreach (Cursor cursor in cursors) {
             layer.AddGrid(cursor.grid, wateredTile_);
         }
-        return new Dictionary<string, int>();
+        return new Dictionary<ItemData, int>();
     }
 
     public override AnimationTag animationTag { get { return AnimationTag.WaterCan; } }

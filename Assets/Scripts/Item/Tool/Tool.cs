@@ -48,6 +48,24 @@ public class Tool : Item {
     return metas;
   }
 
+  public override Dictionary<ItemData, int> Apply(List<Cursor> cursors, int amount) {
+    Dictionary<ItemData, int> items = new Dictionary<ItemData, int>();
+    if (HasStatus(ItemStatus.ItemUsable)) {
+      int level = GetHoldLevel();
+      foreach (Cursor cursor in cursors) {
+        Dictionary<ItemData, int> c_items = cursor.item.ToolApply(cursor.grid, toolType, level);
+        foreach (KeyValuePair<ItemData, int> pair in c_items) {
+          if (!items.ContainsKey(pair.Key)) {
+            items[pair.Key] = pair.Value;
+          } else {
+            items[pair.Key] += pair.Value;
+          }
+        }
+      }
+    }
+    return items;
+  }
+
   protected override bool Dropable(FieldGrid grid) {
     return false;
   }

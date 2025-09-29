@@ -7,7 +7,8 @@ public class Seed : Item {
 
     public override List<CursorMeta> GetCursorMetas(List<FieldGrid> grids, FieldGrid start, Vector3 pos) {
         ResetStatus();
-        if (!HasStatus(ItemStatus.Holding)) {
+        int hold_level = GetHoldLevel();
+        if (hold_level == -1) {
             if (Plantable(start)) {
                 AddStatus(ItemStatus.GridUsable);
                 return new List<CursorMeta> { new CursorMeta(start.GetCenter(), start, null, CursorMode.ValidGrid) };
@@ -15,7 +16,7 @@ public class Seed : Item {
             return base.GetCursorMetas(grids, start, pos);
         }
         List<CursorMeta> metas = new List<CursorMeta>();
-        List<FieldGrid> v_grids = GetHoldLevel() == 0 ? new List<FieldGrid> { start } : grids;
+        List<FieldGrid> v_grids = hold_level == 0 ? new List<FieldGrid> { start } : grids;
         int use_count = GetUseCount();
         foreach (FieldGrid grid in v_grids) {
             if (HasStatus(ItemStatus.GridUsable) && Plantable(grid)) {
@@ -28,13 +29,13 @@ public class Seed : Item {
         return metas;
     }
 
-    public override Dictionary<string, int> Apply(List<Cursor> cursors, int amount) {
+    public override Dictionary<ItemData, int> Apply(List<Cursor> cursors, int amount) {
         int crop_num = Math.Min(cursors.Count, amount);
         for (int i = 0; i < crop_num; i++) {
             Item crop = ItemManager.Instance.CreateItem(cropName_, cursors[i].grid.GetCenter());
             cursors[i].grid.AddItem(crop);
         }
-        Dictionary<string, int> crops = new Dictionary<string, int> { { meta.name, -crop_num } };
+        Dictionary<ItemData, int> crops = new Dictionary<ItemData, int> { { meta, -crop_num } };
         return crops;
     }
 

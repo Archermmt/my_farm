@@ -35,11 +35,11 @@ public static class EventHandler {
         }
     }
 
-    public static event Action<TimeType, int, Season, int, int, int, int, int, int> UpdateTimeEvent;
+    public static event Action<TimeType, TimeData, int> UpdateTimeEvent;
 
-    public static void CallUpdateTime(TimeType time_type, int year, Season season, int month, int week, int day, int hour, int minute, int second) {
+    public static void CallUpdateTime(TimeType time_type, TimeData time, int delta) {
         if (UpdateTimeEvent != null) {
-            UpdateTimeEvent(time_type, year, season, month, week, day, hour, minute, second);
+            UpdateTimeEvent(time_type, time, delta);
         }
     }
 }

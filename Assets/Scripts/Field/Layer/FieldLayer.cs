@@ -88,6 +88,7 @@ public class FieldGrid {
     }
 }
 
+[RequireComponent(typeof(Tilemap))]
 public class FieldLayer : MonoBehaviour {
     [SerializeField] private FieldTag fieldTag_;
     protected List<FieldGrid> grids_;
@@ -120,7 +121,7 @@ public class FieldLayer : MonoBehaviour {
         }
     }
 
-    public virtual void UpdateTime(TimeType time_type, int year, Season season, int month, int week, int day, int hour, int minute, int second) { }
+    public virtual void UpdateTime(TimeType time_type, TimeData time, int delta) { }
 
     public FieldTag fieldTag { get { return fieldTag_; } }
 }

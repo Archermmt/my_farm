@@ -122,17 +122,17 @@ public class Player : Singleton<Player> {
                 }
             } else if (action == Action.UseItem && carried_.Key.HasStatus(ItemStatus.Holding)) {
                 carried_.Key.Unhold();
-                Dictionary<string, int> item_amounts = FieldManager.Instance.UseItem(carried_.Key, cursors, carried_.Value.current);
+                Dictionary<ItemData, int> item_amounts = FieldManager.Instance.UseItem(carried_.Key, cursors, carried_.Value.current);
                 if (carried_.Key.meta.type == ItemType.Tool) {
                     StartCoroutine(UseToolRoutine());
                 } else {
                     Unfreeze();
                 }
-                foreach (KeyValuePair<string, int> pair in item_amounts) {
+                foreach (KeyValuePair<ItemData, int> pair in item_amounts) {
                     if (pair.Value > 0) {
-                        inventory_.AddItem(ItemManager.Instance.FindItem(pair.Key), pair.Value);
+                        inventory_.AddItem(pair.Key, pair.Value);
                     } else {
-                        inventory_.RemoveItem(ItemManager.Instance.FindItem(pair.Key), -pair.Value);
+                        inventory_.RemoveItem(pair.Key, -pair.Value);
 
                     }
                 }
@@ -225,7 +225,7 @@ public class Player : Singleton<Player> {
                 inventory_.AddItem(ItemManager.Instance.RandomItem());
             }
         } else if (Input.GetKeyUp(KeyCode.T)) {
-            EventHandler.CallUpdateTime(TimeType.Day, 0, Season.Spring, 0, 0, 0, 0, 0, 0);
+            EnvManager.Instance.UpdateTime(TimeType.Day, 10);
         } else if (Input.GetKeyDown(KeyCode.C) && carried_.Key != null) {
             ProcessCarried(Action.HoldItem);
             ProcessCarried(Action.UseItem);

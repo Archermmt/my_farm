@@ -14,7 +14,7 @@ public class CursorMeta {
     }
 }
 
-
+[RequireComponent(typeof(SpriteRenderer))]
 public class Cursor : MonoBehaviour {
     [SerializeField] private Sprite validGridSprite_;
     [SerializeField] private Sprite validPosSprite_;
