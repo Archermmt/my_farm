@@ -17,7 +17,7 @@ public class Tool : Item {
       foreach (Item item in start.items) {
         if (item.ToolUsable(start, toolType, hold_level)) {
           AddStatus(ItemStatus.ItemUsable);
-          return new List<CursorMeta> { new CursorMeta(item.transform.position, start, item, CursorMode.ValidPos) };
+          return new List<CursorMeta> { new CursorMeta(item.AlignGrid(), start, item, CursorMode.ValidPos) };
         }
       }
       AddStatus(ItemStatus.Unusable);
@@ -34,7 +34,7 @@ public class Tool : Item {
       } else if (HasStatus(ItemStatus.ItemUsable)) {
         foreach (Item item in grid.items) {
           if (item.ToolUsable(grid, toolType, hold_level)) {
-            metas.Add(new CursorMeta(item.transform.position, grid, item, CursorMode.ValidPos));
+            metas.Add(new CursorMeta(item.AlignGrid(), grid, item, CursorMode.ValidPos));
           }
           if (metas.Count >= use_count) {
             break;

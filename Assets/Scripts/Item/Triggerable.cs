@@ -2,7 +2,8 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-public class Triggerable : Item {
+[RequireComponent(typeof(Item), typeof(SpriteRenderer))]
+public class Triggerable : MonoBehaviour {
     [Header("Trigger.Fade")]
     [SerializeField] private List<string> fadeTargets_;
     [SerializeField] private float fadeInSecond_ = 0.25f;
@@ -12,15 +13,19 @@ public class Triggerable : Item {
     [Header("Trigger.Nudge")]
     [SerializeField] private List<string> nudgeTargets_;
     [SerializeField] private float nudgePauseSecs_ = 0.04f;
+
+    private Item item_;
+    private SpriteRenderer renderer_;
     private bool rotating_ = false;
     private WaitForSeconds nudgePause_;
 
-    public override void SetItem(ItemData item_data) {
-        base.SetItem(item_data);
+    private void Awake() {
         nudgePause_ = new WaitForSeconds(nudgePauseSecs_);
+        renderer_ = GetComponent<SpriteRenderer>();
+        item_ = GetComponent<Item>();
     }
 
-    protected virtual void OnTriggerEnter2D(Collider2D collision) {
+    private void OnTriggerEnter2D(Collider2D collision) {
         if (Nudgable(collision)) {
             if (!rotating_) {
                 if (transform.position.x < collision.transform.position.x) {
@@ -34,7 +39,7 @@ public class Triggerable : Item {
         }
     }
 
-    protected virtual void OnTriggerExit2D(Collider2D collision) {
+    private void OnTriggerExit2D(Collider2D collision) {
         if (Nudgable(collision)) {
             if (!rotating_) {
                 if (transform.position.x > collision.transform.position.x) {
@@ -48,8 +53,8 @@ public class Triggerable : Item {
         }
     }
 
-    protected virtual bool Nudgable(Collider2D collision) {
-        return gameObject.activeSelf && gameObject.activeInHierarchy && nudgeTargets_ != null && nudgeTargets_.Contains(collision.tag);
+    private bool Nudgable(Collider2D collision) {
+        return item_.HasStatus(ItemStatus.Nudgable) && gameObject.activeSelf && gameObject.activeInHierarchy && nudgeTargets_ != null && nudgeTargets_.Contains(collision.tag);
     }
 
     private IEnumerator Rotate(bool clock_wise) {
@@ -79,8 +84,8 @@ public class Triggerable : Item {
         rotating_ = false;
     }
 
-    protected virtual bool Fadable(Collider2D collision) {
-        return gameObject.activeSelf && gameObject.activeInHierarchy && fadeTargets_ != null && fadeTargets_.Contains(collision.tag);
+    private bool Fadable(Collider2D collision) {
+        return item_.HasStatus(ItemStatus.Fadable) && gameObject.activeSelf && gameObject.activeInHierarchy && fadeTargets_ != null && fadeTargets_.Contains(collision.tag);
     }
 
     private IEnumerator FadeInRoutine() {

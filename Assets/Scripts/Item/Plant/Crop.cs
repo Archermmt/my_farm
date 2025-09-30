@@ -1,4 +1,3 @@
-using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -11,6 +10,14 @@ public class Crop : Plant {
     base.SetItem(item_data);
     if (harvestPeriod_ < 0) {
       harvestPeriod_ = totalPeriod_ + harvestPeriod_;
+    }
+    RemoveStatus(ItemStatus.Nudgable);
+  }
+
+  protected override void UpdatePeriod() {
+    base.UpdatePeriod();
+    if (currentPeriod_ > seedPeriod_) {
+      AddStatus(ItemStatus.Nudgable);
     }
   }
 
@@ -25,9 +32,5 @@ public class Crop : Plant {
       return currentPeriod_ >= harvestPeriod_;
     }
     return false;
-  }
-
-  protected override bool Nudgable(Collider2D collision) {
-    return currentPeriod_ > seedPeriod_ && base.Nudgable(collision);
   }
 }

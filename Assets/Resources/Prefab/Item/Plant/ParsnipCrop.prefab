@@ -100,14 +100,31 @@ PrefabInstance:
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
       objectReference: {fileID: 0}
+    - target: {fileID: 9167687079929544454, guid: 35de012629fa8487ab276ce8d8d301c4, type: 3}
+      propertyPath: harvestDatas_.Array.size
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 9167687079929544454, guid: 35de012629fa8487ab276ce8d8d301c4, type: 3}
+      propertyPath: harvestDatas_.Array.data[0].max
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 9167687079929544454, guid: 35de012629fa8487ab276ce8d8d301c4, type: 3}
+      propertyPath: harvestDatas_.Array.data[0].min
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 9167687079929544454, guid: 35de012629fa8487ab276ce8d8d301c4, type: 3}
+      propertyPath: harvestDatas_.Array.data[0].name
+      value: Parsnip
+      objectReference: {fileID: 0}
+    - target: {fileID: 9167687079929544454, guid: 35de012629fa8487ab276ce8d8d301c4, type: 3}
+      propertyPath: harvestDatas_.Array.data[0].period
+      value: 4
+      objectReference: {fileID: 0}
     m_RemovedComponents:
     - {fileID: 3424636914233648278, guid: 35de012629fa8487ab276ce8d8d301c4, type: 3}
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
     m_AddedComponents:
-    - targetCorrespondingSourceObject: {fileID: 2611815160969460626, guid: 35de012629fa8487ab276ce8d8d301c4, type: 3}
-      insertIndex: -1
-      addedObject: {fileID: 2126747646794793614}
     - targetCorrespondingSourceObject: {fileID: 2611815160969460626, guid: 35de012629fa8487ab276ce8d8d301c4, type: 3}
       insertIndex: -1
       addedObject: {fileID: 5340122024045204069}
@@ -117,28 +134,6 @@ GameObject:
   m_CorrespondingSourceObject: {fileID: 2611815160969460626, guid: 35de012629fa8487ab276ce8d8d301c4, type: 3}
   m_PrefabInstance: {fileID: 2252595415710601934}
   m_PrefabAsset: {fileID: 0}
---- !u!95 &2126747646794793614
-Animator:
-  serializedVersion: 7
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 4286823855479777628}
-  m_Enabled: 1
-  m_Avatar: {fileID: 0}
-  m_Controller: {fileID: 9100000, guid: a20107587c30b4faf987ee6700eb4159, type: 2}
-  m_CullingMode: 0
-  m_UpdateMode: 0
-  m_ApplyRootMotion: 0
-  m_LinearVelocityBlending: 0
-  m_StabilizeFeet: 0
-  m_AnimatePhysics: 0
-  m_WarningMessage: 
-  m_HasTransformHierarchy: 1
-  m_AllowConstantClipSamplingOptimization: 1
-  m_KeepAnimatorStateOnDisable: 0
-  m_WriteDefaultValuesOnDisable: 0
 --- !u!114 &5340122024045204069
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -152,13 +147,6 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   item_name_: ParsnipCrop
-  fadeTargets_: []
-  fadeInSecond_: 0.25
-  fadeOutSecond_: 0.35
-  fadeOutAlpha_: 0.45
-  nudgeTargets_:
-  - Player
-  nudgePauseSecs_: 0.04
   growthPeriods_: 0000000001000000030000000500000008000000
   growthSprites_:
   - {fileID: 6634833228405365077, guid: 5a1df36ac90cfa242908df77f9674580, type: 3}
@@ -167,12 +155,5 @@ MonoBehaviour:
   - {fileID: 7041525069147447728, guid: 5a1df36ac90cfa242908df77f9674580, type: 3}
   - {fileID: 7193783865090184285, guid: 5a1df36ac90cfa242908df77f9674580, type: 3}
   growthDay_: 0
-  harvestDatas_:
-  - name: Parsnip
-    period: 4
-    min: 1
-    max: 1
-  harvestStart_: 0.1
-  harvestEnd_: 1
   seedPeriod_: 0
   harvestPeriod_: -1

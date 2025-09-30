@@ -47,6 +47,11 @@ public class Item : MonoBehaviour {
         }
     }
 
+    public Vector3 AlignGrid() {
+        Vector3 pos = transform.position;
+        return new Vector3(pos.x, pos.y + Settings.gridCellSize / 2, pos.z);
+    }
+
     public virtual (Vector3, Vector3) GetScope(FieldGrid center, Vector3 grid_min, Vector3 grid_max) {
         Vector3 c_pos = center.position;
         Vector3 min = Vector3.zero;
@@ -95,7 +100,7 @@ public class Item : MonoBehaviour {
         direction_ = Direction.Around;
     }
 
-    protected void ChangeSprite(Sprite sprite) {
+    public void ChangeSprite(Sprite sprite) {
         renderer_.sprite = sprite;
     }
 

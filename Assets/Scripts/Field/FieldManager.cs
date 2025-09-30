@@ -55,7 +55,7 @@ public class FieldManager : Singleton<FieldManager> {
     public int DropItem(Item item, List<Cursor> cursors) {
         foreach (Cursor cursor in cursors) {
             Item new_item = ItemManager.Instance.CreateItem(item.meta, cursor.transform.position);
-            FieldGrid grid = GetGrid(cursor.transform.position);
+            FieldGrid grid = GetGrid(new_item.AlignGrid());
             grid.AddItem(new_item);
             cursor.SetMode(CursorMode.Mute);
         }
@@ -126,7 +126,7 @@ public class FieldManager : Singleton<FieldManager> {
         if (min == max && min == Vector3.zero) {
             return new List<Cursor>();
         }
-        List<FieldGrid> grids = ExpandGrids(center, min, max);
+        List<FieldGrid> grids = ExpandGrids(center, min, max, !item.HasStatus(ItemStatus.Holding));
         for (int i = 0; i < grids.Count; i++) {
             GetMaskCursor(i).MoveTo(grids[i].GetCenter(), CursorMode.Mask);
         }
@@ -206,13 +206,13 @@ public class FieldManager : Singleton<FieldManager> {
         // add items
         Transform item_parent = GameObject.FindGameObjectWithTag("Items").transform;
         foreach (Item item in item_parent.GetComponentsInChildren<Item>()) {
-            GetGrid(item.transform.position).AddItem(item);
+            GetGrid(item.AlignGrid()).AddItem(item);
         }
         // init field layers
         layers_[scene_name] = new List<FieldLayer>();
     }
 
-    private List<FieldGrid> ExpandGrids(FieldGrid start, Vector3 min, Vector3 max, bool include_start = false) {
+    private List<FieldGrid> ExpandGrids(FieldGrid start, Vector3 min, Vector3 max, bool include_start = true) {
         List<FieldGrid> grids = new List<FieldGrid>();
         List<FieldGrid> frontier = new List<FieldGrid> { start };
         while (frontier.Count > 0) {

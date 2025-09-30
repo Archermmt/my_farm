@@ -54,6 +54,8 @@ public enum ItemStatus {
     Unusable,
     Holding,
     Destroyable,
+    Nudgable,
+    Fadable,
     None
 }
 

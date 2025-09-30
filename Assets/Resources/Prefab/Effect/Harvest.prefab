@@ -217,6 +217,8 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   itemImg_: {fileID: 1087356716961524307}
   amount_: {fileID: 2938218138894978687}
+  triggerStart_: 0.5
+  triggerEnd_: 1
 --- !u!1 &3316536969071278514
 GameObject:
   m_ObjectHideFlags: 0
@@ -418,7 +420,7 @@ MonoBehaviour:
   m_OnCullStateChanged:
     m_PersistentCalls:
       m_Calls: []
-  m_Sprite: {fileID: 0}
+  m_Sprite: {fileID: 21300000, guid: 89c46045b5f23d840b62099f6f1f6344, type: 3}
   m_Type: 0
   m_PreserveAspect: 0
   m_FillCenter: 1
