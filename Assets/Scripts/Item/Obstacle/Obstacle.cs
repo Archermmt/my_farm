@@ -3,6 +3,7 @@ using UnityEngine;
 
 [RequireComponent(typeof(Harvestable))]
 public class Obstacle : Item {
+    [SerializeField] private int health_;
     private Harvestable harvestable_;
 
     public override void SetItem(ItemData item_data) {
@@ -18,7 +19,15 @@ public class Obstacle : Item {
         return false;
     }
 
+    protected virtual int GetDamage(ToolType tool_type, int hold_level) {
+        return hold_level;
+    }
+
     public override Dictionary<ItemData, int> ToolApply(FieldGrid grid, ToolType tool_type, int hold_level) {
-        return harvestable_.HarvestItems(grid, this, 0);
+        if (health_ <= 0) {
+            return harvestable_.HarvestItems(grid, this, 0);
+        }
+        health_ -= GetDamage(tool_type, hold_level);
+        return new Dictionary<ItemData, int>();
     }
 }

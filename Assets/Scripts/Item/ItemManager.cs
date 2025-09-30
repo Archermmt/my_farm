@@ -5,6 +5,7 @@ using UnityEngine;
 public class ItemManager : Singleton<ItemManager> {
     [SerializeField] private ItemData[] items_;
     private Dictionary<string, ItemData> itemsMap_;
+    private Dictionary<Sprite, ItemData> itemSpritesMap_;
     private Dictionary<SceneName, Dictionary<string, Transform>> itemHolders_;
     private SceneName currentScene_ = SceneName.StartScene;
 
@@ -13,6 +14,7 @@ public class ItemManager : Singleton<ItemManager> {
         itemsMap_ = new Dictionary<string, ItemData>();
         foreach (ItemData item in items_) {
             itemsMap_.Add(item.name, item);
+            itemSpritesMap_.Add(item.sprite, item);
         }
         itemHolders_ = new Dictionary<SceneName, Dictionary<string, Transform>>();
     }
@@ -29,6 +31,10 @@ public class ItemManager : Singleton<ItemManager> {
 
     public ItemData FindItem(string name) {
         return itemsMap_[name];
+    }
+
+    public ItemData FindItem(Sprite sprite) {
+        return itemSpritesMap_[sprite];
     }
 
     public ItemData RandomItem(List<ItemType> types = null) {
