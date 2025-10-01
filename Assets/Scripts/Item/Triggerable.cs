@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-[RequireComponent(typeof(Item), typeof(SpriteRenderer))]
+[RequireComponent(typeof(SpriteRenderer))]
 public class Triggerable : MonoBehaviour {
     [Header("Trigger.Fade")]
     [SerializeField] private List<string> fadeTargets_;
@@ -14,7 +14,6 @@ public class Triggerable : MonoBehaviour {
     [SerializeField] private List<string> nudgeTargets_;
     [SerializeField] private float nudgePauseSecs_ = 0.04f;
 
-    private Item item_;
     private SpriteRenderer renderer_;
     private bool rotating_ = false;
     private WaitForSeconds nudgePause_;
@@ -22,11 +21,10 @@ public class Triggerable : MonoBehaviour {
     private void Awake() {
         nudgePause_ = new WaitForSeconds(nudgePauseSecs_);
         renderer_ = GetComponent<SpriteRenderer>();
-        item_ = GetComponent<Item>();
     }
 
-    private void OnTriggerEnter2D(Collider2D collision) {
-        if (Nudgable(collision)) {
+    public void TriggerItemEnter(Collider2D collision, Item item) {
+        if (Nudgable(collision, item)) {
             if (!rotating_) {
                 if (transform.position.x < collision.transform.position.x) {
                     StartCoroutine(Rotate(false));
@@ -34,13 +32,13 @@ public class Triggerable : MonoBehaviour {
                     StartCoroutine(Rotate(true));
                 }
             }
-        } else if (Fadable(collision)) {
+        } else if (Fadable(collision, item)) {
             StartCoroutine(FadeOutRoutine());
         }
     }
 
-    private void OnTriggerExit2D(Collider2D collision) {
-        if (Nudgable(collision)) {
+    public void TriggerItemExit(Collider2D collision, Item item) {
+        if (Nudgable(collision, item)) {
             if (!rotating_) {
                 if (transform.position.x > collision.transform.position.x) {
                     StartCoroutine(Rotate(false));
@@ -48,13 +46,13 @@ public class Triggerable : MonoBehaviour {
                     StartCoroutine(Rotate(true));
                 }
             }
-        } else if (Fadable(collision)) {
+        } else if (Fadable(collision, item)) {
             StartCoroutine(FadeInRoutine());
         }
     }
 
-    private bool Nudgable(Collider2D collision) {
-        return item_.HasStatus(ItemStatus.Nudgable) && gameObject.activeSelf && gameObject.activeInHierarchy && nudgeTargets_ != null && nudgeTargets_.Contains(collision.tag);
+    private bool Nudgable(Collider2D collision, Item item) {
+        return item.HasStatus(ItemStatus.Nudgable) && gameObject.activeSelf && gameObject.activeInHierarchy && nudgeTargets_ != null && nudgeTargets_.Contains(collision.tag);
     }
 
     private IEnumerator Rotate(bool clock_wise) {
@@ -84,8 +82,8 @@ public class Triggerable : MonoBehaviour {
         rotating_ = false;
     }
 
-    private bool Fadable(Collider2D collision) {
-        return item_.HasStatus(ItemStatus.Fadable) && gameObject.activeSelf && gameObject.activeInHierarchy && fadeTargets_ != null && fadeTargets_.Contains(collision.tag);
+    private bool Fadable(Collider2D collision, Item item) {
+        return item.HasStatus(ItemStatus.Fadable) && gameObject.activeSelf && gameObject.activeInHierarchy && fadeTargets_ != null && fadeTargets_.Contains(collision.tag);
     }
 
     private IEnumerator FadeInRoutine() {

@@ -48,6 +48,14 @@ PrefabInstance:
       propertyPath: harvestDatas_.Array.data[0].name
       value: Weed
       objectReference: {fileID: 0}
+    - target: {fileID: 3640997128896635510, guid: 35de012629fa8487ab276ce8d8d301c4, type: 3}
+      propertyPath: destroyDatas_.Array.size
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 3640997128896635510, guid: 35de012629fa8487ab276ce8d8d301c4, type: 3}
+      propertyPath: destroyDatas_.Array.data[0].effect
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 4182700415199540569, guid: 35de012629fa8487ab276ce8d8d301c4, type: 3}
       propertyPath: m_LocalPosition.x
       value: 0
@@ -87,6 +95,14 @@ PrefabInstance:
     - target: {fileID: 4182700415199540569, guid: 35de012629fa8487ab276ce8d8d301c4, type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
+      objectReference: {fileID: 0}
+    - target: {fileID: 6010137388032098245, guid: 35de012629fa8487ab276ce8d8d301c4, type: 3}
+      propertyPath: DamageDatas_.Array.size
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 6010137388032098245, guid: 35de012629fa8487ab276ce8d8d301c4, type: 3}
+      propertyPath: DamageDatas_.Array.data[0].effect
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 7668150496710288662, guid: 35de012629fa8487ab276ce8d8d301c4, type: 3}
       propertyPath: m_Sprite

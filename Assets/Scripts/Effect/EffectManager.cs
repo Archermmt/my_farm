@@ -2,7 +2,6 @@ using System.Collections.Generic;
 using UnityEngine;
 
 public class EffectManager : Singleton<EffectManager> {
-    [SerializeField] private EffectTrigger[] triggers_;
     private Dictionary<EffectType, EffectTrigger> triggersMap_;
 
     protected override void Awake() {

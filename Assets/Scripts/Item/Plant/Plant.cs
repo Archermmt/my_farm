@@ -1,7 +1,7 @@
 using System.Collections.Generic;
 using UnityEngine;
 
-[RequireComponent(typeof(Harvestable))]
+[RequireComponent(typeof(Triggerable), typeof(Harvestable), typeof(Damageable))]
 public class Plant : Item {
     [Header("Plant.Growth")]
     [SerializeField] private List<int> growthPeriods_;
@@ -9,15 +9,27 @@ public class Plant : Item {
     [SerializeField] private int growthDay_ = 0;
     protected int currentPeriod_;
     protected int totalPeriod_;
-    protected Harvestable harvestable_;
+    private Triggerable triggerable_;
+    private Harvestable harvestable_;
+    private Damageable damageable_;
 
     protected override void Awake() {
         base.Awake();
         currentPeriod_ = 0;
         totalPeriod_ = growthPeriods_ == null ? 0 : growthPeriods_.Count;
+        triggerable_ = GetComponent<Triggerable>();
         harvestable_ = GetComponent<Harvestable>();
+        damageable_ = GetComponent<Damageable>();
         AddStatus(ItemStatus.Nudgable);
         UpdatePeriod();
+    }
+
+    private void OnTriggerEnter2D(Collider2D collision) {
+        triggerable_.TriggerItemEnter(collision, this);
+    }
+
+    private void OnTriggerExit2D(Collider2D collision) {
+        triggerable_.TriggerItemExit(collision, this);
     }
 
     protected override bool Pickable(FieldGrid grid) {
@@ -52,6 +64,7 @@ public class Plant : Item {
     }
 
     public override Dictionary<ItemData, int> ToolApply(FieldGrid grid, ToolType tool_type, int hold_level) {
+        damageable_.DamageItem(this, currentPeriod_);
         return harvestable_.HarvestItems(grid, this, currentPeriod_);
     }
 }

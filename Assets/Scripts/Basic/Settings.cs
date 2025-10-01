@@ -61,7 +61,7 @@ public enum ItemStatus {
     ItemUsable,
     Unusable,
     Holding,
-    Destroyable,
+    Damageable,
     Nudgable,
     Fadable,
     None
@@ -100,7 +100,12 @@ public enum TimeType {
 }
 
 public enum EffectType {
-    Harvest
+    Harvest,
+    GrassScatter,
+    ConeFall,
+    LeavesFall,
+    StoneBreak,
+    None
 }
 
 public enum SceneName {

@@ -2,14 +2,16 @@ using System;
 using System.Collections.Generic;
 using UnityEngine;
 
-[RequireComponent(typeof(Harvestable))]
+[RequireComponent(typeof(Harvestable), typeof(Damageable))]
 public class Obstacle : Item {
     [SerializeField] private int health_;
     private Harvestable harvestable_;
+    private Damageable damageable_;
 
     protected override void Awake() {
         base.Awake();
         harvestable_ = GetComponent<Harvestable>();
+        damageable_ = GetComponent<Damageable>();
     }
 
     protected override bool Pickable(FieldGrid grid) {
@@ -26,6 +28,7 @@ public class Obstacle : Item {
 
     public override Dictionary<ItemData, int> ToolApply(FieldGrid grid, ToolType tool_type, int hold_level) {
         health_ -= GetDamage(tool_type, hold_level);
+        damageable_.DamageItem(this, 0);
         if (health_ <= 0) {
             return harvestable_.HarvestItems(grid, this, 0);
         }

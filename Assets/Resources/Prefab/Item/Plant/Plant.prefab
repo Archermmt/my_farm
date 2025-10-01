@@ -67,48 +67,22 @@ PrefabInstance:
     m_AddedComponents:
     - targetCorrespondingSourceObject: {fileID: 5485029832335576484, guid: ae4353ece9de5492f8d09dcf0eadf52d, type: 3}
       insertIndex: -1
-      addedObject: {fileID: 3424636914233648278}
+      addedObject: {fileID: -3955234559752261518}
     - targetCorrespondingSourceObject: {fileID: 5485029832335576484, guid: ae4353ece9de5492f8d09dcf0eadf52d, type: 3}
       insertIndex: -1
       addedObject: {fileID: 9167687079929544454}
     - targetCorrespondingSourceObject: {fileID: 5485029832335576484, guid: ae4353ece9de5492f8d09dcf0eadf52d, type: 3}
       insertIndex: -1
-      addedObject: {fileID: -3955234559752261518}
+      addedObject: {fileID: 6010137388032098245}
+    - targetCorrespondingSourceObject: {fileID: 5485029832335576484, guid: ae4353ece9de5492f8d09dcf0eadf52d, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 3424636914233648278}
   m_SourcePrefab: {fileID: 100100000, guid: ae4353ece9de5492f8d09dcf0eadf52d, type: 3}
 --- !u!1 &2611815160969460626 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 5485029832335576484, guid: ae4353ece9de5492f8d09dcf0eadf52d, type: 3}
   m_PrefabInstance: {fileID: 7503478150196114998}
   m_PrefabAsset: {fileID: 0}
---- !u!114 &3424636914233648278
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2611815160969460626}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 9aa3eb985993c4ed2a2ea991d3336aca, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  item_name_: 
-  growthPeriods_: 
-  growthSprites_: []
-  growthDay_: 0
---- !u!114 &9167687079929544454
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 2611815160969460626}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: c791de523eaaa41fcb6c652e5d16f616, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  harvestDatas_: []
 --- !u!114 &-3955234559752261518
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -128,3 +102,47 @@ MonoBehaviour:
   nudgeTargets_:
   - Player
   nudgePauseSecs_: 0.04
+--- !u!114 &9167687079929544454
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2611815160969460626}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: c791de523eaaa41fcb6c652e5d16f616, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  harvestDatas_: []
+--- !u!114 &6010137388032098245
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2611815160969460626}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 26d3d41c982bd49ea81be5c542dbefdb, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  DamageDatas_: []
+  startSeconds_: 0.2
+  endSeconds_: 0.2
+--- !u!114 &3424636914233648278
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2611815160969460626}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 9aa3eb985993c4ed2a2ea991d3336aca, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  item_name_: 
+  growthPeriods_: 
+  growthSprites_: []
+  growthDay_: 0

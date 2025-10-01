@@ -24,12 +24,12 @@ public class Harvestable : MonoBehaviour {
             items.Add(ItemManager.Instance.FindItem(data.sprite), UnityEngine.Random.Range(data.min, data.max));
         }
         item.ChangeSprite(null);
-        grid.RemoveItem(item);
         int cnt = 0;
         foreach (KeyValuePair<ItemData, int> pair in items) {
             StartCoroutine(HarvestRountine(item, pair.Key, pair.Value, cnt, cnt == items.Count - 1));
             cnt += 1;
         }
+        grid.RemoveItem(item);
         return items;
     }
 
