@@ -43,12 +43,11 @@ public class Item : MonoBehaviour {
         }
     }
 
-    public void SetItem(ItemData item_data) {
+    public virtual void SetItem(ItemData item_data) {
         item_name_ = item_data.name;
         meta_ = item_data;
         renderer_.sprite = item_data.sprite;
     }
-
 
     public Vector3 AlignGrid() {
         Vector3 pos = transform.position;
@@ -156,6 +155,8 @@ public class Item : MonoBehaviour {
     public virtual Dictionary<ItemData, int> ToolApply(FieldGrid grid, ToolType tool_type, int hold_level) {
         return new Dictionary<ItemData, int>();
     }
+
+    public virtual void UpdateTime(TimeType time_type, TimeData time, int delta, FieldGrid grid) { }
 
     public override string ToString() {
         string str = transform.name + " : " + meta_.ToString();

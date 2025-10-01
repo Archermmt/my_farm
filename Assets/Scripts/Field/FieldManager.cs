@@ -153,7 +153,6 @@ public class FieldManager : Singleton<FieldManager> {
     private void BeforeSceneUnload(SceneName scene_name) {
     }
 
-
     private void AfterSceneLoad(SceneName scene_name) {
         currentScene_ = scene_name;
         if (!layerHolders_.ContainsKey(scene_name)) {
@@ -238,6 +237,11 @@ public class FieldManager : Singleton<FieldManager> {
     }
 
     private void UpdateTime(TimeType time_type, TimeData time, int delta) {
+        foreach (FieldGrid grid in fieldGrids_[currentScene_]) {
+            foreach (Item item in grid.items) {
+                item.UpdateTime(time_type, time, delta, grid);
+            }
+        }
         foreach (FieldLayer layer in layers_[currentScene_]) {
             layer.UpdateTime(time_type, time, delta);
         }

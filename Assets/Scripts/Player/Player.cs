@@ -102,7 +102,7 @@ public class Player : Singleton<Player> {
     }
 
     private void ProcessCarried(Action action) {
-        Direction mouse_direct = MouseUtils.GetDirection(camera_, transform.position); ;
+        Direction mouse_direct = MouseUtils.GetDirection(camera_, transform.position);
         List<Cursor> cursors = FieldManager.Instance.CheckItem(carried_.Key, transform.position, MouseUtils.MouseToWorld(camera_), mouse_direct);
         if (cursors.Count > 0) {
             if (action == Action.DropItem && carried_.Key.HasStatus(ItemStatus.Dropable)) {
@@ -111,13 +111,9 @@ public class Player : Singleton<Player> {
             } else if (action == Action.HoldItem && !carried_.Key.HasStatus(ItemStatus.Holding) && (carried_.Key.HasStatus(ItemStatus.GridUsable) || carried_.Key.HasStatus(ItemStatus.ItemUsable))) {
                 Freeze();
                 if (carried_.Key.meta.type == ItemType.Tool || carried_.Key.meta.type == ItemType.Seed) {
-                    direction_ = mouse_direct;
-                    carried_.Key.Hold(direction_);
-                    if (carried_.Key.meta.type == ItemType.Tool) {
-                        UpdateAnimators(direction_, Action.HoldItem);
-                    } else {
-                        UpdateAnimators(direction_, Action.Idle);
-                    }
+                    carried_.Key.Hold(mouse_direct);
+                    Action act = carried_.Key.meta.type == ItemType.Tool ? Action.HoldItem : Action.Idle;
+                    UpdateAnimators(mouse_direct, act);
                 } else {
                     carried_.Key.Hold(Direction.Around);
                 }
@@ -125,7 +121,7 @@ public class Player : Singleton<Player> {
                 Dictionary<ItemData, int> item_amounts = FieldManager.Instance.UseItem(carried_.Key, cursors, carried_.Value.current);
                 carried_.Key.Unhold();
                 if (carried_.Key.meta.type == ItemType.Tool) {
-                    StartCoroutine(UseToolRoutine());
+                    StartCoroutine(UseToolRoutine(mouse_direct));
                 } else {
                     Unfreeze();
                 }
@@ -134,19 +130,20 @@ public class Player : Singleton<Player> {
                         inventory_.AddItem(pair.Key, pair.Value);
                     } else {
                         inventory_.RemoveItem(pair.Key, -pair.Value);
-
                     }
                 }
+            } else if (carried_.Key.HasStatus(ItemStatus.Holding)) {
+                UpdateAnimators(mouse_direct, Action.HoldItem);
             }
         }
     }
 
-    private IEnumerator UseToolRoutine() {
+    private IEnumerator UseToolRoutine(Direction direction) {
         foreach (Animator animator in animators_) {
             animator.SetTrigger("useTool");
         }
         yield return useToolPause_;
-        UpdateAnimators(direction_, Action.Idle);
+        UpdateAnimators(direction, Action.Idle);
         Unfreeze();
     }
 

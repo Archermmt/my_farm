@@ -4,7 +4,8 @@ using UnityEngine;
 
 [RequireComponent(typeof(Harvestable), typeof(Damageable))]
 public class Obstacle : Item {
-    [SerializeField] private int health_;
+    [Header("Obstacle")]
+    [SerializeField] private int health_ = 1;
     private Harvestable harvestable_;
     private Damageable damageable_;
 

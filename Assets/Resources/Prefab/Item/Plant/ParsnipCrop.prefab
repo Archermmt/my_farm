@@ -164,6 +164,10 @@ PrefabInstance:
       propertyPath: DamageDatas_.Array.data[1].period
       value: 3
       objectReference: {fileID: 0}
+    - target: {fileID: 7668150496710288662, guid: 35de012629fa8487ab276ce8d8d301c4, type: 3}
+      propertyPath: m_Sprite
+      value: 
+      objectReference: {fileID: 6634833228405365077, guid: 5a1df36ac90cfa242908df77f9674580, type: 3}
     - target: {fileID: 9167687079929544454, guid: 35de012629fa8487ab276ce8d8d301c4, type: 3}
       propertyPath: harvestDatas_.Array.size
       value: 1
@@ -224,4 +228,4 @@ MonoBehaviour:
   - {fileID: 7193783865090184285, guid: 5a1df36ac90cfa242908df77f9674580, type: 3}
   growthDay_: 0
   seedPeriod_: 0
-  harvestPeriod_: -1
+  harvestPeriod_: 4

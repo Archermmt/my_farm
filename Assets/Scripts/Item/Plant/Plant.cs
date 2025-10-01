@@ -1,9 +1,11 @@
+using System;
 using System.Collections.Generic;
 using UnityEngine;
 
 [RequireComponent(typeof(Triggerable), typeof(Harvestable), typeof(Damageable))]
 public class Plant : Item {
-    [Header("Plant.Growth")]
+    [Header("Plant")]
+    [SerializeField] private int health_ = 1;
     [SerializeField] private List<int> growthPeriods_;
     [SerializeField] private List<Sprite> growthSprites_;
     [SerializeField] private int growthDay_ = 0;
@@ -15,12 +17,15 @@ public class Plant : Item {
 
     protected override void Awake() {
         base.Awake();
-        currentPeriod_ = 0;
-        totalPeriod_ = growthPeriods_ == null ? 0 : growthPeriods_.Count;
         triggerable_ = GetComponent<Triggerable>();
         harvestable_ = GetComponent<Harvestable>();
         damageable_ = GetComponent<Damageable>();
-        AddStatus(ItemStatus.Nudgable);
+    }
+
+    public override void SetItem(ItemData item_data) {
+        base.SetItem(item_data);
+        currentPeriod_ = 0;
+        totalPeriod_ = growthPeriods_ == null ? 0 : growthPeriods_.Count;
         UpdatePeriod();
     }
 
@@ -59,12 +64,22 @@ public class Plant : Item {
         ChangeSprite(growthSprites_[currentPeriod_]);
     }
 
-    public override bool ToolUsable(FieldGrid grid, ToolType tool_type, int hold_level) {
-        return tool_type == ToolType.Scythe;
+    protected virtual int GetDamage(ToolType tool_type, int hold_level) {
+        return Math.Max(hold_level + 1, 1);
     }
 
     public override Dictionary<ItemData, int> ToolApply(FieldGrid grid, ToolType tool_type, int hold_level) {
+        health_ -= GetDamage(tool_type, hold_level);
         damageable_.DamageItem(this, currentPeriod_);
-        return harvestable_.HarvestItems(grid, this, currentPeriod_);
+        if (health_ <= 0) {
+            return harvestable_.HarvestItems(grid, this, currentPeriod_);
+        }
+        return new Dictionary<ItemData, int>();
+    }
+
+    public override void UpdateTime(TimeType time_type, TimeData time, int delta, FieldGrid grid) {
+        if (time_type == TimeType.Day) {
+            Growth(delta);
+        }
     }
 }

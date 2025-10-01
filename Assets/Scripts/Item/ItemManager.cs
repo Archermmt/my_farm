@@ -71,13 +71,16 @@ public class ItemManager : Singleton<ItemManager> {
             }
         }
         GameObject item_obj = Instantiate(prefab, new Vector3(world_pos.x, world_pos.y - Settings.gridCellSize / 2f, world_pos.z), Quaternion.identity, item_holder);
-        item_obj.GetComponent<Item>().SetItem(item_data);
+        Item item = item_obj.GetComponent<Item>();
+        if (item.meta == null) {
+            item.SetItem(item_data);
+        }
         int cnt = 1;
         while (item_holder.Find("Gen_" + item_data.name + "_" + cnt) != null) {
             cnt++;
         }
         item_obj.name = "Gen_" + item_data.name + "_" + cnt;
-        return item_obj.GetComponent<Item>();
+        return item;
     }
 
     public Item CreateItem(string item_name, Vector3 world_pos, Transform holder = null) {
