@@ -2,6 +2,10 @@ using System.Collections.Generic;
 using UnityEngine;
 
 public class Tool : Item {
+  public override (Vector3, Vector3) GetScope(FieldGrid center, Vector3 grid_min, Vector3 grid_max, Direction direct) {
+    return GetScopeByDirect(center, grid_min, grid_max, direct);
+  }
+
   public override List<CursorMeta> GetCursorMetas(List<FieldGrid> grids, FieldGrid start, Vector3 pos) {
     ResetStatus();
     int hold_level = GetHoldLevel();
@@ -76,15 +80,13 @@ public class Tool : Item {
 
   protected override Vector2Int GetScopeRange() {
     int level = GetHoldLevel();
-    if (level == -1) { return new Vector2Int(3, 3); }
     if (level <= 1) { return new Vector2Int(3, 1); }
     if (level == 2) { return new Vector2Int(3, 3); }
     if (level == 3) { return new Vector2Int(9, 3); }
-    if (level == 4) { return new Vector2Int(9, 9); }
-    return Vector2Int.one;
+    return new Vector2Int(9, 9);
   }
 
-  public virtual int GetUseCount() {
+  protected virtual int GetUseCount() {
     if (GetHoldLevel() <= 0) { return 1; }
     Vector2Int range = GetScopeRange();
     return range.x * range.y;

@@ -114,7 +114,7 @@ public class FieldManager : Singleton<FieldManager> {
         return new_layer;
     }
 
-    public List<Cursor> CheckItem(Item item, Vector3 anchor, Vector3 world_pos) {
+    public List<Cursor> CheckItem(Item item, Vector3 anchor, Vector3 world_pos, Direction mouse_direct) {
         if (freezed_) {
             return new List<Cursor>();
         }
@@ -122,11 +122,11 @@ public class FieldManager : Singleton<FieldManager> {
         if (center == null) {
             return new List<Cursor>();
         }
-        (Vector3 min, Vector3 max) = item.GetScope(center, scopes_[currentScene_].Key, scopes_[currentScene_].Value);
+        (Vector3 min, Vector3 max) = item.GetScope(center, scopes_[currentScene_].Key, scopes_[currentScene_].Value, mouse_direct);
         if (min == max && min == Vector3.zero) {
             return new List<Cursor>();
         }
-        List<FieldGrid> grids = ExpandGrids(center, min, max, !item.HasStatus(ItemStatus.Holding));
+        List<FieldGrid> grids = ExpandGrids(center, min, max, false);
         for (int i = 0; i < grids.Count; i++) {
             GetMaskCursor(i).MoveTo(grids[i].GetCenter(), CursorMode.Mask);
         }
@@ -212,7 +212,7 @@ public class FieldManager : Singleton<FieldManager> {
         layers_[scene_name] = new List<FieldLayer>();
     }
 
-    private List<FieldGrid> ExpandGrids(FieldGrid start, Vector3 min, Vector3 max, bool include_start = true) {
+    private List<FieldGrid> ExpandGrids(FieldGrid start, Vector3 min, Vector3 max, bool include_start = false) {
         List<FieldGrid> grids = new List<FieldGrid>();
         List<FieldGrid> frontier = new List<FieldGrid> { start };
         while (frontier.Count > 0) {

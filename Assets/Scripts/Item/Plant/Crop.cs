@@ -1,4 +1,3 @@
-using System.Collections.Generic;
 using UnityEngine;
 
 public class Crop : Plant {
@@ -6,8 +5,8 @@ public class Crop : Plant {
   [SerializeField] private int seedPeriod_ = 0;
   [SerializeField] private int harvestPeriod_ = -1;
 
-  public override void SetItem(ItemData item_data) {
-    base.SetItem(item_data);
+  protected override void Awake() {
+    base.Awake();
     if (harvestPeriod_ < 0) {
       harvestPeriod_ = totalPeriod_ + harvestPeriod_;
     }

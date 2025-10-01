@@ -12,6 +12,7 @@ public class ItemManager : Singleton<ItemManager> {
     protected override void Awake() {
         base.Awake();
         itemsMap_ = new Dictionary<string, ItemData>();
+        itemSpritesMap_ = new Dictionary<Sprite, ItemData>();
         foreach (ItemData item in items_) {
             itemsMap_.Add(item.name, item);
             itemSpritesMap_.Add(item.sprite, item);

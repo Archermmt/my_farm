@@ -17,10 +17,16 @@ public enum Action {
 
 public enum AnimationTag {
     Carry,
+    Wave,
+    Pick,
+    Lift,
+    Swing,
     Hoe,
     WaterCan,
     Scythe,
-    Basket
+    Basket,
+    Pickaxe,
+    Axe
 }
 
 public enum ContainerType {
@@ -45,6 +51,8 @@ public enum ToolType {
     WaterCan,
     Scythe,
     Basket,
+    Pickaxe,
+    Axe
 }
 
 public enum ItemStatus {

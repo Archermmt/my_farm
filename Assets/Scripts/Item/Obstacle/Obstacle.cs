@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -6,8 +7,8 @@ public class Obstacle : Item {
     [SerializeField] private int health_;
     private Harvestable harvestable_;
 
-    public override void SetItem(ItemData item_data) {
-        base.SetItem(item_data);
+    protected override void Awake() {
+        base.Awake();
         harvestable_ = GetComponent<Harvestable>();
     }
 
@@ -20,14 +21,14 @@ public class Obstacle : Item {
     }
 
     protected virtual int GetDamage(ToolType tool_type, int hold_level) {
-        return hold_level;
+        return Math.Max(hold_level + 1, 1);
     }
 
     public override Dictionary<ItemData, int> ToolApply(FieldGrid grid, ToolType tool_type, int hold_level) {
+        health_ -= GetDamage(tool_type, hold_level);
         if (health_ <= 0) {
             return harvestable_.HarvestItems(grid, this, 0);
         }
-        health_ -= GetDamage(tool_type, hold_level);
         return new Dictionary<ItemData, int>();
     }
 }

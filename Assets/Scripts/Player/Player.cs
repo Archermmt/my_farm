@@ -102,7 +102,8 @@ public class Player : Singleton<Player> {
     }
 
     private void ProcessCarried(Action action) {
-        List<Cursor> cursors = FieldManager.Instance.CheckItem(carried_.Key, transform.position, MouseUtils.MouseToWorld(camera_));
+        Direction mouse_direct = MouseUtils.GetDirection(camera_, transform.position); ;
+        List<Cursor> cursors = FieldManager.Instance.CheckItem(carried_.Key, transform.position, MouseUtils.MouseToWorld(camera_), mouse_direct);
         if (cursors.Count > 0) {
             if (action == Action.DropItem && carried_.Key.HasStatus(ItemStatus.Dropable)) {
                 int drop_amount = FieldManager.Instance.DropItem(carried_.Key, cursors);
@@ -110,7 +111,7 @@ public class Player : Singleton<Player> {
             } else if (action == Action.HoldItem && !carried_.Key.HasStatus(ItemStatus.Holding) && (carried_.Key.HasStatus(ItemStatus.GridUsable) || carried_.Key.HasStatus(ItemStatus.ItemUsable))) {
                 Freeze();
                 if (carried_.Key.meta.type == ItemType.Tool || carried_.Key.meta.type == ItemType.Seed) {
-                    direction_ = MouseUtils.GetDirection(camera_, transform.position);
+                    direction_ = mouse_direct;
                     carried_.Key.Hold(direction_);
                     if (carried_.Key.meta.type == ItemType.Tool) {
                         UpdateAnimators(direction_, Action.HoldItem);
@@ -121,8 +122,8 @@ public class Player : Singleton<Player> {
                     carried_.Key.Hold(Direction.Around);
                 }
             } else if (action == Action.UseItem && carried_.Key.HasStatus(ItemStatus.Holding)) {
-                carried_.Key.Unhold();
                 Dictionary<ItemData, int> item_amounts = FieldManager.Instance.UseItem(carried_.Key, cursors, carried_.Value.current);
+                carried_.Key.Unhold();
                 if (carried_.Key.meta.type == ItemType.Tool) {
                     StartCoroutine(UseToolRoutine());
                 } else {
@@ -174,7 +175,9 @@ public class Player : Singleton<Player> {
             if (carried_.Key != null) {
                 carried_.Key.gameObject.SetActive(false);
                 carried_.Key.transform.parent = hands_.Find("Cache");
-                RestoreAnimations(carried_.Key.animationTag);
+                foreach (AnimationTag tag in carried_.Key.animationTags) {
+                    RestoreAnimations(tag);
+                }
             }
             Slot slot = inventory_.GetContainer(container_type).FindSelectedSlot();
             if (!freezed_ && slot != null) {
@@ -190,11 +193,13 @@ public class Player : Singleton<Player> {
                 carried_ = new KeyValuePair<Item, Slot>(null, null);
             }
             if (carried_.Key != null) {
-                if (carried_.Key.animationTag == AnimationTag.Carry) {
+                if (carried_.Key.animationTags.Contains(AnimationTag.Carry)) {
                     handsRender_.sprite = carried_.Key.meta.sprite;
                     handsRender_.color = new Color(1f, 1f, 1f, 1f);
                 }
-                SwapAnimations(carried_.Key.animationTag);
+                foreach (AnimationTag tag in carried_.Key.animationTags) {
+                    SwapAnimations(tag);
+                }
                 FieldManager.Instance.Unfreeze();
             } else {
                 handsRender_.sprite = null;
@@ -218,6 +223,8 @@ public class Player : Singleton<Player> {
             inventory_.AddItem(ItemManager.Instance.FindItem("WaterCan"));
             inventory_.AddItem(ItemManager.Instance.FindItem("Scythe"));
             inventory_.AddItem(ItemManager.Instance.FindItem("Basket"));
+            inventory_.AddItem(ItemManager.Instance.FindItem("Pickaxe"));
+            inventory_.AddItem(ItemManager.Instance.FindItem("Axe"));
             for (int i = 0; i < 81; i++) {
                 inventory_.AddItem(ItemManager.Instance.FindItem("ParsnipSeed"));
             }

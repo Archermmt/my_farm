@@ -4,6 +4,11 @@ using System.Collections.Generic;
 public class Hoe : Tool {
   [SerializeField] private RuleTile dugTile_;
 
+  protected override void Awake() {
+    base.Awake();
+    animationTags_ = new List<AnimationTag> { AnimationTag.Wave, AnimationTag.Hoe };
+  }
+
   protected override bool GridUsable(FieldGrid grid) {
     return grid.HasTag(FieldTag.Diggable) && !grid.HasTag(FieldTag.Dug) && grid.items.Count == 0;
   }
@@ -15,8 +20,6 @@ public class Hoe : Tool {
     }
     return new Dictionary<ItemData, int>();
   }
-
-  public override AnimationTag animationTag { get { return AnimationTag.Hoe; } }
 
   protected override ToolType toolType { get { return ToolType.Hoe; } }
 }

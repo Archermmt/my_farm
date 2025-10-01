@@ -5,7 +5,7 @@ using UnityEngine;
 
 [Serializable]
 public class HarvestData {
-    public string name;
+    public Sprite sprite;
     public int period;
     public int min;
     public int max;
@@ -21,7 +21,7 @@ public class Harvestable : MonoBehaviour {
             if (data.period != period) {
                 continue;
             }
-            items.Add(ItemManager.Instance.FindItem(data.name), UnityEngine.Random.Range(data.min, data.max));
+            items.Add(ItemManager.Instance.FindItem(data.sprite), UnityEngine.Random.Range(data.min, data.max));
         }
         item.ChangeSprite(null);
         grid.RemoveItem(item);

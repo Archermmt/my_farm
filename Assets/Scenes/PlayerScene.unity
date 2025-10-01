@@ -262,7 +262,7 @@ MonoBehaviour:
     - {fileID: 7400000, guid: fb7938dddd79c4a62a0ff4cb3dd3fcfa, type: 2}
     - {fileID: 7400000, guid: 38dd9f4d911f54db4860b5b1643169d9, type: 2}
     - {fileID: 7400000, guid: 8f179745d853441dba7162ed93604895, type: 2}
-    animationTag: 1
+    animationTag: 5
   - srcClips:
     - {fileID: 7400000, guid: df472bae910a74c2f902495cab5d49f3, type: 2}
     - {fileID: 7400000, guid: 5cbb282628f5d46539c0c8f819b6dacd, type: 2}
@@ -281,7 +281,7 @@ MonoBehaviour:
     - {fileID: 7400000, guid: 0058479165c6a44f388b2dc8e3e69463, type: 2}
     - {fileID: 7400000, guid: ddf18107935cd46e695b035b0a8e5654, type: 2}
     - {fileID: 7400000, guid: 7735e280cd9a84870bbdc4c3f6919179, type: 2}
-    animationTag: 2
+    animationTag: 6
   - srcClips:
     - {fileID: 7400000, guid: df472bae910a74c2f902495cab5d49f3, type: 2}
     - {fileID: 7400000, guid: 5cbb282628f5d46539c0c8f819b6dacd, type: 2}
@@ -300,7 +300,26 @@ MonoBehaviour:
     - {fileID: 7400000, guid: 857d9ec447b8d4e5184f5deb2c2043d9, type: 2}
     - {fileID: 7400000, guid: cbe45365c546f49849af852042f57aa8, type: 2}
     - {fileID: 7400000, guid: 23cb82a63693e45d59ddc0def5de4bc4, type: 2}
-    animationTag: 3
+    animationTag: 7
+  - srcClips:
+    - {fileID: 7400000, guid: df472bae910a74c2f902495cab5d49f3, type: 2}
+    - {fileID: 7400000, guid: 5cbb282628f5d46539c0c8f819b6dacd, type: 2}
+    - {fileID: 7400000, guid: 205792d1285ee4346a3c453308c9b772, type: 2}
+    - {fileID: 7400000, guid: c1650c97121fb442fb9f53970800819d, type: 2}
+    - {fileID: 7400000, guid: fd4f5867ddcff46149fc9137e516a87b, type: 2}
+    - {fileID: 7400000, guid: b0255b7309762412c92c493997443560, type: 2}
+    - {fileID: 7400000, guid: c6a7008e3841246fe91bb1c367e8bde0, type: 2}
+    - {fileID: 7400000, guid: b66980bf649a34eff8547622627a1b0e, type: 2}
+    dstClips:
+    - {fileID: 7400000, guid: 2437d996f0df54576ad88e5c582707a1, type: 2}
+    - {fileID: 7400000, guid: d2b3dc7e3281e4b65880f7a6cd103b72, type: 2}
+    - {fileID: 7400000, guid: 69cc7976375814c3eaf87d6aa48403ad, type: 2}
+    - {fileID: 7400000, guid: a99beef8948a44f3493f05a6b53a4910, type: 2}
+    - {fileID: 7400000, guid: 231220145fb414d43bec7f8d96f1736d, type: 2}
+    - {fileID: 7400000, guid: 729f58f27962e41e982befe3c2693835, type: 2}
+    - {fileID: 7400000, guid: 84abfad12390a438ca37ee54c0f685d0, type: 2}
+    - {fileID: 7400000, guid: 4392be4131f324cc1b2a66ed532340ab, type: 2}
+    animationTag: 9
 --- !u!1 &53710398
 GameObject:
   m_ObjectHideFlags: 0
@@ -628,7 +647,7 @@ MonoBehaviour:
     - {fileID: 7400000, guid: 99ad18ba3308c41c78db72448156a54d, type: 2}
     - {fileID: 7400000, guid: 1cb47ea2038c44c1693ecb5785122d1d, type: 2}
     - {fileID: 7400000, guid: 9fa836261f45049b89b2c08af751d800, type: 2}
-    animationTag: 2
+    animationTag: 3
   - srcClips:
     - {fileID: 7400000, guid: 8b6839dda70ab47098de042f7374b6df, type: 2}
     - {fileID: 7400000, guid: fdf7e9217da204ee1904991fe65ebbe3, type: 2}
@@ -647,7 +666,7 @@ MonoBehaviour:
     - {fileID: 7400000, guid: df47350c94a614c44bedb61c031b39e7, type: 2}
     - {fileID: 7400000, guid: 49ede07e0a7664daa8ccc3a740302961, type: 2}
     - {fileID: 7400000, guid: 47967958480e949b3bbd646c9892f5c8, type: 2}
-    animationTag: 3
+    animationTag: 4
   - srcClips:
     - {fileID: 7400000, guid: 8b6839dda70ab47098de042f7374b6df, type: 2}
     - {fileID: 7400000, guid: fdf7e9217da204ee1904991fe65ebbe3, type: 2}
@@ -666,7 +685,7 @@ MonoBehaviour:
     - {fileID: 7400000, guid: 33f3c354a4aa84eceb6cb9f8ee1db387, type: 2}
     - {fileID: 7400000, guid: c6b5f43a453624c9d8de567b879c2a01, type: 2}
     - {fileID: 7400000, guid: c8c93bb56bb4f4c15aa32aec2a66968e, type: 2}
-    animationTag: 4
+    animationTag: 2
 --- !u!1 &229329498
 GameObject:
   m_ObjectHideFlags: 0
@@ -2441,7 +2460,7 @@ MonoBehaviour:
     - {fileID: 7400000, guid: 2fccd5606290149049803307dfc11aa8, type: 2}
     - {fileID: 7400000, guid: fc8a1c16f62f4466194e7d9c5da582a2, type: 2}
     - {fileID: 7400000, guid: 94cf7fc863dd740fbad9790d40def181, type: 2}
-    animationTag: 2
+    animationTag: 3
   - srcClips:
     - {fileID: 7400000, guid: f556b6a9fd6c74ccd8f59792cccc7bcc, type: 2}
     - {fileID: 7400000, guid: bbea28ba4fbae4619a140c08603a1bdb, type: 2}
@@ -2452,7 +2471,7 @@ MonoBehaviour:
     - {fileID: 7400000, guid: d883495b5e12a42b4aa449778b66a2de, type: 2}
     - {fileID: 7400000, guid: 45390f1dc420f4fd29d5485bfb3dd400, type: 2}
     - {fileID: 7400000, guid: 227f6c98bc79a4762acf9ace353ffe88, type: 2}
-    animationTag: 3
+    animationTag: 4
   - srcClips:
     - {fileID: 7400000, guid: fa1ffde931547467293948d43d50b5d9, type: 2}
     - {fileID: 7400000, guid: 4131f501d4bae41e48aab64c857676c4, type: 2}
@@ -2471,7 +2490,7 @@ MonoBehaviour:
     - {fileID: 7400000, guid: 03dac64938e4b42c7b35477102a67a6e, type: 2}
     - {fileID: 7400000, guid: 2b88d83723a6b4ce39466debad5e2b3a, type: 2}
     - {fileID: 7400000, guid: 16c0ef2fbe28f41c7942631638c5d9e3, type: 2}
-    animationTag: 4
+    animationTag: 2
 --- !u!1 &1359804988
 GameObject:
   m_ObjectHideFlags: 0
@@ -3050,7 +3069,7 @@ MonoBehaviour:
     - {fileID: 7400000, guid: ce7e3fc89d71a4c40b7018c251759a61, type: 2}
     - {fileID: 7400000, guid: 9816e2778442243f9a7fcc761975ff16, type: 2}
     - {fileID: 7400000, guid: ec91a6e60c5b3408a9bc065ef92b6de7, type: 2}
-    animationTag: 2
+    animationTag: 3
   - srcClips:
     - {fileID: 7400000, guid: 2f92c74b7537d48619f3afdf89a1392d, type: 2}
     - {fileID: 7400000, guid: d9ba1208b639c4deb9afc4511229263b, type: 2}
@@ -3069,7 +3088,7 @@ MonoBehaviour:
     - {fileID: 7400000, guid: 56b338ec7c4e14adeb58900fa6389d0e, type: 2}
     - {fileID: 7400000, guid: 529c335a2faa9444398b3d253d780b0f, type: 2}
     - {fileID: 7400000, guid: 5d14bf888613746c6afc9829ddfe8c3d, type: 2}
-    animationTag: 3
+    animationTag: 4
   - srcClips:
     - {fileID: 7400000, guid: 2f92c74b7537d48619f3afdf89a1392d, type: 2}
     - {fileID: 7400000, guid: d9ba1208b639c4deb9afc4511229263b, type: 2}
@@ -3088,7 +3107,7 @@ MonoBehaviour:
     - {fileID: 7400000, guid: 1a9f51c0a0be940e594d50b3a7c5cda6, type: 2}
     - {fileID: 7400000, guid: 34d1845b79ca04a229783d82ef915778, type: 2}
     - {fileID: 7400000, guid: bd7645719d2424ccbab3d065898c7888, type: 2}
-    animationTag: 4
+    animationTag: 2
 --- !u!1 &2118683358
 GameObject:
   m_ObjectHideFlags: 0

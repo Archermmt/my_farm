@@ -120,6 +120,10 @@ PrefabInstance:
       propertyPath: harvestDatas_.Array.data[0].period
       value: 4
       objectReference: {fileID: 0}
+    - target: {fileID: 9167687079929544454, guid: 35de012629fa8487ab276ce8d8d301c4, type: 3}
+      propertyPath: harvestDatas_.Array.data[0].sprite
+      value: 
+      objectReference: {fileID: 21300000, guid: 0a1268bf801d5304ebf16458d7309ac1, type: 3}
     m_RemovedComponents:
     - {fileID: 3424636914233648278, guid: 35de012629fa8487ab276ce8d8d301c4, type: 3}
     m_RemovedGameObjects: []

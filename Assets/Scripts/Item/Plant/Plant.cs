@@ -11,12 +11,13 @@ public class Plant : Item {
     protected int totalPeriod_;
     protected Harvestable harvestable_;
 
-    public override void SetItem(ItemData item_data) {
-        base.SetItem(item_data);
-        UpdatePeriod();
-        totalPeriod_ = growthPeriods_.Count;
+    protected override void Awake() {
+        base.Awake();
+        currentPeriod_ = 0;
+        totalPeriod_ = growthPeriods_ == null ? 0 : growthPeriods_.Count;
         harvestable_ = GetComponent<Harvestable>();
         AddStatus(ItemStatus.Nudgable);
+        UpdatePeriod();
     }
 
     protected override bool Pickable(FieldGrid grid) {
@@ -33,6 +34,9 @@ public class Plant : Item {
     }
 
     protected virtual void UpdatePeriod() {
+        if (totalPeriod_ == 0) {
+            return;
+        }
         currentPeriod_ = growthPeriods_.Count - 1;
         for (int i = 0; i < growthPeriods_.Count; i++) {
             if (growthPeriods_[i] >= growthDay_) {

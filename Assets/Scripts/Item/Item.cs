@@ -27,51 +27,58 @@ public class Item : MonoBehaviour {
     [Header("Basic")]
     [SerializeField] private string item_name_;
     protected Direction direction_;
-    private ItemData meta_;
     protected SpriteRenderer renderer_;
+    protected List<AnimationTag> animationTags_;
+    private ItemData meta_;
     private HashSet<ItemStatus> statusSet_;
     private DateTime holdStart_;
-
-    public virtual void SetItem(ItemData item_data) {
-        item_name_ = item_data.name;
-        meta_ = item_data;
-        renderer_.sprite = item_data.sprite;
-    }
 
     protected virtual void Awake() {
         renderer_ = GetComponent<SpriteRenderer>();
         statusSet_ = new HashSet<ItemStatus>();
         direction_ = Direction.Around;
+        animationTags_ = new List<AnimationTag> { AnimationTag.Carry };
         if (item_name_.Length > 0) {
             SetItem(ItemManager.Instance.FindItem(item_name_));
         }
     }
+
+    public void SetItem(ItemData item_data) {
+        item_name_ = item_data.name;
+        meta_ = item_data;
+        renderer_.sprite = item_data.sprite;
+    }
+
 
     public Vector3 AlignGrid() {
         Vector3 pos = transform.position;
         return new Vector3(pos.x, pos.y + Settings.gridCellSize / 2, pos.z);
     }
 
-    public virtual (Vector3, Vector3) GetScope(FieldGrid center, Vector3 grid_min, Vector3 grid_max) {
+    public virtual (Vector3, Vector3) GetScope(FieldGrid center, Vector3 grid_min, Vector3 grid_max, Direction direct) {
+        return GetScopeByDirect(center, grid_min, grid_max, direct);
+    }
+
+    protected (Vector3, Vector3) GetScopeByDirect(FieldGrid center, Vector3 grid_min, Vector3 grid_max, Direction direct) {
         Vector3 c_pos = center.position;
         Vector3 min = Vector3.zero;
         Vector3 max = Vector3.zero;
         Vector2Int range = GetScopeRange();
         int near = (range.x - 1) / 2;
-        int far = direction_ == Direction.Around ? (range.y - 1) / 2 : range.y;
-        if (direction_ == Direction.Around) {
+        int far = direct == Direction.Around ? (range.y - 1) / 2 : range.y;
+        if (direct == Direction.Around) {
             min = new Vector3(Mathf.Max(c_pos.x - near, grid_min.x), Mathf.Max(c_pos.y - far, grid_min.y), c_pos.z);
             max = new Vector3(Mathf.Min(c_pos.x + near, grid_max.x), Mathf.Min(c_pos.y + far, grid_max.y), c_pos.z);
-        } else if (direction_ == Direction.Up) {
+        } else if (direct == Direction.Up) {
             min = new Vector3(Mathf.Max(c_pos.x - near, grid_min.x), Mathf.Max(c_pos.y + 1, grid_min.y), c_pos.z);
             max = new Vector3(Mathf.Min(c_pos.x + near, grid_max.x), Mathf.Min(c_pos.y + far, grid_max.y), c_pos.z);
-        } else if (direction_ == Direction.Down) {
+        } else if (direct == Direction.Down) {
             min = new Vector3(Mathf.Max(c_pos.x - near, grid_min.x), Mathf.Max(c_pos.y - far, grid_min.y), c_pos.z);
             max = new Vector3(Mathf.Min(c_pos.x + near, grid_max.x), Mathf.Min(c_pos.y - 1, grid_max.y), c_pos.z);
-        } else if (direction_ == Direction.Left) {
+        } else if (direct == Direction.Left) {
             min = new Vector3(Mathf.Max(c_pos.x - far, grid_min.x), Mathf.Max(c_pos.y - near, grid_min.y), c_pos.z);
             max = new Vector3(Mathf.Min(c_pos.x - 1, grid_max.x), Mathf.Min(c_pos.y + near, grid_max.y), c_pos.z);
-        } else if (direction_ == Direction.Right) {
+        } else if (direct == Direction.Right) {
             min = new Vector3(Mathf.Max(c_pos.x + 1, grid_min.x), Mathf.Max(c_pos.y - near, grid_min.y), c_pos.z);
             max = new Vector3(Mathf.Min(c_pos.x + far, grid_max.x), Mathf.Min(c_pos.y + near, grid_max.y), c_pos.z);
         }
@@ -131,7 +138,7 @@ public class Item : MonoBehaviour {
     }
 
     protected virtual Vector2Int GetScopeRange() {
-        return new Vector2Int(5, 5);
+        return new Vector2Int(5, 2);
     }
 
     protected virtual bool Pickable(FieldGrid grid) {
@@ -161,9 +168,7 @@ public class Item : MonoBehaviour {
         return str;
     }
 
-    public virtual AnimationTag animationTag { get { return AnimationTag.Carry; } }
-
     public ItemData meta { get { return meta_; } }
-
+    public List<AnimationTag> animationTags { get { return animationTags_; } }
     protected virtual int holdLevelMax { get { return 1; } }
 }

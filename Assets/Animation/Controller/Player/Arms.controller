@@ -1688,7 +1688,7 @@ AnimatorStateMachine:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_Name: Swap_Schthe
+  m_Name: Swap_Swing
   m_ChildStates:
   - serializedVersion: 1
     m_State: {fileID: -5072872002080112484}
@@ -2400,7 +2400,7 @@ AnimatorStateMachine:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_Name: Swap_Basket
+  m_Name: Swap_Pick
   m_ChildStates:
   - serializedVersion: 1
     m_State: {fileID: -3391885282370613715}
@@ -2572,7 +2572,7 @@ AnimatorStateMachine:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_Name: Swap_Hoe
+  m_Name: Swap_Wave
   m_ChildStates:
   - serializedVersion: 1
     m_State: {fileID: -5540638456562685382}
@@ -2825,7 +2825,7 @@ AnimatorStateMachine:
   m_CorrespondingSourceObject: {fileID: 0}
   m_PrefabInstance: {fileID: 0}
   m_PrefabAsset: {fileID: 0}
-  m_Name: Swap_WaterCan
+  m_Name: Swap_Lift
   m_ChildStates:
   - serializedVersion: 1
     m_State: {fileID: -6665122820645092492}
