@@ -12,7 +12,6 @@ GameObject:
   - component: {fileID: 3349793846392838414}
   - component: {fileID: 4517571217730198493}
   - component: {fileID: 3211160323333009836}
-  - component: {fileID: 8251703759255445110}
   - component: {fileID: 2164542418208654090}
   m_Layer: 0
   m_Name: BigRock
@@ -154,23 +153,11 @@ MonoBehaviour:
     period: 0
     min: 2
     max: 3
---- !u!114 &8251703759255445110
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 6929190394768803722}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 26d3d41c982bd49ea81be5c542dbefdb, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  DamageDatas_:
-  - effect: 4
-    period: 0
-  startSeconds_: 0.2
-  endSeconds_: 0.2
+    effects: 04000000
+  harvestStartSec_: 0.3
+  harvetEndSec_: 1
+  effectStartSec_: 0.2
+  effectEndSec_: 0.2
 --- !u!114 &2164542418208654090
 MonoBehaviour:
   m_ObjectHideFlags: 0

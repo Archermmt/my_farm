@@ -13,10 +13,9 @@ GameObject:
   - component: {fileID: 1496129641945609804}
   - component: {fileID: 209534952251448453}
   - component: {fileID: 4808437476129203621}
-  - component: {fileID: 5198782764563441940}
-  - component: {fileID: 5807629742332766592}
+  - component: {fileID: 3119539392758177571}
   m_Layer: 0
-  m_Name: Item
+  m_Name: Grass
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
@@ -174,7 +173,12 @@ MonoBehaviour:
     period: 0
     min: 4
     max: 8
---- !u!114 &5198782764563441940
+    effects: 01000000
+  harvestStartSec_: 0.3
+  harvetEndSec_: 1
+  effectStartSec_: 0.2
+  effectEndSec_: 0.2
+--- !u!114 &3119539392758177571
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -183,30 +187,17 @@ MonoBehaviour:
   m_GameObject: {fileID: 3097594119897346264}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 26d3d41c982bd49ea81be5c542dbefdb, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  DamageDatas_:
-  - effect: 1
-    period: 0
-  startSeconds_: 0.2
-  endSeconds_: 0.2
---- !u!114 &5807629742332766592
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 3097594119897346264}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: b4b9b41ed9efa4f70a40b4913dce416b, type: 3}
+  m_Script: {fileID: 11500000, guid: 9aa3eb985993c4ed2a2ea991d3336aca, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   item_name_: Tumbleweed
-  health_: 5
-  growthPeriods_: 
-  growthSprites_: []
+  growthPeriods_:
+  - sprite: {fileID: 21300000, guid: 8298ab725cafa93429a58bd3e8273289, type: 3}
+    day: 0
+    period: 0
+    health: 5
+    harvestTools: 03000000
+    statusList: 07000000
   growthDay_: 0
 --- !u!1 &4507575748557189761
 GameObject:

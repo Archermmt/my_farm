@@ -1308,6 +1308,12 @@ MonoBehaviour:
     sprite: {fileID: 21300000, guid: 8298ab725cafa93429a58bd3e8273289, type: 3}
     price: 0
     value: 0
+  - type: 4
+    name: BlueSpruceTrunk
+    description: blue spruce trunk
+    sprite: {fileID: -2243126732310486641, guid: 5d22327a2a3d2a049a8a59a708d527fe, type: 3}
+    price: 0
+    value: 0
 --- !u!4 &359293843
 Transform:
   m_ObjectHideFlags: 0
@@ -1626,6 +1632,54 @@ SpriteRenderer:
   m_WasSpriteAssigned: 1
   m_MaskInteraction: 0
   m_SpriteSortPoint: 1
+--- !u!1 &616789926
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 616789927}
+  - component: {fileID: 616789928}
+  m_Layer: 0
+  m_Name: ConeFailTrigger
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &616789927
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 616789926}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 2130576412}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &616789928
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 616789926}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: cecc8096bc38a45adb1331c41bb0eeb1, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  prefab_: {fileID: 5679153624157459015, guid: 10daaf83db7ff42338d0291d1157b3a9, type: 3}
+  type_: 2
+  capacity_: 10
+  maxSize_: 100
 --- !u!1 &669044153
 GameObject:
   m_ObjectHideFlags: 0
@@ -2876,6 +2930,54 @@ MonoBehaviour:
   fadeDuration_: 1
   fadeImage_: {fileID: 53710400}
   startScene_: 1
+--- !u!1 &1629905024
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1629905025}
+  - component: {fileID: 1629905026}
+  m_Layer: 0
+  m_Name: LevesFailTrigger
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &1629905025
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1629905024}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 2130576412}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1629905026
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1629905024}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: cecc8096bc38a45adb1331c41bb0eeb1, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  prefab_: {fileID: 5679153624157459015, guid: 7d02bf08e5bfc4367858fd972eeffee4, type: 3}
+  type_: 3
+  capacity_: 10
+  maxSize_: 100
 --- !u!1 &1690287070
 GameObject:
   m_ObjectHideFlags: 0
@@ -2983,6 +3085,54 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: d49c70d2b605244f68dcc66c3c965fa9, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!1 &2017099505
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 2017099506}
+  - component: {fileID: 2017099507}
+  m_Layer: 0
+  m_Name: TrunkChunkTrigger
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &2017099506
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2017099505}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 2130576412}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &2017099507
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 2017099505}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: cecc8096bc38a45adb1331c41bb0eeb1, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  prefab_: {fileID: 4699758545040624588, guid: ad520497d5dc14b76849c33fbc275590, type: 3}
+  type_: 5
+  capacity_: 10
+  maxSize_: 100
 --- !u!1 &2071057751
 GameObject:
   m_ObjectHideFlags: 0
@@ -3320,6 +3470,9 @@ Transform:
   - {fileID: 961645641}
   - {fileID: 808934652}
   - {fileID: 202652254}
+  - {fileID: 616789927}
+  - {fileID: 1629905025}
+  - {fileID: 2017099506}
   m_Father: {fileID: 1279967474}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!114 &2130576413

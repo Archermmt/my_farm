@@ -5,6 +5,13 @@ using UnityEngine;
 public class Seed : Item {
     [SerializeField] private string cropName_;
 
+    public override void SetItem(ItemData item_data) {
+        base.SetItem(item_data);
+        if (cropName_ == null) {
+            cropName_ = meta.name;
+        }
+    }
+
     public override List<CursorMeta> GetCursorMetas(List<FieldGrid> grids, FieldGrid start, Vector3 pos) {
         ResetStatus();
         int hold_level = GetHoldLevel();

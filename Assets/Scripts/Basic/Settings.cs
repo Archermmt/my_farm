@@ -105,6 +105,7 @@ public enum EffectType {
     ConeFall,
     LeavesFall,
     StoneBreak,
+    TrunkChunk,
     None
 }
 

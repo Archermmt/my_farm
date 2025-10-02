@@ -170,7 +170,7 @@ PrefabInstance:
       objectReference: {fileID: 6634833228405365077, guid: 5a1df36ac90cfa242908df77f9674580, type: 3}
     - target: {fileID: 9167687079929544454, guid: 35de012629fa8487ab276ce8d8d301c4, type: 3}
       propertyPath: harvestDatas_.Array.size
-      value: 1
+      value: 3
       objectReference: {fileID: 0}
     - target: {fileID: 9167687079929544454, guid: 35de012629fa8487ab276ce8d8d301c4, type: 3}
       propertyPath: harvestDatas_.Array.data[0].max
@@ -181,17 +181,65 @@ PrefabInstance:
       value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 9167687079929544454, guid: 35de012629fa8487ab276ce8d8d301c4, type: 3}
+      propertyPath: harvestDatas_.Array.data[1].max
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 9167687079929544454, guid: 35de012629fa8487ab276ce8d8d301c4, type: 3}
+      propertyPath: harvestDatas_.Array.data[1].min
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 9167687079929544454, guid: 35de012629fa8487ab276ce8d8d301c4, type: 3}
+      propertyPath: harvestDatas_.Array.data[2].max
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 9167687079929544454, guid: 35de012629fa8487ab276ce8d8d301c4, type: 3}
+      propertyPath: harvestDatas_.Array.data[2].min
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 9167687079929544454, guid: 35de012629fa8487ab276ce8d8d301c4, type: 3}
       propertyPath: harvestDatas_.Array.data[0].name
       value: Parsnip
       objectReference: {fileID: 0}
     - target: {fileID: 9167687079929544454, guid: 35de012629fa8487ab276ce8d8d301c4, type: 3}
       propertyPath: harvestDatas_.Array.data[0].period
-      value: 4
+      value: 2
       objectReference: {fileID: 0}
     - target: {fileID: 9167687079929544454, guid: 35de012629fa8487ab276ce8d8d301c4, type: 3}
       propertyPath: harvestDatas_.Array.data[0].sprite
       value: 
+      objectReference: {fileID: 21300000, guid: 25925800440b0e84f9533a314ddca6b5, type: 3}
+    - target: {fileID: 9167687079929544454, guid: 35de012629fa8487ab276ce8d8d301c4, type: 3}
+      propertyPath: harvestDatas_.Array.data[1].period
+      value: 3
+      objectReference: {fileID: 0}
+    - target: {fileID: 9167687079929544454, guid: 35de012629fa8487ab276ce8d8d301c4, type: 3}
+      propertyPath: harvestDatas_.Array.data[1].sprite
+      value: 
+      objectReference: {fileID: 21300000, guid: 25925800440b0e84f9533a314ddca6b5, type: 3}
+    - target: {fileID: 9167687079929544454, guid: 35de012629fa8487ab276ce8d8d301c4, type: 3}
+      propertyPath: harvestDatas_.Array.data[2].period
+      value: 4
+      objectReference: {fileID: 0}
+    - target: {fileID: 9167687079929544454, guid: 35de012629fa8487ab276ce8d8d301c4, type: 3}
+      propertyPath: harvestDatas_.Array.data[2].sprite
+      value: 
       objectReference: {fileID: 21300000, guid: 0a1268bf801d5304ebf16458d7309ac1, type: 3}
+    - target: {fileID: 9167687079929544454, guid: 35de012629fa8487ab276ce8d8d301c4, type: 3}
+      propertyPath: harvestDatas_.Array.data[0].effects.Array.size
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 9167687079929544454, guid: 35de012629fa8487ab276ce8d8d301c4, type: 3}
+      propertyPath: harvestDatas_.Array.data[1].effects.Array.size
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 9167687079929544454, guid: 35de012629fa8487ab276ce8d8d301c4, type: 3}
+      propertyPath: 'harvestDatas_.Array.data[0].effects.Array.data[0]'
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 9167687079929544454, guid: 35de012629fa8487ab276ce8d8d301c4, type: 3}
+      propertyPath: 'harvestDatas_.Array.data[1].effects.Array.data[0]'
+      value: 1
+      objectReference: {fileID: 0}
     m_RemovedComponents:
     - {fileID: 3424636914233648278, guid: 35de012629fa8487ab276ce8d8d301c4, type: 3}
     m_RemovedGameObjects: []
@@ -219,13 +267,30 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   item_name_: ParsnipCrop
-  growthPeriods_: 0000000001000000030000000500000008000000
-  growthSprites_:
-  - {fileID: 6634833228405365077, guid: 5a1df36ac90cfa242908df77f9674580, type: 3}
-  - {fileID: -8204859348171178890, guid: 5a1df36ac90cfa242908df77f9674580, type: 3}
-  - {fileID: -4573777506729046043, guid: 5a1df36ac90cfa242908df77f9674580, type: 3}
-  - {fileID: 7041525069147447728, guid: 5a1df36ac90cfa242908df77f9674580, type: 3}
-  - {fileID: 7193783865090184285, guid: 5a1df36ac90cfa242908df77f9674580, type: 3}
+  growthPeriods_:
+  - sprite: {fileID: 6634833228405365077, guid: 5a1df36ac90cfa242908df77f9674580, type: 3}
+    day: 0
+    health: 1
+    harvestTools: 01000000
+    statusList: 
+  - sprite: {fileID: -8204859348171178890, guid: 5a1df36ac90cfa242908df77f9674580, type: 3}
+    day: 1
+    health: 1
+    harvestTools: 01000000
+    statusList: 
+  - sprite: {fileID: -4573777506729046043, guid: 5a1df36ac90cfa242908df77f9674580, type: 3}
+    day: 3
+    health: 1
+    harvestTools: 03000000
+    statusList: 06000000
+  - sprite: {fileID: 7041525069147447728, guid: 5a1df36ac90cfa242908df77f9674580, type: 3}
+    day: 5
+    health: 1
+    harvestTools: 03000000
+    statusList: 06000000
+  - sprite: {fileID: 7193783865090184285, guid: 5a1df36ac90cfa242908df77f9674580, type: 3}
+    day: 8
+    health: 1
+    harvestTools: 04000000
+    statusList: 06000000
   growthDay_: 0
-  seedPeriod_: 0
-  harvestPeriod_: 4

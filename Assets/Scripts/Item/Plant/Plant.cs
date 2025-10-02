@@ -2,30 +2,47 @@ using System;
 using System.Collections.Generic;
 using UnityEngine;
 
-[RequireComponent(typeof(Triggerable), typeof(Harvestable), typeof(Damageable))]
+[Serializable]
+public class GrowthPeriod {
+    public Sprite sprite;
+    public int day = 0;
+    public int health = 1;
+    public List<ToolType> harvestTools;
+    public List<ItemStatus> statusList;
+
+    public GrowthPeriod(Sprite sprite, int day = 0, int health = 1, List<ToolType> harvestTools = null, List<ItemStatus> statusList = null) {
+        this.sprite = sprite;
+        this.day = day;
+        this.health = health;
+        this.harvestTools = harvestTools == null ? new List<ToolType> { ToolType.Scythe } : harvestTools;
+        this.statusList = statusList == null ? new List<ItemStatus> { ItemStatus.Nudgable } : statusList;
+    }
+}
+
+[RequireComponent(typeof(Triggerable), typeof(Harvestable))]
 public class Plant : Item {
     [Header("Plant")]
-    [SerializeField] private int health_ = 1;
-    [SerializeField] private List<int> growthPeriods_;
-    [SerializeField] private List<Sprite> growthSprites_;
+    [SerializeField] private List<GrowthPeriod> growthPeriods_;
     [SerializeField] private int growthDay_ = 0;
     protected int currentPeriod_;
     protected int totalPeriod_;
+    private int health_ = 1;
     private Triggerable triggerable_;
     private Harvestable harvestable_;
-    private Damageable damageable_;
 
     protected override void Awake() {
         base.Awake();
         triggerable_ = GetComponent<Triggerable>();
         harvestable_ = GetComponent<Harvestable>();
-        damageable_ = GetComponent<Damageable>();
     }
 
     public override void SetItem(ItemData item_data) {
         base.SetItem(item_data);
         currentPeriod_ = 0;
-        totalPeriod_ = growthPeriods_ == null ? 0 : growthPeriods_.Count;
+        if (growthPeriods_ == null || growthPeriods_.Count == 0) {
+            growthPeriods_ = new List<GrowthPeriod> { new GrowthPeriod(item_data.sprite) };
+        }
+        totalPeriod_ = growthPeriods_.Count;
         UpdatePeriod();
     }
 
@@ -51,30 +68,32 @@ public class Plant : Item {
     }
 
     protected virtual void UpdatePeriod() {
-        if (totalPeriod_ == 0) {
-            return;
-        }
         currentPeriod_ = growthPeriods_.Count - 1;
         for (int i = 0; i < growthPeriods_.Count; i++) {
-            if (growthPeriods_[i] >= growthDay_) {
+            if (growthPeriods_[i].day >= growthDay_) {
                 currentPeriod_ = i;
                 break;
             }
         }
-        ChangeSprite(growthSprites_[currentPeriod_]);
+        ChangeSprite(growthPeriods_[currentPeriod_].sprite);
+        health_ = growthPeriods_[currentPeriod_].health;
+        ResetStatus();
+        foreach (ItemStatus status in growthPeriods_[currentPeriod_].statusList) {
+            AddStatus(status);
+        }
     }
 
     protected virtual int GetDamage(ToolType tool_type, int hold_level) {
         return Math.Max(hold_level + 1, 1);
     }
 
+    public override bool ToolUsable(FieldGrid grid, ToolType tool_type, int hold_level) {
+        return growthPeriods_[currentPeriod_].harvestTools.Contains(tool_type);
+    }
+
     public override Dictionary<ItemData, int> ToolApply(FieldGrid grid, ToolType tool_type, int hold_level) {
         health_ -= GetDamage(tool_type, hold_level);
-        damageable_.DamageItem(this, currentPeriod_);
-        if (health_ <= 0) {
-            return harvestable_.HarvestItems(grid, this, currentPeriod_);
-        }
-        return new Dictionary<ItemData, int>();
+        return harvestable_.HarvestItem(grid, this, currentPeriod_, health_);
     }
 
     public override void UpdateTime(TimeType time_type, TimeData time, int delta, FieldGrid grid) {

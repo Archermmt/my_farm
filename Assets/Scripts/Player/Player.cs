@@ -229,7 +229,7 @@ public class Player : Singleton<Player> {
                 inventory_.AddItem(ItemManager.Instance.RandomItem());
             }
         } else if (Input.GetKeyUp(KeyCode.T)) {
-            EnvManager.Instance.UpdateTime(TimeType.Day, 10);
+            EnvManager.Instance.UpdateTime(TimeType.Day, 5);
         } else if (Input.GetKeyDown(KeyCode.C) && carried_.Key != null) {
             ProcessCarried(Action.HoldItem);
             ProcessCarried(Action.UseItem);
