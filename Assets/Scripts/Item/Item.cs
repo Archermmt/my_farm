@@ -27,14 +27,14 @@ public class Item : MonoBehaviour {
     [Header("Basic")]
     [SerializeField] private string item_name_;
     protected Direction direction_;
-    protected SpriteRenderer renderer_;
+    protected SpriteRenderer render_;
     protected List<AnimationTag> animationTags_;
     private ItemData meta_;
     private HashSet<ItemStatus> statusSet_;
     private DateTime holdStart_;
 
     protected virtual void Awake() {
-        renderer_ = GetComponent<SpriteRenderer>();
+        render_ = GetComponent<SpriteRenderer>();
         statusSet_ = new HashSet<ItemStatus>();
         direction_ = Direction.Around;
         animationTags_ = new List<AnimationTag> { AnimationTag.Carry };
@@ -46,12 +46,21 @@ public class Item : MonoBehaviour {
     public virtual void SetItem(ItemData item_data) {
         item_name_ = item_data.name;
         meta_ = item_data;
-        renderer_.sprite = item_data.sprite;
+        render_.sprite = item_data.sprite;
+    }
+
+    public virtual void DestroyItem(FieldGrid grid) {
+        Destroy(gameObject);
     }
 
     public Vector3 AlignGrid() {
         Vector3 pos = transform.position;
         return new Vector3(pos.x, pos.y + Settings.gridCellSize / 2, pos.z);
+    }
+
+    public virtual Vector3 GetEffectPos() {
+        Vector3 pos = transform.position;
+        return new Vector3(pos.x, pos.y + render_.sprite.bounds.size.y / 2, pos.z);
     }
 
     public virtual (Vector3, Vector3) GetScope(FieldGrid center, Vector3 grid_min, Vector3 grid_max, Direction direct) {
@@ -107,7 +116,7 @@ public class Item : MonoBehaviour {
     }
 
     public void ChangeSprite(Sprite sprite) {
-        renderer_.sprite = sprite;
+        render_.sprite = sprite;
     }
 
     protected int GetHoldLevel() {
@@ -116,7 +125,7 @@ public class Item : MonoBehaviour {
         return Math.Min(Mathf.FloorToInt((float)diff.TotalSeconds), holdLevelMax);
     }
 
-    protected void ResetStatus() {
+    public void ResetStatus() {
         if (!HasStatus(ItemStatus.Holding)) {
             statusSet_ = new HashSet<ItemStatus>();
         }
@@ -126,7 +135,7 @@ public class Item : MonoBehaviour {
         return statusSet_ != null && statusSet_.Contains(status);
     }
 
-    protected void AddStatus(ItemStatus status) {
+    public void AddStatus(ItemStatus status) {
         statusSet_.Add(status);
     }
 
@@ -148,11 +157,11 @@ public class Item : MonoBehaviour {
         return grid.HasTag(FieldTag.Dropable);
     }
 
-    public virtual bool ToolUsable(FieldGrid grid, ToolType tool_type, int hold_level) {
+    public virtual bool ToolUsable(FieldGrid grid, Tool tool, int hold_level) {
         return false;
     }
 
-    public virtual Dictionary<ItemData, int> ToolApply(FieldGrid grid, ToolType tool_type, int hold_level) {
+    public virtual Dictionary<ItemData, int> ToolApply(FieldGrid grid, Tool tool, int hold_level) {
         return new Dictionary<ItemData, int>();
     }
 
@@ -170,6 +179,8 @@ public class Item : MonoBehaviour {
     }
 
     public ItemData meta { get { return meta_; } }
+    public Direction direction { get { return direction_; } }
+    public SpriteRenderer render { get { return render_; } }
     public List<AnimationTag> animationTags { get { return animationTags_; } }
     protected virtual int holdLevelMax { get { return 1; } }
 }

@@ -1,5 +1,4 @@
 using System.Collections.Generic;
-using UnityEngine;
 
 public class EffectManager : Singleton<EffectManager> {
     private Dictionary<EffectType, EffectTrigger> triggersMap_;
@@ -12,11 +11,19 @@ public class EffectManager : Singleton<EffectManager> {
         }
     }
 
-    public GameObject GetTriggerObj(EffectType type, Vector3 position) {
-        return triggersMap_[type].GetObj(position);
+    public void ClearEffects() {
+        foreach (EffectTrigger trigger in triggersMap_.Values) {
+            trigger.ClearEffects();
+        }
     }
 
-    public void ReleaseTriggerObj(EffectType type, GameObject obj) {
-        triggersMap_[type].ReleaseObj(obj);
+    public void AddEffect(EffectData effect) {
+        triggersMap_[effect.type].AddEffect(effect);
+    }
+
+    public void TriggerEffects() {
+        foreach (EffectTrigger trigger in triggersMap_.Values) {
+            trigger.TriggerEffects();
+        }
     }
 }

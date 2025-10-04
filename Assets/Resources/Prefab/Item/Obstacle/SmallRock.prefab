@@ -9,8 +9,20 @@ PrefabInstance:
     m_TransformParent: {fileID: 0}
     m_Modifications:
     - target: {fileID: -8237175580818081697, guid: 179f08d4816154296ae9d04ce1508a5f, type: 3}
+      propertyPath: health_
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: -8237175580818081697, guid: 179f08d4816154296ae9d04ce1508a5f, type: 3}
       propertyPath: item_name_
       value: SmallRock
+      objectReference: {fileID: 0}
+    - target: {fileID: -8237175580818081697, guid: 179f08d4816154296ae9d04ce1508a5f, type: 3}
+      propertyPath: harvestTools.Array.size
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: -8237175580818081697, guid: 179f08d4816154296ae9d04ce1508a5f, type: 3}
+      propertyPath: 'harvestTools.Array.data[0]'
+      value: 5
       objectReference: {fileID: 0}
     - target: {fileID: -5653567603028394684, guid: 179f08d4816154296ae9d04ce1508a5f, type: 3}
       propertyPath: harvestDatas_.Array.size
@@ -101,31 +113,8 @@ PrefabInstance:
       value: SmallRock
       objectReference: {fileID: 0}
     m_RemovedComponents:
-    - {fileID: -8237175580818081697, guid: 179f08d4816154296ae9d04ce1508a5f, type: 3}
-    - {fileID: -1181671889036160354, guid: 179f08d4816154296ae9d04ce1508a5f, type: 3}
+    - {fileID: 0}
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
-    m_AddedComponents:
-    - targetCorrespondingSourceObject: {fileID: 9021632025865227106, guid: 179f08d4816154296ae9d04ce1508a5f, type: 3}
-      insertIndex: -1
-      addedObject: {fileID: 900980776286897001}
+    m_AddedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: 179f08d4816154296ae9d04ce1508a5f, type: 3}
---- !u!1 &328315796938234974 stripped
-GameObject:
-  m_CorrespondingSourceObject: {fileID: 9021632025865227106, guid: 179f08d4816154296ae9d04ce1508a5f, type: 3}
-  m_PrefabInstance: {fileID: 8772220413688878908}
-  m_PrefabAsset: {fileID: 0}
---- !u!114 &900980776286897001
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 328315796938234974}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 8fc17e190aa414854993258d737234fe, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  item_name_: SmallRock
-  health_: 1

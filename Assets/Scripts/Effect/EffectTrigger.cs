@@ -1,3 +1,5 @@
+using System.Collections;
+using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Pool;
 
@@ -6,11 +8,42 @@ public class EffectTrigger : MonoBehaviour {
     [SerializeField] EffectType type_;
     [SerializeField] private int capacity_ = 10;
     [SerializeField] private int maxSize_ = 100;
+    [SerializeField] private float effectStartSec_ = 0.2f;
+    [SerializeField] private float effectEndSec_ = 2f;
     private ObjectPool<GameObject> pool_;
+    private List<EffectData> effectQueque_;
+    private WaitForSeconds effectEndWait_;
     private int count_ = 0;
 
     private void Awake() {
         pool_ = new ObjectPool<GameObject>(CreateFunc, ActionOnGet, ActionOnRelease, ActionOnDestroy, true, capacity_, maxSize_);
+        effectQueque_ = new List<EffectData>();
+        effectEndWait_ = new WaitForSeconds(effectEndSec_);
+    }
+
+    public void ClearEffects() {
+        effectQueque_ = new List<EffectData>();
+    }
+
+    public void AddEffect(EffectData effect) {
+        effectQueque_.Add(effect);
+    }
+
+    public void TriggerEffects() {
+        int cnt = 0;
+        foreach (EffectData effect in effectQueque_) {
+            StartCoroutine(TriggerRountine(effect));
+            cnt += 1;
+        }
+    }
+
+    private IEnumerator TriggerRountine(EffectData effect) {
+        GameObject obj = GetObj(effect.position);
+        yield return new WaitForSeconds(effect.offset * effectStartSec_ + Random.Range(0.0f, effectStartSec_));
+        obj.GetComponent<Effect>().StartEffect(effect);
+        yield return effectEndWait_;
+        obj.GetComponent<Effect>().EndEffect(effect);
+        ReleaseObj(obj);
     }
 
     public GameObject GetObj(Vector3 position) {

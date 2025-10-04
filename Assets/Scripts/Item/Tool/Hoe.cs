@@ -21,5 +21,5 @@ public class Hoe : Tool {
     return new Dictionary<ItemData, int>();
   }
 
-  protected override ToolType toolType { get { return ToolType.Hoe; } }
+  public override ToolType toolType { get { return ToolType.Hoe; } }
 }

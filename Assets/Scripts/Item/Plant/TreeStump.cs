@@ -1,5 +1,16 @@
+using UnityEngine;
+
 public class TreeStump : Plant {
-    public override bool ToolUsable(FieldGrid grid, ToolType tool_type, int hold_level) {
-        return tool_type == ToolType.Axe;
+
+    private Animator animator_;
+
+    protected override void Awake() {
+        animator_ = GetComponent<Animator>();
+        base.Awake();
+    }
+
+    public override void DestroyItem(FieldGrid grid) {
+        base.DestroyItem(grid);
+        Destroy(transform.parent.gameObject);
     }
 }

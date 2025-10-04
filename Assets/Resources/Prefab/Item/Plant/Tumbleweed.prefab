@@ -13,7 +13,7 @@ GameObject:
   - component: {fileID: 1496129641945609804}
   - component: {fileID: 209534952251448453}
   - component: {fileID: 4808437476129203621}
-  - component: {fileID: 3119539392758177571}
+  - component: {fileID: 963997281765174432}
   m_Layer: 0
   m_Name: Grass
   m_TagString: Untagged
@@ -79,7 +79,7 @@ SpriteRenderer:
   m_LightmapParameters: {fileID: 0}
   m_SortingLayerID: -1837073645
   m_SortingLayer: 3
-  m_SortingOrder: 0
+  m_SortingOrder: 1
   m_Sprite: {fileID: 21300000, guid: 8298ab725cafa93429a58bd3e8273289, type: 3}
   m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_FlipX: 0
@@ -90,7 +90,7 @@ SpriteRenderer:
   m_SpriteTileMode: 0
   m_WasSpriteAssigned: 1
   m_MaskInteraction: 0
-  m_SpriteSortPoint: 0
+  m_SpriteSortPoint: 1
 --- !u!61 &1496129641945609804
 BoxCollider2D:
   m_ObjectHideFlags: 0
@@ -174,11 +174,7 @@ MonoBehaviour:
     min: 4
     max: 8
     effects: 01000000
-  harvestStartSec_: 0.3
-  harvetEndSec_: 1
-  effectStartSec_: 0.2
-  effectEndSec_: 0.2
---- !u!114 &3119539392758177571
+--- !u!114 &963997281765174432
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -187,14 +183,13 @@ MonoBehaviour:
   m_GameObject: {fileID: 3097594119897346264}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 9aa3eb985993c4ed2a2ea991d3336aca, type: 3}
+  m_Script: {fileID: 11500000, guid: e80c8006edb3a4cec878c4446b95d998, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   item_name_: Tumbleweed
   growthPeriods_:
   - sprite: {fileID: 21300000, guid: 8298ab725cafa93429a58bd3e8273289, type: 3}
     day: 0
-    period: 0
     health: 5
     harvestTools: 03000000
     statusList: 07000000

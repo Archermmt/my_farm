@@ -22,12 +22,12 @@ public class GrowthPeriod {
 [RequireComponent(typeof(Triggerable), typeof(Harvestable))]
 public class Plant : Item {
     [Header("Plant")]
-    [SerializeField] private List<GrowthPeriod> growthPeriods_;
+    [SerializeField] protected List<GrowthPeriod> growthPeriods_;
     [SerializeField] private int growthDay_ = 0;
     protected int currentPeriod_;
     protected int totalPeriod_;
     private int health_ = 1;
-    private Triggerable triggerable_;
+    protected Triggerable triggerable_;
     private Harvestable harvestable_;
 
     protected override void Awake() {
@@ -46,11 +46,11 @@ public class Plant : Item {
         UpdatePeriod();
     }
 
-    private void OnTriggerEnter2D(Collider2D collision) {
+    protected virtual void OnTriggerEnter2D(Collider2D collision) {
         triggerable_.TriggerItemEnter(collision, this);
     }
 
-    private void OnTriggerExit2D(Collider2D collision) {
+    protected virtual void OnTriggerExit2D(Collider2D collision) {
         triggerable_.TriggerItemExit(collision, this);
     }
 
@@ -83,16 +83,16 @@ public class Plant : Item {
         }
     }
 
-    protected virtual int GetDamage(ToolType tool_type, int hold_level) {
+    protected virtual int GetDamage(Tool tool, int hold_level) {
         return Math.Max(hold_level + 1, 1);
     }
 
-    public override bool ToolUsable(FieldGrid grid, ToolType tool_type, int hold_level) {
-        return growthPeriods_[currentPeriod_].harvestTools.Contains(tool_type);
+    public override bool ToolUsable(FieldGrid grid, Tool tool, int hold_level) {
+        return growthPeriods_[currentPeriod_].harvestTools.Contains(tool.toolType);
     }
 
-    public override Dictionary<ItemData, int> ToolApply(FieldGrid grid, ToolType tool_type, int hold_level) {
-        health_ -= GetDamage(tool_type, hold_level);
+    public override Dictionary<ItemData, int> ToolApply(FieldGrid grid, Tool tool, int hold_level) {
+        health_ -= GetDamage(tool, hold_level);
         return harvestable_.HarvestItem(grid, this, currentPeriod_, health_);
     }
 

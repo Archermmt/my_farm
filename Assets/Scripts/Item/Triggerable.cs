@@ -14,26 +14,24 @@ public class Triggerable : MonoBehaviour {
     [SerializeField] private List<string> nudgeTargets_;
     [SerializeField] private float nudgePauseSecs_ = 0.04f;
 
-    private SpriteRenderer renderer_;
     private bool rotating_ = false;
     private WaitForSeconds nudgePause_;
 
     private void Awake() {
         nudgePause_ = new WaitForSeconds(nudgePauseSecs_);
-        renderer_ = GetComponent<SpriteRenderer>();
     }
 
     public void TriggerItemEnter(Collider2D collision, Item item) {
         if (Nudgable(collision, item)) {
             if (!rotating_) {
                 if (transform.position.x < collision.transform.position.x) {
-                    StartCoroutine(Rotate(false));
+                    StartCoroutine(Rotate(item, false));
                 } else {
-                    StartCoroutine(Rotate(true));
+                    StartCoroutine(Rotate(item, true));
                 }
             }
         } else if (Fadable(collision, item)) {
-            StartCoroutine(FadeOutRoutine());
+            StartCoroutine(FadeOutRoutine(item));
         }
     }
 
@@ -41,13 +39,13 @@ public class Triggerable : MonoBehaviour {
         if (Nudgable(collision, item)) {
             if (!rotating_) {
                 if (transform.position.x > collision.transform.position.x) {
-                    StartCoroutine(Rotate(false));
+                    StartCoroutine(Rotate(item, false));
                 } else {
-                    StartCoroutine(Rotate(true));
+                    StartCoroutine(Rotate(item, true));
                 }
             }
         } else if (Fadable(collision, item)) {
-            StartCoroutine(FadeInRoutine());
+            StartCoroutine(FadeInRoutine(item));
         }
     }
 
@@ -55,28 +53,28 @@ public class Triggerable : MonoBehaviour {
         return item.HasStatus(ItemStatus.Nudgable) && gameObject.activeSelf && gameObject.activeInHierarchy && nudgeTargets_ != null && nudgeTargets_.Contains(collision.tag);
     }
 
-    private IEnumerator Rotate(bool clock_wise) {
+    private IEnumerator Rotate(Item item, bool clock_wise) {
         rotating_ = true;
         if (clock_wise) {
             for (int i = 0; i < 4; i++) {
-                transform.Rotate(0f, 0f, -2f);
+                item.transform.Rotate(0f, 0f, -2f);
                 yield return nudgePause_;
             }
             for (int i = 0; i < 5; i++) {
-                transform.Rotate(0f, 0f, 2f);
+                item.transform.Rotate(0f, 0f, 2f);
                 yield return nudgePause_;
             }
-            transform.Rotate(0f, 0f, -2f);
+            item.transform.Rotate(0f, 0f, -2f);
         } else {
             for (int i = 0; i < 4; i++) {
-                transform.Rotate(0f, 0f, 2f);
+                item.transform.Rotate(0f, 0f, 2f);
                 yield return nudgePause_;
             }
             for (int i = 0; i < 5; i++) {
-                transform.Rotate(0f, 0f, -2f);
+                item.transform.Rotate(0f, 0f, -2f);
                 yield return nudgePause_;
             }
-            transform.Rotate(0f, 0f, 2f);
+            item.transform.Rotate(0f, 0f, 2f);
         }
         yield return nudgePause_;
         rotating_ = false;
@@ -86,26 +84,26 @@ public class Triggerable : MonoBehaviour {
         return item.HasStatus(ItemStatus.Fadable) && gameObject.activeSelf && gameObject.activeInHierarchy && fadeTargets_ != null && fadeTargets_.Contains(collision.tag);
     }
 
-    private IEnumerator FadeInRoutine() {
-        float alpha = renderer_.color.a;
+    private IEnumerator FadeInRoutine(Item item) {
+        float alpha = item.render.color.a;
         float distance = 1f - alpha;
         while (1f - alpha > 0.01f) {
             alpha = alpha + distance / fadeInSecond_ * Time.deltaTime;
-            renderer_.color = new Color(1f, 1f, 1f, alpha);
+            item.render.color = new Color(1f, 1f, 1f, alpha);
             yield return null;
         }
-        renderer_.color = new Color(1f, 1f, 1f, 1f);
+        item.render.color = new Color(1f, 1f, 1f, 1f);
     }
 
-    private IEnumerator FadeOutRoutine() {
-        float alpha = renderer_.color.a;
+    private IEnumerator FadeOutRoutine(Item item) {
+        float alpha = item.render.color.a;
         float distance = alpha - fadeOutAlpha_;
         while (alpha - fadeOutAlpha_ > 0.01f) {
             alpha = alpha - distance / fadeOutSecond_ * Time.deltaTime;
-            renderer_.color = new Color(1f, 1f, 1f, alpha);
+            item.render.color = new Color(1f, 1f, 1f, alpha);
             yield return null;
         }
-        renderer_.color = new Color(1f, 1f, 1f, fadeOutAlpha_);
+        item.render.color = new Color(1f, 1f, 1f, fadeOutAlpha_);
     }
 
 }

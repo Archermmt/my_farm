@@ -2,6 +2,20 @@ using System.Collections.Generic;
 using UnityEngine;
 
 public class Tool : Item {
+
+  protected List<Vector2Int> scopeRanges_;
+
+  protected override void Awake() {
+    base.Awake();
+    animationTags_ = new List<AnimationTag> { AnimationTag.Wave, AnimationTag.Axe };
+    scopeRanges_ = new List<Vector2Int> {
+          new Vector2Int(3, 1),
+          new Vector2Int(3, 3),
+          new Vector2Int(9, 3),
+          new Vector2Int(9, 9)
+        };
+  }
+
   public override (Vector3, Vector3) GetScope(FieldGrid center, Vector3 grid_min, Vector3 grid_max, Direction direct) {
     return GetScopeByDirect(center, grid_min, grid_max, direct);
   }
@@ -19,7 +33,7 @@ public class Tool : Item {
         return new List<CursorMeta> { new CursorMeta(start.GetCenter(), start, null, CursorMode.ValidGrid) };
       }
       foreach (Item item in start.items) {
-        if (item.ToolUsable(start, toolType, hold_level)) {
+        if (item.ToolUsable(start, this, hold_level)) {
           AddStatus(ItemStatus.ItemUsable);
           return new List<CursorMeta> { new CursorMeta(item.AlignGrid(), start, item, CursorMode.ValidPos) };
         }
@@ -37,7 +51,7 @@ public class Tool : Item {
         }
       } else if (HasStatus(ItemStatus.ItemUsable)) {
         foreach (Item item in grid.items) {
-          if (item.ToolUsable(grid, toolType, hold_level)) {
+          if (item.ToolUsable(grid, this, hold_level)) {
             metas.Add(new CursorMeta(item.AlignGrid(), grid, item, CursorMode.ValidPos));
           }
           if (metas.Count >= use_count) {
@@ -57,7 +71,7 @@ public class Tool : Item {
     if (HasStatus(ItemStatus.ItemUsable)) {
       int level = GetHoldLevel();
       foreach (Cursor cursor in cursors) {
-        Dictionary<ItemData, int> c_items = cursor.item.ToolApply(cursor.grid, toolType, level);
+        Dictionary<ItemData, int> c_items = cursor.item.ToolApply(cursor.grid, this, level);
         foreach (KeyValuePair<ItemData, int> pair in c_items) {
           if (!items.ContainsKey(pair.Key)) {
             items[pair.Key] = pair.Value;
@@ -80,10 +94,10 @@ public class Tool : Item {
 
   protected override Vector2Int GetScopeRange() {
     int level = GetHoldLevel();
-    if (level <= 1) { return new Vector2Int(3, 1); }
-    if (level == 2) { return new Vector2Int(3, 3); }
-    if (level == 3) { return new Vector2Int(9, 3); }
-    return new Vector2Int(9, 9);
+    if (level <= 1) { return scopeRanges_[0]; }
+    if (level == 2) { return scopeRanges_[1]; }
+    if (level == 3) { return scopeRanges_[2]; }
+    return scopeRanges_[3];
   }
 
   protected virtual int GetUseCount() {
@@ -94,5 +108,5 @@ public class Tool : Item {
 
   protected override int holdLevelMax { get { return 4; } }
 
-  protected virtual ToolType toolType { get { return ToolType.Tool; } }
+  public virtual ToolType toolType { get { return ToolType.Tool; } }
 }

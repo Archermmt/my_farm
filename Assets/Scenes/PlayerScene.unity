@@ -320,6 +320,25 @@ MonoBehaviour:
     - {fileID: 7400000, guid: 84abfad12390a438ca37ee54c0f685d0, type: 2}
     - {fileID: 7400000, guid: 4392be4131f324cc1b2a66ed532340ab, type: 2}
     animationTag: 9
+  - srcClips:
+    - {fileID: 7400000, guid: df472bae910a74c2f902495cab5d49f3, type: 2}
+    - {fileID: 7400000, guid: 5cbb282628f5d46539c0c8f819b6dacd, type: 2}
+    - {fileID: 7400000, guid: 205792d1285ee4346a3c453308c9b772, type: 2}
+    - {fileID: 7400000, guid: c1650c97121fb442fb9f53970800819d, type: 2}
+    - {fileID: 7400000, guid: fd4f5867ddcff46149fc9137e516a87b, type: 2}
+    - {fileID: 7400000, guid: b0255b7309762412c92c493997443560, type: 2}
+    - {fileID: 7400000, guid: c6a7008e3841246fe91bb1c367e8bde0, type: 2}
+    - {fileID: 7400000, guid: b66980bf649a34eff8547622627a1b0e, type: 2}
+    dstClips:
+    - {fileID: 7400000, guid: 2d3940882872d4cee8e8fdd8cf1cedde, type: 2}
+    - {fileID: 7400000, guid: b91f7cb170e104cb38178b16bfbb2c17, type: 2}
+    - {fileID: 7400000, guid: 63f91df4e49234a9bac79d94bac7b993, type: 2}
+    - {fileID: 7400000, guid: 1aee63184d3504e05be5eb5b31318e08, type: 2}
+    - {fileID: 7400000, guid: a0d173d2a24c045f4a820d31ed9ae466, type: 2}
+    - {fileID: 7400000, guid: 8cd1a3be362e041719427927db1d9db1, type: 2}
+    - {fileID: 7400000, guid: dca2e53cccec743539e1b07e58a133bd, type: 2}
+    - {fileID: 7400000, guid: b64b15b7a37d94117b549a2c2de2d74b, type: 2}
+    animationTag: 10
 --- !u!1 &53710398
 GameObject:
   m_ObjectHideFlags: 0
@@ -734,6 +753,8 @@ MonoBehaviour:
   type_: 4
   capacity_: 10
   maxSize_: 100
+  effectStartSec_: 0.2
+  effectEndSec_: 2
 --- !u!1 &229329498
 GameObject:
   m_ObjectHideFlags: 0
@@ -1310,8 +1331,20 @@ MonoBehaviour:
     value: 0
   - type: 4
     name: BlueSpruceTrunk
-    description: blue spruce trunk
+    description: trunk of blue spruce
     sprite: {fileID: -2243126732310486641, guid: 5d22327a2a3d2a049a8a59a708d527fe, type: 3}
+    price: 0
+    value: 0
+  - type: 4
+    name: CanyonOakTrunk
+    description: trunk canyon oak
+    sprite: {fileID: 4789355601316357596, guid: d241c496741a12d4290e12ba81dd6724, type: 3}
+    price: 0
+    value: 0
+  - type: 4
+    name: WildOak
+    description: wild oak
+    sprite: {fileID: 21300000, guid: 6cefe32f730a75046ab8e8e5434d336e, type: 3}
     price: 0
     value: 0
 --- !u!4 &359293843
@@ -1507,7 +1540,7 @@ Transform:
   m_GameObject: {fileID: 519420028}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: -0.00000333786, y: -0.000002861023, z: -10}
+  m_LocalPosition: {x: -0.000005722046, y: 0.000006198883, z: -10}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -1680,6 +1713,8 @@ MonoBehaviour:
   type_: 2
   capacity_: 10
   maxSize_: 100
+  effectStartSec_: 0.2
+  effectEndSec_: 2
 --- !u!1 &669044153
 GameObject:
   m_ObjectHideFlags: 0
@@ -1767,10 +1802,10 @@ MonoBehaviour:
   CameraDistance: 10
   DeadZoneDepth: 0
   Composition:
-    ScreenPosition: {x: 0.00000010430813, y: -0.0000001937151}
+    ScreenPosition: {x: 0.0000001937151, y: 0.0000003874302}
     DeadZone:
       Enabled: 1
-      Size: {x: 0.4062535, y: 0.5066497}
+      Size: {x: 0.36325577, y: 0.41266054}
     HardLimits:
       Enabled: 0
       Size: {x: 0.8, y: 0.8}
@@ -1835,7 +1870,7 @@ Transform:
   m_GameObject: {fileID: 708315663}
   serializedVersion: 2
   m_LocalRotation: {x: -0, y: -0, z: -0, w: 1}
-  m_LocalPosition: {x: -0.00000333786, y: -0.000002861023, z: -10}
+  m_LocalPosition: {x: -0.000005722046, y: 0.000006198883, z: -10}
   m_LocalScale: {x: 1, y: 1, z: 1}
   m_ConstrainProportionsScale: 0
   m_Children: []
@@ -1909,6 +1944,8 @@ MonoBehaviour:
   type_: 1
   capacity_: 10
   maxSize_: 100
+  effectStartSec_: 0.2
+  effectEndSec_: 2
 --- !u!1 &961645640
 GameObject:
   m_ObjectHideFlags: 0
@@ -1957,6 +1994,8 @@ MonoBehaviour:
   type_: 0
   capacity_: 10
   maxSize_: 100
+  effectStartSec_: 0.3
+  effectEndSec_: 1
 --- !u!1 &1011684059
 GameObject:
   m_ObjectHideFlags: 0
@@ -2978,6 +3017,8 @@ MonoBehaviour:
   type_: 3
   capacity_: 10
   maxSize_: 100
+  effectStartSec_: 0.2
+  effectEndSec_: 2
 --- !u!1 &1690287070
 GameObject:
   m_ObjectHideFlags: 0
@@ -3133,6 +3174,8 @@ MonoBehaviour:
   type_: 5
   capacity_: 10
   maxSize_: 100
+  effectStartSec_: 0.2
+  effectEndSec_: 2
 --- !u!1 &2071057751
 GameObject:
   m_ObjectHideFlags: 0

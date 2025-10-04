@@ -12,7 +12,7 @@ GameObject:
   - component: {fileID: 3349793846392838414}
   - component: {fileID: 4517571217730198493}
   - component: {fileID: 3211160323333009836}
-  - component: {fileID: 2164542418208654090}
+  - component: {fileID: -5549613557826047339}
   m_Layer: 0
   m_Name: BigRock
   m_TagString: Untagged
@@ -158,7 +158,7 @@ MonoBehaviour:
   harvetEndSec_: 1
   effectStartSec_: 0.2
   effectEndSec_: 0.2
---- !u!114 &2164542418208654090
+--- !u!114 &-5549613557826047339
 MonoBehaviour:
   m_ObjectHideFlags: 0
   m_CorrespondingSourceObject: {fileID: 0}
@@ -167,8 +167,9 @@ MonoBehaviour:
   m_GameObject: {fileID: 6929190394768803722}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 8fc17e190aa414854993258d737234fe, type: 3}
+  m_Script: {fileID: 11500000, guid: ec081e67708434d449cf69801246d66d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   item_name_: BigRock
+  harvestTools: 05000000
   health_: 2

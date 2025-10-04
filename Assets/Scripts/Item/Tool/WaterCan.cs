@@ -21,5 +21,5 @@ public class WaterCan : Tool {
         return new Dictionary<ItemData, int>();
     }
 
-    protected override ToolType toolType { get { return ToolType.WaterCan; } }
+    public override ToolType toolType { get { return ToolType.WaterCan; } }
 }

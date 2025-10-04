@@ -102,8 +102,8 @@ public class Player : Singleton<Player> {
     }
 
     private void ProcessCarried(Action action) {
-        Direction mouse_direct = MouseUtils.GetDirection(camera_, transform.position);
-        List<Cursor> cursors = FieldManager.Instance.CheckItem(carried_.Key, transform.position, MouseUtils.MouseToWorld(camera_), mouse_direct);
+        direction_ = MouseUtils.GetDirection(camera_, transform.position);
+        List<Cursor> cursors = FieldManager.Instance.CheckItem(carried_.Key, transform.position, MouseUtils.MouseToWorld(camera_), direction_);
         if (cursors.Count > 0) {
             if (action == Action.DropItem && carried_.Key.HasStatus(ItemStatus.Dropable)) {
                 int drop_amount = FieldManager.Instance.DropItem(carried_.Key, cursors);
@@ -111,9 +111,9 @@ public class Player : Singleton<Player> {
             } else if (action == Action.HoldItem && !carried_.Key.HasStatus(ItemStatus.Holding) && (carried_.Key.HasStatus(ItemStatus.GridUsable) || carried_.Key.HasStatus(ItemStatus.ItemUsable))) {
                 Freeze();
                 if (carried_.Key.meta.type == ItemType.Tool || carried_.Key.meta.type == ItemType.Seed) {
-                    carried_.Key.Hold(mouse_direct);
+                    carried_.Key.Hold(direction_);
                     Action act = carried_.Key.meta.type == ItemType.Tool ? Action.HoldItem : Action.Idle;
-                    UpdateAnimators(mouse_direct, act);
+                    UpdateAnimators(direction_, act);
                 } else {
                     carried_.Key.Hold(Direction.Around);
                 }
@@ -121,7 +121,7 @@ public class Player : Singleton<Player> {
                 Dictionary<ItemData, int> item_amounts = FieldManager.Instance.UseItem(carried_.Key, cursors, carried_.Value.current);
                 carried_.Key.Unhold();
                 if (carried_.Key.meta.type == ItemType.Tool) {
-                    StartCoroutine(UseToolRoutine(mouse_direct));
+                    StartCoroutine(UseToolRoutine(direction_));
                 } else {
                     Unfreeze();
                 }
@@ -133,7 +133,7 @@ public class Player : Singleton<Player> {
                     }
                 }
             } else if (carried_.Key.HasStatus(ItemStatus.Holding)) {
-                UpdateAnimators(mouse_direct, Action.HoldItem);
+                UpdateAnimators(direction_, carried_.Key.meta.type == ItemType.Tool ? Action.HoldItem : Action.Idle);
             }
         }
     }
