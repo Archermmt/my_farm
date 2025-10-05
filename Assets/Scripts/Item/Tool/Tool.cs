@@ -2,7 +2,6 @@ using System.Collections.Generic;
 using UnityEngine;
 
 public class Tool : Item {
-
   protected List<Vector2Int> scopeRanges_;
 
   protected override void Awake() {

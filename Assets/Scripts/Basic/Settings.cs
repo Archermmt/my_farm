@@ -32,7 +32,8 @@ public enum AnimationTag {
 public enum ContainerType {
     ToolBar,
     Pocket,
-    Backpack
+    Backpack,
+    Any
 }
 
 public enum ItemType {

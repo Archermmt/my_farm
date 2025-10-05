@@ -29,7 +29,7 @@ public class Player : Singleton<Player> {
         rigidBody_ = GetComponent<Rigidbody2D>();
         animators_ = GetComponentsInChildren<Animator>();
         useToolPause_ = new WaitForSeconds(useToolPauseSecs_);
-        inventory_.Setup(transform);
+        inventory_.Setup(transform.tag);
         animationSwappers_ = GetComponentsInChildren<AnimationSwapper>();
         hands_ = transform.Find("Hands");
         handsRender_ = hands_.GetComponent<SpriteRenderer>();
@@ -42,11 +42,13 @@ public class Player : Singleton<Player> {
         UpdateAnimators(direction_, action_);
         EventHandler.UpdateHandsEvent += UpdateHands;
         EventHandler.UpdateInventoryEvent += UpdateInventory;
+        EventHandler.AddInventoryItemEvent += AddInventoryItem;
     }
 
     private void OnDisable() {
         EventHandler.UpdateHandsEvent -= UpdateHands;
         EventHandler.UpdateInventoryEvent -= UpdateInventory;
+        EventHandler.AddInventoryItemEvent -= AddInventoryItem;
     }
 
     private void Update() {
@@ -169,8 +171,8 @@ public class Player : Singleton<Player> {
         }
     }
 
-    private void UpdateHands(Transform owner, ContainerType container_type) {
-        if (owner == transform && container_type == ContainerType.ToolBar) {
+    private void UpdateHands(string owner, ContainerType container_type) {
+        if (owner == transform.tag && container_type == ContainerType.ToolBar) {
             if (carried_.Key != null) {
                 carried_.Key.gameObject.SetActive(false);
                 carried_.Key.transform.parent = hands_.Find("Cache");
@@ -208,9 +210,15 @@ public class Player : Singleton<Player> {
         }
     }
 
-    private void UpdateInventory(Transform owner, ContainerType container_type, bool sort, bool deselect) {
-        if (owner == transform) {
+    private void UpdateInventory(string owner, ContainerType container_type, bool sort, bool deselect) {
+        if (owner == transform.tag) {
             inventory_.GetContainer(container_type).UpdateSlots(sort, deselect);
+        }
+    }
+
+    private void AddInventoryItem(string owner, ItemData item, int amount) {
+        if (owner == transform.tag) {
+            inventory_.AddItem(item, amount);
         }
     }
 

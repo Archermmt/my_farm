@@ -19,17 +19,25 @@ public static class EventHandler {
         }
     }
 
-    public static event Action<Transform, ContainerType, bool, bool> UpdateInventoryEvent;
+    public static event Action<string, ContainerType, bool, bool> UpdateInventoryEvent;
 
-    public static void CallUpdateInventory(Transform owner, ContainerType type, bool sort, bool deselect) {
+    public static void CallUpdateInventory(string owner, ContainerType type, bool sort, bool deselect) {
         if (UpdateInventoryEvent != null) {
             UpdateInventoryEvent(owner, type, sort, deselect);
         }
     }
 
-    public static event Action<Transform, ContainerType> UpdateHandsEvent;
+    public static event Action<string, ItemData, int> AddInventoryItemEvent;
 
-    public static void CallUpdateHands(Transform owner, ContainerType type) {
+    public static void CallAddInventoryItem(string owner, ItemData item, int amount) {
+        if (AddInventoryItemEvent != null) {
+            AddInventoryItemEvent(owner, item, amount);
+        }
+    }
+
+    public static event Action<string, ContainerType> UpdateHandsEvent;
+
+    public static void CallUpdateHands(string owner, ContainerType type) {
         if (UpdateHandsEvent != null) {
             UpdateHandsEvent(owner, type);
         }

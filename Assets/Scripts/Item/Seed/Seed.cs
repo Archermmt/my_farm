@@ -2,14 +2,36 @@ using System;
 using System.Collections.Generic;
 using UnityEngine;
 
+[RequireComponent(typeof(Pickable))]
 public class Seed : Item {
     [SerializeField] private string cropName_;
+    private Pickable pickable_;
+
+    protected override void Awake() {
+        base.Awake();
+        pickable_ = GetComponent<Pickable>();
+    }
 
     public override void SetItem(ItemData item_data) {
         base.SetItem(item_data);
         if (cropName_ == null) {
             cropName_ = meta.name;
         }
+    }
+
+    private void FixedUpdate() {
+        string owner = pickable_.Track(this);
+        if (owner.Length > 0) {
+            Destroy(gameObject);
+        }
+    }
+
+    protected virtual void OnTriggerEnter2D(Collider2D collision) {
+        pickable_.StartTrack(collision);
+    }
+
+    protected virtual void OnTriggerExit2D(Collider2D collision) {
+        pickable_.EndTrack(collision);
     }
 
     public override List<CursorMeta> GetCursorMetas(List<FieldGrid> grids, FieldGrid start, Vector3 pos) {

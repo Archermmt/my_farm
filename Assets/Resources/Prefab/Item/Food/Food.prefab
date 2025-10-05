@@ -66,9 +66,16 @@ PrefabInstance:
       objectReference: {fileID: 0}
     m_RemovedComponents:
     - {fileID: 8461236395484111858, guid: ae4353ece9de5492f8d09dcf0eadf52d, type: 3}
+    - {fileID: 1334881297446752755, guid: ae4353ece9de5492f8d09dcf0eadf52d, type: 3}
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
     m_AddedComponents:
+    - targetCorrespondingSourceObject: {fileID: 5485029832335576484, guid: ae4353ece9de5492f8d09dcf0eadf52d, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 6042337671091273150}
+    - targetCorrespondingSourceObject: {fileID: 5485029832335576484, guid: ae4353ece9de5492f8d09dcf0eadf52d, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 42551164148659824}
     - targetCorrespondingSourceObject: {fileID: 5485029832335576484, guid: ae4353ece9de5492f8d09dcf0eadf52d, type: 3}
       insertIndex: -1
       addedObject: {fileID: -6742593434603243449}
@@ -78,6 +85,59 @@ GameObject:
   m_CorrespondingSourceObject: {fileID: 5485029832335576484, guid: ae4353ece9de5492f8d09dcf0eadf52d, type: 3}
   m_PrefabInstance: {fileID: 3459439766822673994}
   m_PrefabAsset: {fileID: 0}
+--- !u!58 &6042337671091273150
+CircleCollider2D:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8943264516621931502}
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Density: 1
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_ForceSendLayers:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  m_ForceReceiveLayers:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  m_ContactCaptureLayers:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  m_CallbackLayers:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  m_IsTrigger: 1
+  m_UsedByEffector: 0
+  m_CompositeOperation: 0
+  m_CompositeOrder: 0
+  m_Offset: {x: 0, y: 0.5}
+  m_Radius: 1
+--- !u!114 &42551164148659824
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8943264516621931502}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 67d52d08e8c3442f3b570817e419ce0f, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  trackTargets_:
+  - Player
+  speedFactor_: 2
+  pickRadius_: 0.2
+  trackRadius_: 2
 --- !u!114 &-6742593434603243449
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -91,3 +151,4 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   item_name_: 
+  days_: 0

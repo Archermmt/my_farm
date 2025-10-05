@@ -2,7 +2,7 @@ using System;
 using System.Collections.Generic;
 using UnityEngine;
 
-[RequireComponent(typeof(Harvestable))]
+[RequireComponent(typeof(Harvestable), typeof(BoxCollider2D))]
 public class Obstacle : Item {
     [Header("Obstacle")]
     [SerializeField] private List<ToolType> harvestTools;

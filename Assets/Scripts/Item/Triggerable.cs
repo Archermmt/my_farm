@@ -2,7 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
-[RequireComponent(typeof(SpriteRenderer))]
+[RequireComponent(typeof(SpriteRenderer), typeof(BoxCollider2D))]
 public class Triggerable : MonoBehaviour {
     [Header("Trigger.Fade")]
     [SerializeField] private List<string> fadeTargets_;

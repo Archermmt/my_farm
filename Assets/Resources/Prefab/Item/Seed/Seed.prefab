@@ -71,6 +71,12 @@ PrefabInstance:
     m_AddedComponents:
     - targetCorrespondingSourceObject: {fileID: 5485029832335576484, guid: ae4353ece9de5492f8d09dcf0eadf52d, type: 3}
       insertIndex: -1
+      addedObject: {fileID: 2314400516870928370}
+    - targetCorrespondingSourceObject: {fileID: 5485029832335576484, guid: ae4353ece9de5492f8d09dcf0eadf52d, type: 3}
+      insertIndex: -1
+      addedObject: {fileID: 5157974517308528788}
+    - targetCorrespondingSourceObject: {fileID: 5485029832335576484, guid: ae4353ece9de5492f8d09dcf0eadf52d, type: 3}
+      insertIndex: -1
       addedObject: {fileID: 2653564629590201053}
   m_SourcePrefab: {fileID: 100100000, guid: ae4353ece9de5492f8d09dcf0eadf52d, type: 3}
 --- !u!1 &4133423491962543278 stripped
@@ -78,6 +84,59 @@ GameObject:
   m_CorrespondingSourceObject: {fileID: 5485029832335576484, guid: ae4353ece9de5492f8d09dcf0eadf52d, type: 3}
   m_PrefabInstance: {fileID: 8449425073838149898}
   m_PrefabAsset: {fileID: 0}
+--- !u!58 &2314400516870928370
+CircleCollider2D:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4133423491962543278}
+  m_Enabled: 1
+  serializedVersion: 3
+  m_Density: 1
+  m_Material: {fileID: 0}
+  m_IncludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_ExcludeLayers:
+    serializedVersion: 2
+    m_Bits: 0
+  m_LayerOverridePriority: 0
+  m_ForceSendLayers:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  m_ForceReceiveLayers:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  m_ContactCaptureLayers:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  m_CallbackLayers:
+    serializedVersion: 2
+    m_Bits: 4294967295
+  m_IsTrigger: 1
+  m_UsedByEffector: 0
+  m_CompositeOperation: 0
+  m_CompositeOrder: 0
+  m_Offset: {x: 0, y: 0}
+  m_Radius: 0.5
+--- !u!114 &5157974517308528788
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4133423491962543278}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 67d52d08e8c3442f3b570817e419ce0f, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  trackTargets_:
+  - Player
+  speedFactor_: 2
+  pickRadius_: 0.2
+  trackRadius_: 3
 --- !u!114 &2653564629590201053
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -90,5 +149,6 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 3781e914ceaa84a899d08fcba977d73b, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  item_name_: ParsnipSeed
-  cropName_: ParsnipCrop
+  item_name_: 
+  days_: 0
+  cropName_: 

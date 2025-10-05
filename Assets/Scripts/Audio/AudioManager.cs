@@ -37,6 +37,12 @@ public class AudioManager : Singleton<AudioManager> {
         }
     }
 
+    public void TriggerSound(string name) {
+        if (soundsMap_.ContainsKey(name)) {
+            StartCoroutine(TriggerSoundRoutine(soundsMap_[name]));
+        }
+    }
+
     public void ClearSounds() {
         soundQueque_ = new List<string>();
     }
@@ -47,9 +53,7 @@ public class AudioManager : Singleton<AudioManager> {
 
     public void TriggerSounds() {
         foreach (string name in soundQueque_) {
-            if (soundsMap_.ContainsKey(name)) {
-                StartCoroutine(TriggerSoundRoutine(soundsMap_[name]));
-            }
+            TriggerSound(name);
         }
     }
 

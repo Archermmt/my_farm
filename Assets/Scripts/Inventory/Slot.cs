@@ -20,12 +20,12 @@ public class Slot : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndDragHand
   private ItemData itemMeta_;
   private GameObject dragging_;
   private Sprite emptySprite_;
-  private Transform owner_;
   private ContainerType holderType_;
+  private string owner_;
   private int current_ = 0;
   private bool selected_ = false;
 
-  public void Setup(Transform owner, ContainerType container_type) {
+  public void Setup(string owner, ContainerType container_type) {
     owner_ = owner;
     holderType_ = container_type;
   }
@@ -54,7 +54,7 @@ public class Slot : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndDragHand
   }
 
   public void Swap(Slot other) {
-    Transform otherOwner = other.owner;
+    string otherOwner = other.owner;
     ContainerType otherHolderType = other.holderType;
     other.Setup(owner_, holderType_);
     Setup(otherOwner, otherHolderType);
@@ -211,7 +211,7 @@ public class Slot : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndDragHand
 
   public bool selected { get { return selected_; } }
 
-  public Transform owner { get { return owner_; } }
+  public string owner { get { return owner_; } }
 
   public ContainerType holderType { get { return holderType_; } }
 }

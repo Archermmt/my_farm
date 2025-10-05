@@ -8,7 +8,7 @@ public class Container : MonoBehaviour {
     private List<Slot> slots_;
     private int current_;
 
-    public virtual void Setup(Transform owner) {
+    public virtual void Setup(string owner) {
         slots_ = new List<Slot>();
         GameObject slot_prefab = Resources.Load<GameObject>("Prefab/Inventory/Slot");
         for (int i = 0; i < max_capacity_; i++) {
