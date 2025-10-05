@@ -7,6 +7,7 @@ public class ItemManager : Singleton<ItemManager> {
     private Dictionary<string, ItemData> itemsMap_;
     private Dictionary<Sprite, ItemData> itemSpritesMap_;
     private Dictionary<SceneName, Dictionary<string, Transform>> itemHolders_;
+    private Dictionary<SceneName, List<Pickable>> pickableItems_;
     private SceneName currentScene_ = SceneName.StartScene;
 
     protected override void Awake() {
@@ -15,9 +16,12 @@ public class ItemManager : Singleton<ItemManager> {
         itemSpritesMap_ = new Dictionary<Sprite, ItemData>();
         foreach (ItemData item in items_) {
             itemsMap_.Add(item.name, item);
-            itemSpritesMap_.Add(item.sprite, item);
+            if (item.sprite != null) {
+                itemSpritesMap_.Add(item.sprite, item);
+            }
         }
         itemHolders_ = new Dictionary<SceneName, Dictionary<string, Transform>>();
+        pickableItems_ = new Dictionary<SceneName, List<Pickable>>();
     }
 
     private void OnEnable() {
@@ -36,6 +40,19 @@ public class ItemManager : Singleton<ItemManager> {
 
     public ItemData FindItem(Sprite sprite) {
         return itemSpritesMap_[sprite];
+    }
+
+    public void AddPickable(Pickable item) {
+        if (!pickableItems_[currentScene_].Contains(item)) {
+            pickableItems_[currentScene_].Add(item);
+        }
+    }
+
+    public void RemovePickable(Pickable item) {
+        if (pickableItems_[currentScene_].Contains(item)) {
+            pickableItems_[currentScene_].Remove(item);
+            Destroy(item.gameObject);
+        }
     }
 
     public ItemData RandomItem(List<ItemType> types = null) {
@@ -72,6 +89,10 @@ public class ItemManager : Singleton<ItemManager> {
         }
         GameObject item_obj = Instantiate(prefab, new Vector3(world_pos.x, world_pos.y - Settings.gridCellSize / 2f, world_pos.z), Quaternion.identity, item_holder);
         Item item = item_obj.GetComponent<Item>();
+        if (item == null) {
+            item = item_obj.transform.GetComponentInChildren<Item>();
+        }
+        Assert.AreNotEqual(item, null, "Can not find item for " + item_data.name + "(" + item_data.type.ToString() + ") from " + prefab);
         if (item.meta == null) {
             item.SetItem(item_data);
         }
@@ -94,6 +115,7 @@ public class ItemManager : Singleton<ItemManager> {
         currentScene_ = scene_name;
         if (!itemHolders_.ContainsKey(scene_name)) {
             ParseHolders(scene_name);
+            GenerateItems(scene_name);
         }
     }
 
@@ -101,8 +123,21 @@ public class ItemManager : Singleton<ItemManager> {
         Transform parent = GameObject.FindGameObjectWithTag("Items").transform;
         Dictionary<string, Transform> item_holders = new Dictionary<string, Transform>();
         foreach (Transform child in parent) {
+            if (child.name == "Generator") {
+                continue;
+            }
             item_holders[child.name] = child;
         }
         itemHolders_[scene_name] = item_holders;
+        pickableItems_[scene_name] = new List<Pickable>();
+    }
+
+    private void GenerateItems(SceneName scene_name) {
+        Transform holder = GameObject.FindGameObjectWithTag("Items").transform.Find("Generator");
+        if (holder != null) {
+            foreach (Generator generator in holder.GetComponentsInChildren<Generator>()) {
+                generator.Generate();
+            }
+        }
     }
 }

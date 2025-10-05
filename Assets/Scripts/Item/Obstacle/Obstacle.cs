@@ -13,10 +13,6 @@ public class Obstacle : Item {
         harvestable_ = GetComponent<Harvestable>();
     }
 
-    protected override bool Pickable(FieldGrid grid) {
-        return false;
-    }
-
     protected override bool Dropable(FieldGrid grid) {
         return false;
     }

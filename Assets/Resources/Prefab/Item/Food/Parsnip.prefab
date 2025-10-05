@@ -12,6 +12,14 @@ PrefabInstance:
       propertyPath: item_name_
       value: Parsnip
       objectReference: {fileID: 0}
+    - target: {fileID: -6742593434603243449, guid: 0ccb75370d9d743e2bc65db40da1c149, type: 3}
+      propertyPath: 'trackTargets_.Array.data[0]'
+      value: Player
+      objectReference: {fileID: 0}
+    - target: {fileID: 42551164148659824, guid: 0ccb75370d9d743e2bc65db40da1c149, type: 3}
+      propertyPath: item_name_
+      value: Parsnip
+      objectReference: {fileID: 0}
     - target: {fileID: 42551164148659824, guid: 0ccb75370d9d743e2bc65db40da1c149, type: 3}
       propertyPath: trackRadius_
       value: 3
@@ -64,7 +72,8 @@ PrefabInstance:
       propertyPath: m_Name
       value: Parsnip
       objectReference: {fileID: 0}
-    m_RemovedComponents: []
+    m_RemovedComponents:
+    - {fileID: 42551164148659824, guid: 0ccb75370d9d743e2bc65db40da1c149, type: 3}
     m_RemovedGameObjects: []
     m_AddedGameObjects: []
     m_AddedComponents: []

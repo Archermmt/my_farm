@@ -209,7 +209,11 @@ public class FieldManager : Singleton<FieldManager> {
         // add items
         Transform item_parent = GameObject.FindGameObjectWithTag("Items").transform;
         foreach (Item item in item_parent.GetComponentsInChildren<Item>()) {
-            GetGrid(item.AlignGrid()).AddItem(item);
+            if (item is Pickable) {
+                ItemManager.Instance.AddPickable((Pickable)item);
+            } else {
+                GetGrid(item.AlignGrid()).AddItem(item);
+            }
         }
         // init field layers
         layers_[scene_name] = new List<FieldLayer>();

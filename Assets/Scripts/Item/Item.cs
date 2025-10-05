@@ -125,7 +125,9 @@ public class Item : MonoBehaviour {
     }
 
     public void ChangeSprite(Sprite sprite) {
-        render_.sprite = sprite;
+        if (render_ != null) {
+            render_.sprite = sprite;
+        }
     }
 
     protected int GetHoldLevel() {
@@ -156,10 +158,6 @@ public class Item : MonoBehaviour {
 
     protected virtual Vector2Int GetScopeRange() {
         return new Vector2Int(5, 2);
-    }
-
-    protected virtual bool Pickable(FieldGrid grid) {
-        return true;
     }
 
     protected virtual bool Dropable(FieldGrid grid) {

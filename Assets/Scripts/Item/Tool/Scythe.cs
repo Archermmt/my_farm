@@ -5,12 +5,6 @@ public class Scythe : Tool {
     protected override void Awake() {
         base.Awake();
         animationTags_ = new List<AnimationTag> { AnimationTag.Swing, AnimationTag.Scythe };
-        scopeRanges_ = new List<Vector2Int> {
-          new Vector2Int(3, 2),
-          new Vector2Int(3, 3),
-          new Vector2Int(9,3),
-          new Vector2Int(9,9),
-        };
     }
 
     protected override bool GridUsable(FieldGrid grid) {

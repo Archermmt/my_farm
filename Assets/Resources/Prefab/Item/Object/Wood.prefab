@@ -16,6 +16,14 @@ PrefabInstance:
       propertyPath: item_name_
       value: Wood
       objectReference: {fileID: 0}
+    - target: {fileID: -5287288147791093249, guid: 85474b1da31a942dab7798baae3ac182, type: 3}
+      propertyPath: trackTargets_.Array.size
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: -5287288147791093249, guid: 85474b1da31a942dab7798baae3ac182, type: 3}
+      propertyPath: 'trackTargets_.Array.data[0]'
+      value: Player
+      objectReference: {fileID: 0}
     - target: {fileID: 3415777420614680345, guid: 85474b1da31a942dab7798baae3ac182, type: 3}
       propertyPath: m_Name
       value: Wood

@@ -12,6 +12,10 @@ PrefabInstance:
       propertyPath: item_name_
       value: Pumpkin
       objectReference: {fileID: 0}
+    - target: {fileID: -6742593434603243449, guid: 0ccb75370d9d743e2bc65db40da1c149, type: 3}
+      propertyPath: 'trackTargets_.Array.data[0]'
+      value: Player
+      objectReference: {fileID: 0}
     - target: {fileID: 42551164148659824, guid: 0ccb75370d9d743e2bc65db40da1c149, type: 3}
       propertyPath: trackRadius_
       value: 3

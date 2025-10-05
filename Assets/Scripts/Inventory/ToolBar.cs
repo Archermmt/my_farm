@@ -15,14 +15,13 @@ public class ToolBar : Container {
 
     private void SwitchPosition() {
         Vector3 playerPosition = Player.Instance.GetViewportPosition();
-
-        if (playerPosition.y > 0.3f && !at_bottom_) {
+        if (playerPosition.y > 0.2f && !at_bottom_) {
             rect_.pivot = new Vector2(0.5f, 0f);
             rect_.anchorMin = new Vector2(0.5f, 0f);
             rect_.anchorMax = new Vector2(0.5f, 0f);
             rect_.anchoredPosition = new Vector2(0f, 2.5f);
             at_bottom_ = true;
-        } else if (playerPosition.y <= 0.3f && at_bottom_) {
+        } else if (playerPosition.y <= 0.2f && at_bottom_) {
             rect_.pivot = new Vector2(0.5f, 1f);
             rect_.anchorMin = new Vector2(0.5f, 1f);
             rect_.anchorMax = new Vector2(0.5f, 1f);

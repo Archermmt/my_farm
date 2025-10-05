@@ -8,7 +8,7 @@ public class Tool : Item {
     base.Awake();
     animationTags_ = new List<AnimationTag> { AnimationTag.Wave, AnimationTag.Axe };
     scopeRanges_ = new List<Vector2Int> {
-          new Vector2Int(3, 1),
+          new Vector2Int(3, 2),
           new Vector2Int(3, 3),
           new Vector2Int(9, 3),
           new Vector2Int(9, 9)

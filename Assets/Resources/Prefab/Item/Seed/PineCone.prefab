@@ -16,6 +16,10 @@ PrefabInstance:
       propertyPath: item_name_
       value: PineCone
       objectReference: {fileID: 0}
+    - target: {fileID: 2653564629590201053, guid: 712adea4de57d4062a4dd28996a9b7ce, type: 3}
+      propertyPath: 'trackTargets_.Array.data[0]'
+      value: Player
+      objectReference: {fileID: 0}
     - target: {fileID: 2839582326506525285, guid: 712adea4de57d4062a4dd28996a9b7ce, type: 3}
       propertyPath: m_LocalPosition.x
       value: 0
