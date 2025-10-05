@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 
 public class EffectManager : Singleton<EffectManager> {
@@ -17,8 +18,12 @@ public class EffectManager : Singleton<EffectManager> {
         }
     }
 
-    public void AddEffect(EffectData effect) {
-        triggersMap_[effect.type].AddEffect(effect);
+    public void AddEffect(EffectMeta effect) {
+        EffectTrigger trigger = triggersMap_[effect.type];
+        if (trigger.sound.Length > 0) {
+            AudioManager.Instance.AddSound(trigger.sound);
+        }
+        trigger.AddEffect(effect);
     }
 
     public void TriggerEffects() {

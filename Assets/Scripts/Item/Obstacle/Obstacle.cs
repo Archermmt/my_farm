@@ -6,7 +6,6 @@ using UnityEngine;
 public class Obstacle : Item {
     [Header("Obstacle")]
     [SerializeField] private List<ToolType> harvestTools;
-    [SerializeField] private int health_ = 1;
     private Harvestable harvestable_;
 
     protected override void Awake() {

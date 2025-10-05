@@ -13,12 +13,12 @@ public class Hoe : Tool {
     return grid.HasTag(FieldTag.Diggable) && !grid.HasTag(FieldTag.Dug) && grid.items.Count == 0;
   }
 
-  public override Dictionary<ItemData, int> Apply(List<Cursor> cursors, int amount) {
+  protected override void ApplyToGrid(List<Cursor> cursors, int amount) {
+    AudioManager.Instance.PlaySound(toolType.ToString());
     FieldLayer layer = FieldManager.Instance.GetLayer(FieldTag.Dug);
     foreach (Cursor cursor in cursors) {
       layer.AddGrid(cursor.grid, dugTile_);
     }
-    return new Dictionary<ItemData, int>();
   }
 
   public override ToolType toolType { get { return ToolType.Hoe; } }

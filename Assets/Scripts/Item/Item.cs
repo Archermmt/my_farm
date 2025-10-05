@@ -4,10 +4,11 @@ using UnityEngine;
 
 [Serializable]
 public class ItemData {
-    public ItemType type;
     public string name;
+    public ItemType type;
     public string description;
     public Sprite sprite;
+    public int health = 1;
     public int price = 0;
     public int value = 0;
 
@@ -26,6 +27,8 @@ public class ItemData {
 public class Item : MonoBehaviour {
     [Header("Basic")]
     [SerializeField] private string item_name_;
+    [SerializeField] protected int days_ = 0;
+    protected int health_;
     protected Direction direction_;
     protected SpriteRenderer render_;
     protected List<AnimationTag> animationTags_;
@@ -47,10 +50,16 @@ public class Item : MonoBehaviour {
         item_name_ = item_data.name;
         meta_ = item_data;
         render_.sprite = item_data.sprite;
+        health_ = item_data.health;
+        days_ = 0;
     }
 
     public virtual void DestroyItem(FieldGrid grid) {
         Destroy(gameObject);
+    }
+
+    public virtual void Growth(int days = 1) {
+        days_ += days;
     }
 
     public Vector3 AlignGrid() {
@@ -165,7 +174,11 @@ public class Item : MonoBehaviour {
         return new Dictionary<ItemData, int>();
     }
 
-    public virtual void UpdateTime(TimeType time_type, TimeData time, int delta, FieldGrid grid) { }
+    public virtual void UpdateTime(TimeType time_type, TimeData time, int delta, FieldGrid grid) {
+        if (time_type == TimeType.Day) {
+            Growth(delta);
+        }
+    }
 
     public override string ToString() {
         string str = transform.name + " : " + meta_.ToString();

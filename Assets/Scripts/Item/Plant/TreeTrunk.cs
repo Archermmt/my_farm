@@ -48,10 +48,13 @@ public class TreeTrunk : Plant {
 
     public override void DestroyItem(FieldGrid grid) {
         if (currentPeriod_ >= maturePeriod_) {
-            Debug.Log("[TMINFO] should dectroy the tree in direction " + direction_);
+            AudioManager.Instance.PlaySound("TreeFall");
             StartCoroutine(DestroyRoutine(grid));
         } else {
             base.DestroyItem(grid);
+            if (stump_ == null) {
+                Destroy(transform.parent.gameObject);
+            }
         }
         if (stump_ != null && currentPeriod_ >= maturePeriod_) {
             grid.AddItem(stump_);
@@ -93,5 +96,9 @@ public class TreeTrunk : Plant {
         animator_.SetInteger("direction", (int)direction_);
         yield return destroyWait_;
         base.DestroyItem(grid);
+        if (stump_ == null) {
+            Destroy(transform.parent.gameObject);
+        }
+
     }
 }

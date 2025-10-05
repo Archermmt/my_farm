@@ -1173,178 +1173,207 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   items_:
-  - type: 0
-    name: Acorn
+  - name: Acorn
+    type: 0
     description: acorn
     sprite: {fileID: 21300000, guid: 730e572c78cf0244ca0db36bb8f3af7f, type: 3}
+    health: 1
     price: 15
     value: 10
-  - type: 1
-    name: Pumpkin
+  - name: Pumpkin
+    type: 1
     description: pumpkin
     sprite: {fileID: 21300000, guid: f0d720006ae6c9e468cc99a9f1713ba1, type: 3}
+    health: 1
     price: 20
     value: 16
-  - type: 1
-    name: Sweetcorn
+  - name: Sweetcorn
+    type: 1
     description: sweetcorn
     sprite: {fileID: 21300000, guid: 081b5033ea188cb48b5d44b99ab920bc, type: 3}
+    health: 1
     price: 20
     value: 16
-  - type: 3
-    name: WaterCan
+  - name: WaterCan
+    type: 3
     description: watering can
     sprite: {fileID: 21300136, guid: 853ac38383c680342ac7e688bf29b197, type: 3}
+    health: 1
     price: 50
     value: 36
-  - type: 3
-    name: Hoe
+  - name: Hoe
+    type: 3
     description: hoe
     sprite: {fileID: 21300052, guid: 853ac38383c680342ac7e688bf29b197, type: 3}
+    health: 100
     price: 50
     value: 36
-  - type: 3
-    name: Axe
+  - name: Axe
+    type: 3
     description: axe
     sprite: {fileID: 21300010, guid: 853ac38383c680342ac7e688bf29b197, type: 3}
+    health: 100
     price: 50
     value: 36
-  - type: 0
-    name: ParsnipSeed
+  - name: ParsnipSeed
+    type: 0
     description: parsnip seed
     sprite: {fileID: 21300000, guid: 7da78110e28e0f74aaa3ef4a41f4c0ed, type: 3}
+    health: 1
     price: 15
     value: 10
-  - type: 1
-    name: Parsnip
+  - name: Parsnip
+    type: 1
     description: parsnip
     sprite: {fileID: 21300000, guid: 0a1268bf801d5304ebf16458d7309ac1, type: 3}
+    health: 1
     price: 20
     value: 16
-  - type: 2
-    name: Wood
+  - name: Wood
+    type: 2
     description: wood
     sprite: {fileID: 21300000, guid: e26dc0d638731ec47abe9c4b3cae62ac, type: 3}
+    health: 1
     price: 10
     value: 5
-  - type: 0
-    name: PineCone
+  - name: PineCone
+    type: 0
     description: PineCone
     sprite: {fileID: 21300000, guid: 5eb84bf51d351da428f95a1296f6a397, type: 3}
+    health: 1
     price: 15
     value: 10
-  - type: 5
-    name: CanyonOakStump
+  - name: CanyonOakStump
+    type: 4
     description: stump of canyon oak
     sprite: {fileID: 7154603021615155856, guid: d241c496741a12d4290e12ba81dd6724, type: 3}
+    health: 5
     price: 0
     value: 0
-  - type: 5
-    name: BlueSpruceStump
+  - name: BlueSpruceStump
+    type: 4
     description: stump of bllue spruce
     sprite: {fileID: -341119608263849502, guid: 5d22327a2a3d2a049a8a59a708d527fe, type: 3}
+    health: 5
     price: 0
     value: 0
-  - type: 3
-    name: Basket
+  - name: Basket
+    type: 3
     description: basket
     sprite: {fileID: 21300504, guid: 853ac38383c680342ac7e688bf29b197, type: 3}
+    health: 100
     price: 50
     value: 36
-  - type: 3
-    name: Pickaxe
+  - name: Pickaxe
+    type: 3
     description: pickaxe
     sprite: {fileID: 21300094, guid: 853ac38383c680342ac7e688bf29b197, type: 3}
+    health: 100
     price: 50
     value: 36
-  - type: 5
-    name: SmallRock
+  - name: SmallRock
+    type: 5
     description: small rock
     sprite: {fileID: 21300000, guid: 4fb548784c08c2c40b86a99493efa98d, type: 3}
+    health: 1
     price: 0
     value: 0
-  - type: 2
-    name: Stone
+  - name: Stone
+    type: 2
     description: stone
     sprite: {fileID: 21300000, guid: 7700e9e59e6f58e4598ea8f2e5a84cc1, type: 3}
+    health: 1
     price: 10
     value: 5
-  - type: 5
-    name: BigRock
+  - name: BigRock
+    type: 5
     description: big rock
     sprite: {fileID: 21300000, guid: ffd3a07e9702a614284d1e5a4be9f532, type: 3}
+    health: 3
     price: 0
     value: 0
-  - type: 3
-    name: Scythe
+  - name: Scythe
+    type: 3
     description: scythe
     sprite: {fileID: 21300506, guid: 853ac38383c680342ac7e688bf29b197, type: 3}
+    health: 100
     price: 50
     value: 36
-  - type: 4
-    name: Grass1
+  - name: Grass1
+    type: 4
     description: grass1
     sprite: {fileID: 21300000, guid: 207ad99171e171b418bcaaa396d5a6f6, type: 3}
+    health: 1
     price: 0
     value: 0
-  - type: 4
-    name: Grass2
+  - name: Grass2
+    type: 4
     description: grass2
     sprite: {fileID: 21300000, guid: e452dd2aa629f624390a9ba516a7c47e, type: 3}
+    health: 1
     price: 0
     value: 0
-  - type: 2
-    name: Weed
+  - name: Weed
+    type: 2
     description: weed
     sprite: {fileID: 21300000, guid: 25925800440b0e84f9533a314ddca6b5, type: 3}
+    health: 1
     price: 10
     value: 5
-  - type: 4
-    name: Cactus
+  - name: Cactus
+    type: 4
     description: cactus
     sprite: {fileID: 21300000, guid: 37e09848a493a0a4b89a743f73f75963, type: 3}
+    health: 2
     price: 0
     value: 0
-  - type: 6
-    name: Chair
+  - name: Chair
+    type: 6
     description: chair
     sprite: {fileID: 21300000, guid: 2a61f48c8f2dfed4da6f2f8e2485ee15, type: 3}
+    health: 200
     price: 200
     value: 150
-  - type: 6
-    name: Table
+  - name: Table
+    type: 6
     description: table
     sprite: {fileID: 21300000, guid: 60f7a57556be87841a8cabc94054df28, type: 3}
+    health: 300
     price: 300
     value: 200
-  - type: 4
-    name: ParsnipCrop
+  - name: ParsnipCrop
+    type: 4
     description: parsnip crop
     sprite: {fileID: 7193783865090184285, guid: 5a1df36ac90cfa242908df77f9674580, type: 3}
+    health: 1
     price: 0
     value: 0
-  - type: 4
-    name: Tumbleweed
+  - name: Tumbleweed
+    type: 4
     description: tumble weed
     sprite: {fileID: 21300000, guid: 8298ab725cafa93429a58bd3e8273289, type: 3}
+    health: 1
     price: 0
     value: 0
-  - type: 4
-    name: BlueSpruceTrunk
+  - name: BlueSpruceTrunk
+    type: 4
     description: trunk of blue spruce
     sprite: {fileID: -2243126732310486641, guid: 5d22327a2a3d2a049a8a59a708d527fe, type: 3}
+    health: 1
     price: 0
     value: 0
-  - type: 4
-    name: CanyonOakTrunk
+  - name: CanyonOakTrunk
+    type: 4
     description: trunk canyon oak
     sprite: {fileID: 4789355601316357596, guid: d241c496741a12d4290e12ba81dd6724, type: 3}
+    health: 1
     price: 0
     value: 0
-  - type: 4
-    name: WildOak
+  - name: WildOak
+    type: 4
     description: wild oak
     sprite: {fileID: 21300000, guid: 6cefe32f730a75046ab8e8e5434d336e, type: 3}
+    health: 1
     price: 0
     value: 0
 --- !u!4 &359293843
@@ -2466,6 +2495,171 @@ MonoBehaviour:
   containerType_: 1
   max_capacity_: 12
   start_capacity_: 12
+--- !u!1 &1271739938
+GameObject:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  serializedVersion: 6
+  m_Component:
+  - component: {fileID: 1271739939}
+  - component: {fileID: 1271739940}
+  m_Layer: 0
+  m_Name: AudioManager
+  m_TagString: Untagged
+  m_Icon: {fileID: 0}
+  m_NavMeshLayer: 0
+  m_StaticEditorFlags: 0
+  m_IsActive: 1
+--- !u!4 &1271739939
+Transform:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1271739938}
+  serializedVersion: 2
+  m_LocalRotation: {x: 0, y: 0, z: 0, w: 1}
+  m_LocalPosition: {x: 0, y: 0, z: 0}
+  m_LocalScale: {x: 1, y: 1, z: 1}
+  m_ConstrainProportionsScale: 0
+  m_Children: []
+  m_Father: {fileID: 1279967474}
+  m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1271739940
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1271739938}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 5d5bdefb480f144839eb84eb1e78b0a9, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  sounds_:
+  - name: FootStepSoft
+    audioClip: {fileID: 8300000, guid: 093845d14eed7654a8dc2b6b0ed14dfb, type: 3}
+    pitchMin: 0.9
+    pitchMax: 1.1
+    volume: 0.2
+    duration: 4
+  - name: FootStepHard
+    audioClip: {fileID: 8300000, guid: 093845d14eed7654a8dc2b6b0ed14dfb, type: 3}
+    pitchMin: 0.9
+    pitchMax: 1.1
+    volume: 0.2
+    duration: 2
+  - name: Axe
+    audioClip: {fileID: 8300000, guid: 936ee70bd6b31ba40950a23b2c095ab8, type: 3}
+    pitchMin: 0.7
+    pitchMax: 0.8
+    volume: 0.2
+    duration: 1
+  - name: Pickaxe
+    audioClip: {fileID: 8300000, guid: b16cd18cafd719948a61e6aea4a21370, type: 3}
+    pitchMin: 0.8
+    pitchMax: 1
+    volume: 0.2
+    duration: 1
+  - name: Scythe
+    audioClip: {fileID: 8300000, guid: 9e4779bab3c6d7946b7af0eac39ca456, type: 3}
+    pitchMin: 0.7
+    pitchMax: 1
+    volume: 0.2
+    duration: 1
+  - name: Hoe
+    audioClip: {fileID: 8300000, guid: bde45eab5733e6542a8d483df7fe29f8, type: 3}
+    pitchMin: 0.6
+    pitchMax: 0.8
+    volume: 0.124
+    duration: 1
+  - name: WaterCan
+    audioClip: {fileID: 8300000, guid: b94be4986d11cd4459632754ca6bdc67, type: 3}
+    pitchMin: 0.8
+    pitchMax: 1.2
+    volume: 0.2
+    duration: 1
+  - name: Basket
+    audioClip: {fileID: 8300000, guid: d454eb6adaec49549ba52c089120a01d, type: 3}
+    pitchMin: 0.8
+    pitchMax: 1.2
+    volume: 0.2
+    duration: 1
+  - name: PickUp
+    audioClip: {fileID: 8300000, guid: 0632bc5535e45c542a8c788eba7f4c26, type: 3}
+    pitchMin: 0.8
+    pitchMax: 1.2
+    volume: 0.2
+    duration: 1
+  - name: Rustle
+    audioClip: {fileID: 8300000, guid: a1245e3e236386448a3b1d2caf1730a7, type: 3}
+    pitchMin: 0.9
+    pitchMax: 1.1
+    volume: 0.344
+    duration: 1
+  - name: TreeFall
+    audioClip: {fileID: 8300000, guid: c9ce207fa6e383946a84cf6467e9b568, type: 3}
+    pitchMin: 1.225
+    pitchMax: 1.5
+    volume: 0.1
+    duration: 1
+  - name: PlantSeed
+    audioClip: {fileID: 8300000, guid: 04df0319290c0e143913096aa330c9e2, type: 3}
+    pitchMin: 0.8
+    pitchMax: 1
+    volume: 0.2
+    duration: 1
+  - name: Pluck
+    audioClip: {fileID: 8300000, guid: ad87ccdd6a6f9084c9a0dbd41df442f6, type: 3}
+    pitchMin: 0.8
+    pitchMax: 1
+    volume: 0.3
+    duration: 1
+  - name: StoneShatter
+    audioClip: {fileID: 8300000, guid: e23732cc1a3c7f54d9eb6d08e60772ca, type: 3}
+    pitchMin: 0.8
+    pitchMax: 1
+    volume: 0.188
+    duration: 1
+  - name: WoodSplinter
+    audioClip: {fileID: 8300000, guid: 5d94ded4f36496d45bf497d00fa298a9, type: 3}
+    pitchMin: 0.8
+    pitchMax: 1.2
+    volume: 0.3
+    duration: 1
+  - name: FarmAmbient
+    audioClip: {fileID: 8300000, guid: f623b7978080a7c4aa811c7bdb13cc7f, type: 3}
+    pitchMin: 1
+    pitchMax: 1
+    volume: 0.749
+    duration: 1
+  - name: FieldAmbient
+    audioClip: {fileID: 8300000, guid: f244993237b6b004cb36d373cc490e54, type: 3}
+    pitchMin: 1
+    pitchMax: 1
+    volume: 0.782
+    duration: 1
+  - name: IndoorsAmbient
+    audioClip: {fileID: 8300000, guid: 597fa2fa4634b8048ab616a4b482e405, type: 3}
+    pitchMin: 1
+    pitchMax: 1
+    volume: 0.55
+    duration: 1
+  - name: Calm1
+    audioClip: {fileID: 8300000, guid: eaaabf775115a9642a03f6fcf4dda6a7, type: 3}
+    pitchMin: 1
+    pitchMax: 1
+    volume: 0.55
+    duration: 1
+  - name: Calm3
+    audioClip: {fileID: 8300000, guid: 2b541905ca3cd9347a56ffc11193c35a, type: 3}
+    pitchMin: 1
+    pitchMax: 1
+    volume: 0.55
+    duration: 1
 --- !u!1 &1279967473
 GameObject:
   m_ObjectHideFlags: 0
@@ -2500,6 +2694,7 @@ Transform:
   - {fileID: 437958434}
   - {fileID: 1585565065}
   - {fileID: 2130576412}
+  - {fileID: 1271739939}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
 --- !u!1 &1293293825

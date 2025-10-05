@@ -23,10 +23,8 @@ public class GrowthPeriod {
 public class Plant : Item {
     [Header("Plant")]
     [SerializeField] protected List<GrowthPeriod> growthPeriods_;
-    [SerializeField] private int growthDay_ = 0;
     protected int currentPeriod_;
     protected int totalPeriod_;
-    private int health_ = 1;
     protected Triggerable triggerable_;
     private Harvestable harvestable_;
 
@@ -62,15 +60,15 @@ public class Plant : Item {
         return false;
     }
 
-    public virtual void Growth(int days = 1) {
-        growthDay_ += days;
+    public override void Growth(int days = 1) {
+        base.Growth(days);
         UpdatePeriod();
     }
 
     protected virtual void UpdatePeriod() {
         currentPeriod_ = growthPeriods_.Count - 1;
         for (int i = 0; i < growthPeriods_.Count; i++) {
-            if (growthPeriods_[i].day >= growthDay_) {
+            if (growthPeriods_[i].day >= days_) {
                 currentPeriod_ = i;
                 break;
             }

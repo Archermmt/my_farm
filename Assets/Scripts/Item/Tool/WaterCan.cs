@@ -13,12 +13,12 @@ public class WaterCan : Tool {
         return grid.HasTag(FieldTag.Dug);
     }
 
-    public override Dictionary<ItemData, int> Apply(List<Cursor> cursors, int amount) {
+    protected override void ApplyToGrid(List<Cursor> cursors, int amount) {
+        AudioManager.Instance.PlaySound(toolType.ToString());
         FieldLayer layer = FieldManager.Instance.GetLayer(FieldTag.Watered);
         foreach (Cursor cursor in cursors) {
             layer.AddGrid(cursor.grid, wateredTile_);
         }
-        return new Dictionary<ItemData, int>();
     }
 
     public override ToolType toolType { get { return ToolType.WaterCan; } }

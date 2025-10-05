@@ -173,7 +173,8 @@ MonoBehaviour:
     period: 0
     min: 4
     max: 8
-    effects: 01000000
+    sound: 
+    effect: 1
 --- !u!114 &963997281765174432
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -187,13 +188,13 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   item_name_: Tumbleweed
+  days_: 0
   growthPeriods_:
   - sprite: {fileID: 21300000, guid: 8298ab725cafa93429a58bd3e8273289, type: 3}
     day: 0
     health: 5
     harvestTools: 03000000
     statusList: 07000000
-  growthDay_: 0
 --- !u!1 &4507575748557189761
 GameObject:
   m_ObjectHideFlags: 0

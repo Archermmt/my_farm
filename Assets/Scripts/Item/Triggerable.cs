@@ -13,6 +13,7 @@ public class Triggerable : MonoBehaviour {
     [Header("Trigger.Nudge")]
     [SerializeField] private List<string> nudgeTargets_;
     [SerializeField] private float nudgePauseSecs_ = 0.04f;
+    [SerializeField] private string nudgeSound_ = "";
 
     private bool rotating_ = false;
     private WaitForSeconds nudgePause_;
@@ -55,6 +56,9 @@ public class Triggerable : MonoBehaviour {
 
     private IEnumerator Rotate(Item item, bool clock_wise) {
         rotating_ = true;
+        if (nudgeSound_.Length > 0) {
+            AudioManager.Instance.PlaySound(nudgeSound_);
+        }
         if (clock_wise) {
             for (int i = 0; i < 4; i++) {
                 item.transform.Rotate(0f, 0f, -2f);

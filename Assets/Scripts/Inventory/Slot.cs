@@ -134,7 +134,7 @@ public class Slot : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndDragHand
   public void OnBeginDrag(PointerEventData eventData) {
     if (itemMeta_ != null) {
       Player.Instance.Freeze();
-      GameObject prefab = Resources.Load<GameObject>("Prefab/Item/Dragged");
+      GameObject prefab = Resources.Load<GameObject>("Prefab/Inventory/Dragged");
       dragging_ = Instantiate(prefab, transform);
       dragging_.GetComponent<Image>().sprite = itemMeta_.sprite;
       Select();

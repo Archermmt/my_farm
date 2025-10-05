@@ -10,7 +10,7 @@ public class Container : MonoBehaviour {
 
     public virtual void Setup(Transform owner) {
         slots_ = new List<Slot>();
-        GameObject slot_prefab = Resources.Load<GameObject>("Prefab/Slot");
+        GameObject slot_prefab = Resources.Load<GameObject>("Prefab/Inventory/Slot");
         for (int i = 0; i < max_capacity_; i++) {
             Slot slot = Instantiate(slot_prefab, gameObject.transform).GetComponent<Slot>();
             slot.gameObject.name = "Slot_" + i;
@@ -21,7 +21,6 @@ public class Container : MonoBehaviour {
         current_ = 0;
         IncreaseCapacity(start_capacity_);
     }
-
 
     public int AddItem(ItemData item_data, int amount = 1) {
         Slot slot = FindSlot(item_data);

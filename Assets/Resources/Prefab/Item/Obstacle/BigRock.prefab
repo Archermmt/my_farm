@@ -153,11 +153,8 @@ MonoBehaviour:
     period: 0
     min: 2
     max: 3
-    effects: 04000000
-  harvestStartSec_: 0.3
-  harvetEndSec_: 1
-  effectStartSec_: 0.2
-  effectEndSec_: 0.2
+    sound: StoneShatter
+    effect: 4
 --- !u!114 &-5549613557826047339
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -171,5 +168,5 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   item_name_: BigRock
+  days_: 0
   harvestTools: 05000000
-  health_: 2

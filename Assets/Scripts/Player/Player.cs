@@ -83,9 +83,11 @@ public class Player : Singleton<Player> {
             if (Input.GetKey(KeyCode.LeftShift) || Input.GetKey(KeyCode.RightShift)) {
                 action_ = Action.Walk;
                 speed = walkSpeed_;
+                AudioManager.Instance.PlaySound("FootStepSoft");
             } else {
                 action_ = Action.Run;
                 speed = runSpeed_;
+                AudioManager.Instance.PlaySound("FootStepHard");
             }
             // set direction
             if (movement.x > 0)

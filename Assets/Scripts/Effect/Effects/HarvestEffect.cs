@@ -13,14 +13,14 @@ public class HarvestEffect : Effect {
         emptySprite_ = itemImg_.sprite;
     }
 
-    public override void StartEffect(EffectData data) {
+    public override void StartEffect(EffectMeta data) {
         gameObject.SetActive(true);
         itemImg_.sprite = data.item.sprite;
         amount_.text = "X " + data.amount;
         animator_.SetTrigger("harvest");
     }
 
-    public override void EndEffect(EffectData data) {
+    public override void EndEffect(EffectMeta data) {
         itemImg_.sprite = emptySprite_;
         amount_.text = "";
         gameObject.SetActive(false);

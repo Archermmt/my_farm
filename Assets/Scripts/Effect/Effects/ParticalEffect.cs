@@ -1,9 +1,9 @@
 public class ParticalEffect : Effect {
-    public override void StartEffect(EffectData data) {
+    public override void StartEffect(EffectMeta data) {
         gameObject.SetActive(true);
     }
 
-    public override void EndEffect(EffectData data) {
+    public override void EndEffect(EffectMeta data) {
         gameObject.SetActive(false);
     }
 }

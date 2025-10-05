@@ -67,6 +67,7 @@ public class Tool : Item {
   }
 
   public override Dictionary<ItemData, int> Apply(List<Cursor> cursors, int amount) {
+    AudioManager.Instance.PlaySound(toolType.ToString());
     Dictionary<ItemData, int> items = new Dictionary<ItemData, int>();
     if (HasStatus(ItemStatus.ItemUsable)) {
       int level = GetHoldLevel();
@@ -80,9 +81,13 @@ public class Tool : Item {
           }
         }
       }
+    } else if (HasStatus(ItemStatus.GridUsable)) {
+      ApplyToGrid(cursors, amount);
     }
     return items;
   }
+
+  protected virtual void ApplyToGrid(List<Cursor> cursors, int amount) { }
 
   protected override bool Dropable(FieldGrid grid) {
     return false;

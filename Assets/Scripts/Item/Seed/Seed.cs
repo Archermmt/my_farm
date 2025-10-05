@@ -41,6 +41,7 @@ public class Seed : Item {
         for (int i = 0; i < crop_num; i++) {
             Item crop = ItemManager.Instance.CreateItem(cropName_, cursors[i].grid.GetCenter());
             cursors[i].grid.AddItem(crop);
+            AudioManager.Instance.AddSound("PlantSeed");
         }
         Dictionary<ItemData, int> crops = new Dictionary<ItemData, int> { { meta, -crop_num } };
         return crops;

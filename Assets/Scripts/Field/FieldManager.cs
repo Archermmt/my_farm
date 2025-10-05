@@ -64,8 +64,10 @@ public class FieldManager : Singleton<FieldManager> {
 
     public Dictionary<ItemData, int> UseItem(Item item, List<Cursor> cursors, int amount) {
         EffectManager.Instance.ClearEffects();
+        AudioManager.Instance.ClearSounds();
         Dictionary<ItemData, int> item_amounts = item.Apply(cursors, amount);
         EffectManager.Instance.TriggerEffects();
+        AudioManager.Instance.TriggerSounds();
         foreach (Cursor cursor in cursors) {
             cursor.SetMode(CursorMode.Mute);
         }
