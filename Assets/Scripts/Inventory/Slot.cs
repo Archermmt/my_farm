@@ -109,6 +109,7 @@ public class Slot : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndDragHand
       highlight_.color = new Color(0, 0, 0, 0);
       EventHandler.CallUpdateHands(owner_, containerType_);
     }
+    describer_.SetActive(false);
   }
 
   public void Enable() {
@@ -181,10 +182,10 @@ public class Slot : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndDragHand
   private void DescribeItem(ItemData item_data, int amount) {
     Vector3 player_pos = Player.Instance.GetViewportPosition();
     Vector3 item_pos = transform.position;
-    if (player_pos.y > 0.3f) {
+    if (player_pos.y > 0.2f) {
       describer_.transform.GetComponent<RectTransform>().pivot = new Vector2(0.5f, 0f);
       describer_.transform.position = new Vector3(item_pos.x, item_pos.y + 50f, item_pos.z);
-    } else if (player_pos.y <= 0.3f) {
+    } else if (player_pos.y <= 0.2f) {
       describer_.transform.GetComponent<RectTransform>().pivot = new Vector2(0.5f, 1f);
       describer_.transform.position = new Vector3(item_pos.x, item_pos.y - 50f, item_pos.z);
     }

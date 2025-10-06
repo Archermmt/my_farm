@@ -29,6 +29,7 @@ public class Item : MonoBehaviour {
     [SerializeField] private string item_name_;
     [SerializeField] protected int days_ = 0;
     protected int health_;
+    protected bool freezed_;
     protected Direction direction_;
     protected SpriteRenderer render_;
     protected List<AnimationTag> animationTags_;
@@ -101,7 +102,7 @@ public class Item : MonoBehaviour {
         return (min, max);
     }
 
-    public virtual List<CursorMeta> GetCursorMetas(List<FieldGrid> grids, FieldGrid start, Vector3 pos) {
+    public virtual List<CursorMeta> GetCursorMetas(List<FieldGrid> grids, FieldGrid start, Vector3 pos, int amount) {
         ResetStatus();
         bool dropable = Dropable(start) && grids.Contains(start);
         AddStatus(dropable ? ItemStatus.Dropable : ItemStatus.Unusable);
@@ -188,9 +189,18 @@ public class Item : MonoBehaviour {
         return str;
     }
 
+    public void Freeze() {
+        freezed_ = true;
+    }
+
+    public void Unfreeze() {
+        freezed_ = false;
+    }
+
     public ItemData meta { get { return meta_; } }
     public Direction direction { get { return direction_; } }
     public SpriteRenderer render { get { return render_; } }
     public List<AnimationTag> animationTags { get { return animationTags_; } }
     protected virtual int holdLevelMax { get { return 1; } }
+    public bool freezed { get { return freezed_; } }
 }

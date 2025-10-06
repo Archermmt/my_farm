@@ -45,6 +45,7 @@ public class Player : Singleton<Player> {
         inventory_.AddItem(ItemManager.Instance.FindItem("Basket"));
         inventory_.AddItem(ItemManager.Instance.FindItem("Pickaxe"));
         inventory_.AddItem(ItemManager.Instance.FindItem("Axe"));
+        ItemManager.Instance.Freeze();
         UpdateAnimators(direction_, action_);
         EventHandler.UpdateHandsEvent += UpdateHands;
         EventHandler.UpdateInventoryEvent += UpdateInventory;
@@ -58,7 +59,7 @@ public class Player : Singleton<Player> {
     }
 
     private void Update() {
-        if (carried_.Key != null) {
+        if (carried_.Key != null && !ItemManager.Instance.freezed) {
             Action action = Action.Idle;
             if (Input.GetMouseButtonDown(0)) {
                 action = Action.DropItem;
@@ -69,6 +70,7 @@ public class Player : Singleton<Player> {
             }
             ProcessCarried(action);
         }
+        ProcessInput();
         InputTest();
     }
 
@@ -106,6 +108,7 @@ public class Player : Singleton<Player> {
                 direction_ = Direction.Down;
             else
                 direction_ = Direction.Up;
+            ItemManager.Instance.Unfreeze();
         }
         UpdateAnimators(direction_, action_);
         rigidBody_.MovePosition(rigidBody_.position + movement * speed * Time.deltaTime);
@@ -113,7 +116,7 @@ public class Player : Singleton<Player> {
 
     private void ProcessCarried(Action action) {
         direction_ = MouseUtils.GetDirection(camera_, transform.position);
-        List<Cursor> cursors = FieldManager.Instance.CheckItem(carried_.Key, transform.position, MouseUtils.MouseToWorld(camera_), direction_);
+        List<Cursor> cursors = FieldManager.Instance.CheckItem(carried_.Key, transform.position, MouseUtils.MouseToWorld(camera_), direction_, carried_.Value.current);
         if (cursors.Count > 0) {
             if (action == Action.DropItem && carried_.Key.HasStatus(ItemStatus.Dropable)) {
                 int drop_amount = FieldManager.Instance.DropItem(carried_.Key, cursors);
@@ -228,9 +231,7 @@ public class Player : Singleton<Player> {
         }
     }
 
-    // TMINFO:debug only
-    private void InputTest() {
-        // pick item test
+    private void ProcessInput() {
         if (Input.GetKeyDown(KeyCode.P)) {
             if (inventory_.backpackOpening) {
                 Unfreeze();
@@ -241,25 +242,19 @@ public class Player : Singleton<Player> {
                 ItemManager.Instance.Freeze();
                 inventory_.OpenBackpack();
             }
-            /*
-            inventory_.AddItem(ItemManager.Instance.FindItem("Hoe"));
-            inventory_.AddItem(ItemManager.Instance.FindItem("WaterCan"));
-            inventory_.AddItem(ItemManager.Instance.FindItem("Scythe"));
-            inventory_.AddItem(ItemManager.Instance.FindItem("Basket"));
-            inventory_.AddItem(ItemManager.Instance.FindItem("Pickaxe"));
-            inventory_.AddItem(ItemManager.Instance.FindItem("Axe"));
-            for (int i = 0; i < 81; i++) {
-                inventory_.AddItem(ItemManager.Instance.FindItem("ParsnipSeed"));
-            }
-            for (int i = 0; i < 50; i++) {
-                inventory_.AddItem(ItemManager.Instance.RandomItem());
-            }
-            */
-        } else if (Input.GetKeyUp(KeyCode.T)) {
+        }
+
+    }
+
+    // TMINFO:debug only
+    private void InputTest() {
+        // pick item test
+        if (Input.GetKeyUp(KeyCode.T)) {
             EnvManager.Instance.UpdateTime(TimeType.Day, 5);
-        } else if (Input.GetKeyDown(KeyCode.C) && carried_.Key != null) {
-            ProcessCarried(Action.HoldItem);
-            ProcessCarried(Action.UseItem);
+        } else if (Input.GetKeyDown(KeyCode.C)) {
+            ItemData item = ItemManager.Instance.FindItem("ParsnipSeed");
+            inventory_.AddItem(item, 10);
+            inventory_.RemoveItem(item, 10);
         }
     }
 

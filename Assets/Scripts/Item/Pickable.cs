@@ -18,7 +18,7 @@ public class Pickable : Item {
     }
 
     private void FixedUpdate() {
-        if (target_ == null || ItemManager.Instance.freezed) {
+        if (target_ == null || ItemManager.Instance.freezed || freezed_) {
             return;
         }
         float distance = Vector3.Distance(target_.position, transform.position);
@@ -42,6 +42,7 @@ public class Pickable : Item {
     protected virtual void OnTriggerExit2D(Collider2D collision) {
         if (trackTargets_.Contains(collision.tag) && target_ != null && target_.tag == collision.tag) {
             target_ = null;
+            Unfreeze();
         }
     }
 }

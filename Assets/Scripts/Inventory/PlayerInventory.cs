@@ -20,20 +20,20 @@ public class PlayerInventory : BaseInventory {
 
     public void OpenBackpack() {
         if (!backpackOpening_) {
-            GetContainer(ContainerType.ToolBar).gameObject.SetActive(false);
-            GetContainer(ContainerType.Pocket).gameObject.SetActive(true);
+            GetContainer(ContainerType.ToolBar).Close();
+            GetContainer(ContainerType.Pocket).Open();
+            GetContainer(ContainerType.Backpack).Open();
             GetContainer(ContainerType.Pocket).CopyFrom(GetContainer(ContainerType.ToolBar));
-            GetContainer(ContainerType.Backpack).gameObject.SetActive(true);
             GetContainer(ContainerType.Backpack).transform.parent.gameObject.SetActive(true);
             backpackOpening_ = true;
         }
     }
     public void CloseBackpack() {
         if (backpackOpening_) {
-            GetContainer(ContainerType.ToolBar).gameObject.SetActive(true);
+            GetContainer(ContainerType.ToolBar).Open();
             GetContainer(ContainerType.ToolBar).CopyFrom(GetContainer(ContainerType.Pocket));
-            GetContainer(ContainerType.Pocket).gameObject.SetActive(false);
-            GetContainer(ContainerType.Backpack).gameObject.SetActive(false);
+            GetContainer(ContainerType.Pocket).Close();
+            GetContainer(ContainerType.Backpack).Close();
             GetContainer(ContainerType.Backpack).transform.parent.gameObject.SetActive(false);
             backpackOpening_ = false;
         }

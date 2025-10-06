@@ -12,7 +12,7 @@ public class Seed : Pickable {
         }
     }
 
-    public override List<CursorMeta> GetCursorMetas(List<FieldGrid> grids, FieldGrid start, Vector3 pos) {
+    public override List<CursorMeta> GetCursorMetas(List<FieldGrid> grids, FieldGrid start, Vector3 pos, int amount) {
         ResetStatus();
         int hold_level = GetHoldLevel();
         if (hold_level == -1) {
@@ -20,7 +20,7 @@ public class Seed : Pickable {
                 AddStatus(ItemStatus.GridUsable);
                 return new List<CursorMeta> { new CursorMeta(start.GetCenter(), start, null, CursorMode.ValidGrid) };
             }
-            return base.GetCursorMetas(grids, start, pos);
+            return base.GetCursorMetas(grids, start, pos, amount);
         }
         List<CursorMeta> metas = new List<CursorMeta>();
         List<FieldGrid> v_grids = hold_level == 0 ? new List<FieldGrid> { start } : grids;
@@ -29,7 +29,7 @@ public class Seed : Pickable {
             if (HasStatus(ItemStatus.GridUsable) && Plantable(grid)) {
                 metas.Add(new CursorMeta(grid.GetCenter(), grid, null, CursorMode.ValidGrid));
             }
-            if (metas.Count >= use_count) {
+            if (metas.Count >= use_count || metas.Count >= amount) {
                 break;
             }
         }

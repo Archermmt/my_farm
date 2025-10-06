@@ -19,7 +19,7 @@ public class Tool : Item {
     return GetScopeByDirect(center, grid_min, grid_max, direct);
   }
 
-  public override List<CursorMeta> GetCursorMetas(List<FieldGrid> grids, FieldGrid start, Vector3 pos) {
+  public override List<CursorMeta> GetCursorMetas(List<FieldGrid> grids, FieldGrid start, Vector3 pos, int amount) {
     ResetStatus();
     int hold_level = GetHoldLevel();
     if (hold_level == -1) {
@@ -32,7 +32,7 @@ public class Tool : Item {
         return new List<CursorMeta> { new CursorMeta(start.GetCenter(), start, null, CursorMode.ValidGrid) };
       }
       foreach (Item item in start.items) {
-        if (item.ToolUsable(start, this, hold_level)) {
+        if (!item.freezed && item.ToolUsable(start, this, hold_level)) {
           AddStatus(ItemStatus.ItemUsable);
           return new List<CursorMeta> { new CursorMeta(item.AlignGrid(), start, item, CursorMode.ValidPos) };
         }
@@ -50,7 +50,7 @@ public class Tool : Item {
         }
       } else if (HasStatus(ItemStatus.ItemUsable)) {
         foreach (Item item in grid.items) {
-          if (item.ToolUsable(grid, this, hold_level)) {
+          if (!item.freezed && item.ToolUsable(grid, this, hold_level)) {
             metas.Add(new CursorMeta(item.AlignGrid(), grid, item, CursorMode.ValidPos));
           }
           if (metas.Count >= use_count) {

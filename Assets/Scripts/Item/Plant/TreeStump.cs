@@ -8,7 +8,6 @@ public class TreeStump : Plant {
     private Animator animator_;
     private WaitForSeconds destroyWait_;
 
-
     protected override void Awake() {
         animator_ = GetComponent<Animator>();
         destroyWait_ = new WaitForSeconds(destroySecs_);

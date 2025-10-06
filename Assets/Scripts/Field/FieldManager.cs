@@ -52,28 +52,6 @@ public class FieldManager : Singleton<FieldManager> {
         return GridAt(cell_pos.x - start.x, cell_pos.y - start.y);
     }
 
-    public int DropItem(Item item, List<Cursor> cursors) {
-        foreach (Cursor cursor in cursors) {
-            Item new_item = ItemManager.Instance.CreateItem(item.meta, cursor.transform.position);
-            FieldGrid grid = GetGrid(new_item.AlignGrid());
-            grid.AddItem(new_item);
-            cursor.SetMode(CursorMode.Mute);
-        }
-        return cursors.Count;
-    }
-
-    public Dictionary<ItemData, int> UseItem(Item item, List<Cursor> cursors, int amount) {
-        EffectManager.Instance.ClearEffects();
-        AudioManager.Instance.ClearSounds();
-        Dictionary<ItemData, int> item_amounts = item.Apply(cursors, amount);
-        EffectManager.Instance.TriggerEffects();
-        AudioManager.Instance.TriggerSounds();
-        foreach (Cursor cursor in cursors) {
-            cursor.SetMode(CursorMode.Mute);
-        }
-        return item_amounts;
-    }
-
     public Cursor GetFieldCursor(int idx) {
         while (idx >= fieldCursors_.Count) {
             GameObject prefab = Resources.Load<GameObject>("Prefab/Field/Cursor");
@@ -118,7 +96,7 @@ public class FieldManager : Singleton<FieldManager> {
         return new_layer;
     }
 
-    public List<Cursor> CheckItem(Item item, Vector3 anchor, Vector3 world_pos, Direction mouse_direct) {
+    public List<Cursor> CheckItem(Item item, Vector3 anchor, Vector3 world_pos, Direction mouse_direct, int amount) {
         if (freezed_) {
             return new List<Cursor>();
         }
@@ -141,7 +119,7 @@ public class FieldManager : Singleton<FieldManager> {
         if (start == null) {
             return new List<Cursor>();
         }
-        List<CursorMeta> metas = item.GetCursorMetas(grids, start, world_pos);
+        List<CursorMeta> metas = item.GetCursorMetas(grids, start, world_pos, amount);
         List<Cursor> cursors = new List<Cursor>();
         for (int i = 0; i < metas.Count; i++) {
             Cursor cursor = GetFieldCursor(i);
@@ -153,6 +131,33 @@ public class FieldManager : Singleton<FieldManager> {
         }
         return cursors;
     }
+
+    public int DropItem(Item item, List<Cursor> cursors) {
+        foreach (Cursor cursor in cursors) {
+            Item new_item = ItemManager.Instance.CreateItem(item.meta, cursor.transform.position);
+            if (new_item is Pickable) {
+                ItemManager.Instance.AddPickable((Pickable)new_item, true);
+            } else {
+                FieldGrid grid = GetGrid(new_item.AlignGrid());
+                grid.AddItem(new_item);
+            }
+            cursor.SetMode(CursorMode.Mute);
+        }
+        return cursors.Count;
+    }
+
+    public Dictionary<ItemData, int> UseItem(Item item, List<Cursor> cursors, int amount) {
+        EffectManager.Instance.ClearEffects();
+        AudioManager.Instance.ClearSounds();
+        Dictionary<ItemData, int> item_amounts = item.Apply(cursors, amount);
+        EffectManager.Instance.TriggerEffects();
+        AudioManager.Instance.TriggerSounds();
+        foreach (Cursor cursor in cursors) {
+            cursor.SetMode(CursorMode.Mute);
+        }
+        return item_amounts;
+    }
+
 
     private void BeforeSceneUnload(SceneName scene_name) {
     }

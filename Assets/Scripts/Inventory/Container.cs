@@ -26,14 +26,14 @@ public class Container : MonoBehaviour {
     public void CopyFrom(Container other) {
         int amount = Math.Min(current_, other.current);
         for (int i = 0; i < amount; i++) {
-            if (other.SlotAt(i).current > 0) {
-                slots_[i].CopyFrom(other.SlotAt(i));
+            if (other.GetSlot(i).current > 0) {
+                slots_[i].CopyFrom(other.GetSlot(i));
             }
         }
     }
 
     public int AddItem(ItemData item_data, int amount = 1) {
-        Slot slot = FindSlot(item_data);
+        Slot slot = FindSlotToAdd(item_data);
         if (slot == null) {
             return amount;
         }
@@ -44,7 +44,7 @@ public class Container : MonoBehaviour {
         while (slot.GetSurplus(item_data) < left) {
             slot.IncreaseAmount(slot.GetSurplus(item_data));
             left -= slot.GetSurplus(item_data);
-            slot = FindSlot(item_data);
+            slot = FindSlotToAdd(item_data);
             if (slot == null) {
                 return left;
             }
@@ -54,7 +54,7 @@ public class Container : MonoBehaviour {
     }
 
     public int RemoveItem(ItemData item_data, int amount = 1) {
-        Slot slot = FindSlot(item_data);
+        Slot slot = FindSlotToRemove(item_data);
         if (slot == null) {
             return amount;
         }
@@ -62,7 +62,7 @@ public class Container : MonoBehaviour {
         while (slot.current < left) {
             slot.DecreaseAmount(slot.current);
             left -= slot.current;
-            slot = FindSlot(item_data);
+            slot = FindSlotToRemove(item_data);
             if (slot == null) {
                 return left;
             }
@@ -71,13 +71,18 @@ public class Container : MonoBehaviour {
         return 0;
     }
 
-    public Slot SlotAt(int idx) {
-        return slots_[idx];
-    }
-
-    public Slot FindSlot(ItemData item_data, int amount = 1) {
+    public Slot FindSlotToAdd(ItemData item_data, int amount = 1) {
         foreach (Slot slot in slots_) {
             if (slot.GetSurplus(item_data) >= amount) {
+                return slot;
+            }
+        }
+        return null;
+    }
+
+    public Slot FindSlotToRemove(ItemData item_data, int amount = 1) {
+        foreach (Slot slot in slots_) {
+            if (slot.current >= amount && slot.itemMeta.name == item_data.name) {
                 return slot;
             }
         }
@@ -134,6 +139,20 @@ public class Container : MonoBehaviour {
 
     public Slot GetSlot(int idx) {
         return slots_[idx];
+    }
+
+    public void Open() {
+        foreach (Slot slot in slots_) {
+            slot.Deselect();
+        }
+        gameObject.SetActive(true);
+    }
+
+    public void Close() {
+        foreach (Slot slot in slots_) {
+            slot.Deselect();
+        }
+        gameObject.SetActive(false);
     }
 
     public int current { get { return current_; } }

@@ -43,7 +43,10 @@ public class ItemManager : Singleton<ItemManager> {
         return itemSpritesMap_[sprite];
     }
 
-    public void AddPickable(Pickable item) {
+    public void AddPickable(Pickable item, bool freeze = false) {
+        if (freeze) {
+            item.Freeze();
+        }
         if (!pickableItems_[currentScene_].Contains(item)) {
             pickableItems_[currentScene_].Add(item);
         }
@@ -52,8 +55,8 @@ public class ItemManager : Singleton<ItemManager> {
     public void RemovePickable(Pickable item) {
         if (pickableItems_[currentScene_].Contains(item)) {
             pickableItems_[currentScene_].Remove(item);
-            Destroy(item.gameObject);
         }
+        Destroy(item.gameObject);
     }
 
     public ItemData RandomItem(List<ItemType> types = null) {

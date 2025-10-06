@@ -19,6 +19,9 @@ public class TreeTrunk : Plant {
         destroyWait_ = new WaitForSeconds(destroySecs_);
         matureSize_ = collider_.size;
         matureOffset_ = collider_.offset;
+        if (stump_ != null) {
+            stump_.Freeze();
+        }
         base.Awake();
     }
 
@@ -64,9 +67,6 @@ public class TreeTrunk : Plant {
                 Destroy(transform.parent.gameObject);
             }
         }
-        if (stump_ != null && currentPeriod_ >= maturePeriod_) {
-            grid.AddItem(stump_);
-        }
     }
 
     protected override void UpdatePeriod() {
@@ -106,7 +106,9 @@ public class TreeTrunk : Plant {
         base.DestroyItem(grid);
         if (stump_ == null) {
             Destroy(transform.parent.gameObject);
+        } else if (currentPeriod_ >= maturePeriod_) {
+            grid.AddItem(stump_);
+            stump_.Unfreeze();
         }
-
     }
 }

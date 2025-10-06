@@ -3150,7 +3150,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   containerType_: 2
   max_capacity_: 36
-  start_capacity_: 36
+  start_capacity_: 12
 --- !u!1 &1585565064
 GameObject:
   m_ObjectHideFlags: 0
