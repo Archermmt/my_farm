@@ -50,7 +50,7 @@ public class Triggerable : MonoBehaviour {
         }
     }
 
-    private bool Nudgable(Collider2D collision, Item item) {
+    public bool Nudgable(Collider2D collision, Item item) {
         return item.HasStatus(ItemStatus.Nudgable) && gameObject.activeSelf && gameObject.activeInHierarchy && nudgeTargets_ != null && nudgeTargets_.Contains(collision.tag);
     }
 
@@ -84,7 +84,7 @@ public class Triggerable : MonoBehaviour {
         rotating_ = false;
     }
 
-    private bool Fadable(Collider2D collision, Item item) {
+    public bool Fadable(Collider2D collision, Item item) {
         return item.HasStatus(ItemStatus.Fadable) && gameObject.activeSelf && gameObject.activeInHierarchy && fadeTargets_ != null && fadeTargets_.Contains(collision.tag);
     }
 

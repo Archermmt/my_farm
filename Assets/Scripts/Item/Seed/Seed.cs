@@ -53,7 +53,7 @@ public class Seed : Pickable {
 
     protected override Vector2Int GetScopeRange() {
         int level = GetHoldLevel();
-        if (level <= 1) { return new Vector2Int(3, 2); }
+        if (level <= 1) { return new Vector2Int(3, 1); }
         if (level == 2) { return new Vector2Int(3, 3); }
         if (level == 3) { return new Vector2Int(9, 3); }
         return new Vector2Int(9, 9);

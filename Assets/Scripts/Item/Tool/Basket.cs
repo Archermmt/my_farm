@@ -5,6 +5,7 @@ public class Basket : Tool {
     protected override void Awake() {
         base.Awake();
         animationTags_ = new List<AnimationTag> { AnimationTag.Pick };
+        scopeRanges_[0] = new Vector2Int(3, 1);
     }
 
     protected override bool GridUsable(FieldGrid grid) {

@@ -51,7 +51,6 @@ public class Item : MonoBehaviour {
         meta_ = item_data;
         render_.sprite = item_data.sprite;
         health_ = item_data.health;
-        days_ = 0;
     }
 
     public virtual void DestroyItem(FieldGrid grid) {

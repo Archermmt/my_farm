@@ -62,11 +62,13 @@ public class Plant : Item {
     }
 
     protected virtual void UpdatePeriod() {
-        currentPeriod_ = growthPeriods_.Count - 1;
-        for (int i = 0; i < growthPeriods_.Count; i++) {
-            if (growthPeriods_[i].day >= days_) {
-                currentPeriod_ = i;
-                break;
+        currentPeriod_ = 0;
+        if (growthPeriods_.Count > 1) {
+            for (int i = 0; i < growthPeriods_.Count; i++) {
+                if (days_ >= growthPeriods_[i].day && (i == growthPeriods_.Count - 1 || days_ < growthPeriods_[i + 1].day)) {
+                    currentPeriod_ = i;
+                    break;
+                }
             }
         }
         ChangeSprite(growthPeriods_[currentPeriod_].sprite);

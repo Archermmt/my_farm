@@ -9,6 +9,7 @@ public class ItemManager : Singleton<ItemManager> {
     private Dictionary<SceneName, Dictionary<string, Transform>> itemHolders_;
     private Dictionary<SceneName, List<Pickable>> pickableItems_;
     private SceneName currentScene_ = SceneName.StartScene;
+    private bool freezed_ = false;
 
     protected override void Awake() {
         base.Awake();
@@ -134,10 +135,20 @@ public class ItemManager : Singleton<ItemManager> {
 
     private void GenerateItems(SceneName scene_name) {
         Transform holder = GameObject.FindGameObjectWithTag("Items").transform.Find("Generator");
-        if (holder != null) {
+        if (holder != null && holder.gameObject.activeSelf) {
             foreach (Generator generator in holder.GetComponentsInChildren<Generator>()) {
                 generator.Generate();
             }
         }
     }
+
+    public void Freeze() {
+        freezed_ = true;
+    }
+
+    public void Unfreeze() {
+        freezed_ = false;
+    }
+
+    public bool freezed { get { return freezed_; } }
 }

@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -22,6 +23,15 @@ public class Container : MonoBehaviour {
         IncreaseCapacity(start_capacity_);
     }
 
+    public void CopyFrom(Container other) {
+        int amount = Math.Min(current_, other.current);
+        for (int i = 0; i < amount; i++) {
+            if (other.SlotAt(i).current > 0) {
+                slots_[i].CopyFrom(other.SlotAt(i));
+            }
+        }
+    }
+
     public int AddItem(ItemData item_data, int amount = 1) {
         Slot slot = FindSlot(item_data);
         if (slot == null) {
@@ -40,7 +50,7 @@ public class Container : MonoBehaviour {
             }
         }
         slot.IncreaseAmount(left);
-        return left;
+        return 0;
     }
 
     public int RemoveItem(ItemData item_data, int amount = 1) {
@@ -58,7 +68,11 @@ public class Container : MonoBehaviour {
             }
         }
         slot.DecreaseAmount(left);
-        return left;
+        return 0;
+    }
+
+    public Slot SlotAt(int idx) {
+        return slots_[idx];
     }
 
     public Slot FindSlot(ItemData item_data, int amount = 1) {

@@ -39,6 +39,12 @@ public class Player : Singleton<Player> {
     }
 
     private void OnEnable() {
+        inventory_.AddItem(ItemManager.Instance.FindItem("Hoe"));
+        inventory_.AddItem(ItemManager.Instance.FindItem("WaterCan"));
+        inventory_.AddItem(ItemManager.Instance.FindItem("Scythe"));
+        inventory_.AddItem(ItemManager.Instance.FindItem("Basket"));
+        inventory_.AddItem(ItemManager.Instance.FindItem("Pickaxe"));
+        inventory_.AddItem(ItemManager.Instance.FindItem("Axe"));
         UpdateAnimators(direction_, action_);
         EventHandler.UpdateHandsEvent += UpdateHands;
         EventHandler.UpdateInventoryEvent += UpdateInventory;
@@ -226,6 +232,16 @@ public class Player : Singleton<Player> {
     private void InputTest() {
         // pick item test
         if (Input.GetKeyDown(KeyCode.P)) {
+            if (inventory_.backpackOpening) {
+                Unfreeze();
+                ItemManager.Instance.Unfreeze();
+                inventory_.CloseBackpack();
+            } else {
+                Freeze();
+                ItemManager.Instance.Freeze();
+                inventory_.OpenBackpack();
+            }
+            /*
             inventory_.AddItem(ItemManager.Instance.FindItem("Hoe"));
             inventory_.AddItem(ItemManager.Instance.FindItem("WaterCan"));
             inventory_.AddItem(ItemManager.Instance.FindItem("Scythe"));
@@ -238,6 +254,7 @@ public class Player : Singleton<Player> {
             for (int i = 0; i < 50; i++) {
                 inventory_.AddItem(ItemManager.Instance.RandomItem());
             }
+            */
         } else if (Input.GetKeyUp(KeyCode.T)) {
             EnvManager.Instance.UpdateTime(TimeType.Day, 5);
         } else if (Input.GetKeyDown(KeyCode.C) && carried_.Key != null) {

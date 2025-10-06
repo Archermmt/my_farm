@@ -18,7 +18,7 @@ public class Pickable : Item {
     }
 
     private void FixedUpdate() {
-        if (target_ == null) {
+        if (target_ == null || ItemManager.Instance.freezed) {
             return;
         }
         float distance = Vector3.Distance(target_.position, transform.position);

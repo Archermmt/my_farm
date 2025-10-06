@@ -26,6 +26,10 @@ public class TreeTrunk : Plant {
         base.OnTriggerEnter2D(collision);
         if (stump_ != null && currentPeriod_ >= maturePeriod_) {
             triggerable_.TriggerItemEnter(collision, stump_);
+        } else if (triggerable_.Nudgable(collision, this)) {
+            Direction direction = transform.position.x > collision.transform.position.x ? Direction.Left : Direction.Right;
+            animator_.SetTrigger("wobble");
+            animator_.SetInteger("direction", (int)direction);
         }
     }
 
@@ -33,6 +37,10 @@ public class TreeTrunk : Plant {
         triggerable_.TriggerItemExit(collision, this);
         if (stump_ != null && currentPeriod_ >= maturePeriod_) {
             triggerable_.TriggerItemExit(collision, stump_);
+        } else if (triggerable_.Nudgable(collision, this)) {
+            Direction direction = transform.position.x > collision.transform.position.x ? Direction.Left : Direction.Right;
+            animator_.SetTrigger("wobble");
+            animator_.SetInteger("direction", (int)direction);
         }
     }
 
