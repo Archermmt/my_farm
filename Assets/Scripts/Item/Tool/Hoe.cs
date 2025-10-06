@@ -2,8 +2,6 @@ using UnityEngine;
 using System.Collections.Generic;
 
 public class Hoe : Tool {
-  [SerializeField] private RuleTile dugTile_;
-
   protected override void Awake() {
     base.Awake();
     animationTags_ = new List<AnimationTag> { AnimationTag.Wave, AnimationTag.Hoe };
@@ -18,7 +16,7 @@ public class Hoe : Tool {
     AudioManager.Instance.PlaySound(toolType.ToString());
     FieldLayer layer = FieldManager.Instance.GetLayer(FieldTag.Dug);
     foreach (Cursor cursor in cursors) {
-      layer.AddGrid(cursor.grid, dugTile_);
+      layer.AddGrid(cursor.grid);
     }
   }
 

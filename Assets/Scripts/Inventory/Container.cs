@@ -9,6 +9,14 @@ public class Container : MonoBehaviour {
     private List<Slot> slots_;
     private int current_;
 
+    private void OnEnable() {
+        EventHandler.BeforeSceneUnloadEvent += BeforeSceneUnload;
+    }
+
+    private void OnDisable() {
+        EventHandler.BeforeSceneUnloadEvent -= BeforeSceneUnload;
+    }
+
     public virtual void Setup(string owner) {
         slots_ = new List<Slot>();
         GameObject slot_prefab = Resources.Load<GameObject>("Prefab/Inventory/Slot");
@@ -141,18 +149,24 @@ public class Container : MonoBehaviour {
         return slots_[idx];
     }
 
-    public void Open() {
+    public void Deselect() {
         foreach (Slot slot in slots_) {
             slot.Deselect();
         }
+    }
+
+    public void Open() {
+        Deselect();
         gameObject.SetActive(true);
     }
 
     public void Close() {
-        foreach (Slot slot in slots_) {
-            slot.Deselect();
-        }
+        Deselect();
         gameObject.SetActive(false);
+    }
+
+    private void BeforeSceneUnload(SceneName scene_name) {
+        Deselect();
     }
 
     public int current { get { return current_; } }

@@ -91,6 +91,7 @@ public class FieldGrid {
 [RequireComponent(typeof(Tilemap))]
 public class FieldLayer : MonoBehaviour {
     [SerializeField] private FieldTag fieldTag_;
+    [SerializeField] private RuleTile tile_;
     protected List<FieldGrid> grids_;
     private Tilemap tilemap_;
 
@@ -103,10 +104,10 @@ public class FieldLayer : MonoBehaviour {
         fieldTag_ = tag;
     }
 
-    public void AddGrid(FieldGrid grid, RuleTile tile = null) {
+    public void AddGrid(FieldGrid grid) {
         grid.AddTag(fieldTag_);
-        if (tile != null) {
-            tilemap_.SetTile(Vector3Int.FloorToInt(grid.GetCenter()), tile);
+        if (tile_ != null) {
+            tilemap_.SetTile(Vector3Int.FloorToInt(grid.GetCenter()), tile_);
         }
         if (!grids_.Contains(grid)) {
             grids_.Add(grid);

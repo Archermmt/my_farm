@@ -2,8 +2,6 @@ using UnityEngine;
 using System.Collections.Generic;
 
 public class WaterCan : Tool {
-    [SerializeField] private RuleTile wateredTile_;
-
     protected override void Awake() {
         base.Awake();
         animationTags_ = new List<AnimationTag> { AnimationTag.Lift, AnimationTag.WaterCan };
@@ -18,7 +16,7 @@ public class WaterCan : Tool {
         AudioManager.Instance.PlaySound(toolType.ToString());
         FieldLayer layer = FieldManager.Instance.GetLayer(FieldTag.Watered);
         foreach (Cursor cursor in cursors) {
-            layer.AddGrid(cursor.grid, wateredTile_);
+            layer.AddGrid(cursor.grid);
         }
     }
 

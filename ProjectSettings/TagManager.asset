@@ -46,9 +46,6 @@ TagManager:
   - name: Enviroment
     uniqueID: 2792733103
     locked: 0
-  - name: Building
-    uniqueID: 3891281273
-    locked: 0
   - name: Player
     uniqueID: 2457893651
     locked: 0

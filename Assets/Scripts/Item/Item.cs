@@ -203,4 +203,5 @@ public class Item : MonoBehaviour {
     public List<AnimationTag> animationTags { get { return animationTags_; } }
     protected virtual int holdLevelMax { get { return 1; } }
     public bool freezed { get { return freezed_; } }
+    public int days { get { return days_; } }
 }

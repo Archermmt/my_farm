@@ -2,12 +2,31 @@ using System.Collections.Generic;
 using NUnit.Framework;
 using UnityEngine;
 
+
+[System.Serializable]
+public class ItemSave {
+    public string name;
+    public string item_name;
+    public string holder;
+    public int days;
+    public Vector3Save position;
+
+    public ItemSave(Item item, string holder) {
+        position = new Vector3Save(item.transform.position);
+        name = item.gameObject.name;
+        item_name = item.meta.name;
+        days = item.days;
+        this.holder = holder;
+    }
+}
+
 public class ItemManager : Singleton<ItemManager> {
     [SerializeField] private ItemData[] items_;
     private Dictionary<string, ItemData> itemsMap_;
     private Dictionary<Sprite, ItemData> itemSpritesMap_;
     private Dictionary<SceneName, Dictionary<string, Transform>> itemHolders_;
     private Dictionary<SceneName, List<Pickable>> pickableItems_;
+    private Dictionary<SceneName, List<ItemSave>> itemSaves_;
     private SceneName currentScene_ = SceneName.StartScene;
     private bool freezed_ = false;
 
@@ -23,6 +42,7 @@ public class ItemManager : Singleton<ItemManager> {
         }
         itemHolders_ = new Dictionary<SceneName, Dictionary<string, Transform>>();
         pickableItems_ = new Dictionary<SceneName, List<Pickable>>();
+        itemSaves_ = new Dictionary<SceneName, List<ItemSave>>();
     }
 
     private void OnEnable() {
@@ -71,7 +91,7 @@ public class ItemManager : Singleton<ItemManager> {
         return allowed_items[rand.Next(allowed_items.Count)];
     }
 
-    public Item CreateItem(ItemData item_data, Vector3 world_pos, Transform holder = null) {
+    public Item CreateItem(ItemData item_data, Vector3 world_pos, Transform holder = null, string name = "") {
         GameObject prefab = Resources.Load<GameObject>("Prefab/Item/" + item_data.type.ToString() + "/" + item_data.name);
         if (!prefab) {
             prefab = Resources.Load<GameObject>("Prefab/Item/" + item_data.type.ToString() + "/" + item_data.type.ToString());
@@ -100,26 +120,42 @@ public class ItemManager : Singleton<ItemManager> {
         if (item.meta == null) {
             item.SetItem(item_data);
         }
-        int cnt = 1;
-        while (item_holder.Find("Gen_" + item_data.name + "_" + cnt) != null) {
-            cnt++;
+        if (name.Length > 0) {
+            item_obj.name = name;
+        } else {
+            int cnt = 1;
+            while (item_holder.Find("Gen_" + item_data.name + "_" + cnt) != null) {
+                cnt++;
+            }
+            item_obj.name = "Gen_" + item_data.name + "_" + cnt;
         }
-        item_obj.name = "Gen_" + item_data.name + "_" + cnt;
         return item;
     }
 
-    public Item CreateItem(string item_name, Vector3 world_pos, Transform holder = null) {
-        return CreateItem(FindItem(item_name), world_pos, holder);
+    public Item CreateItem(string item_name, Vector3 world_pos, Transform holder = null, string name = "") {
+        return CreateItem(FindItem(item_name), world_pos, holder, name);
     }
 
     private void BeforeSceneUnload(SceneName scene_name) {
+        itemSaves_[scene_name] = new List<ItemSave>();
+        Transform parent = GameObject.FindGameObjectWithTag("Items").transform;
+        foreach (Transform child in parent) {
+            foreach (Item item in child.GetComponentsInChildren<Item>()) {
+                itemSaves_[scene_name].Add(new ItemSave(item, child.name));
+            }
+        }
     }
 
     private void AfterSceneLoad(SceneName scene_name) {
         currentScene_ = scene_name;
-        if (!itemHolders_.ContainsKey(scene_name)) {
-            ParseHolders(scene_name);
+        ParseHolders(scene_name);
+        if (!itemSaves_.ContainsKey(scene_name)) {
             GenerateItems(scene_name);
+        } else {
+            foreach (ItemSave saved in itemSaves_[scene_name]) {
+                Item item = CreateItem(saved.item_name, saved.position.ToVector3(), itemHolders_[scene_name][saved.holder], saved.name);
+                item.Growth(saved.days);
+            }
         }
     }
 

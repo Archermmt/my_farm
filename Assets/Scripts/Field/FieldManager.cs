@@ -164,9 +164,7 @@ public class FieldManager : Singleton<FieldManager> {
 
     private void AfterSceneLoad(SceneName scene_name) {
         currentScene_ = scene_name;
-        if (!layerHolders_.ContainsKey(scene_name)) {
-            ParseFields(scene_name);
-        }
+        ParseFields(scene_name);
     }
 
     public void Freeze() {
