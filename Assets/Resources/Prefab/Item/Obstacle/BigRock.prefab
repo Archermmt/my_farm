@@ -17,8 +17,52 @@ PrefabInstance:
       value: 1
       objectReference: {fileID: 0}
     - target: {fileID: -8237175580818081697, guid: 179f08d4816154296ae9d04ce1508a5f, type: 3}
+      propertyPath: lifePeriods_.Array.size
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: -8237175580818081697, guid: 179f08d4816154296ae9d04ce1508a5f, type: 3}
       propertyPath: 'harvestTools.Array.data[0]'
       value: 5
+      objectReference: {fileID: 0}
+    - target: {fileID: -8237175580818081697, guid: 179f08d4816154296ae9d04ce1508a5f, type: 3}
+      propertyPath: lifePeriods_.Array.data[0].health
+      value: 3
+      objectReference: {fileID: 0}
+    - target: {fileID: -8237175580818081697, guid: 179f08d4816154296ae9d04ce1508a5f, type: 3}
+      propertyPath: lifePeriods_.Array.data[0].sprite
+      value: 
+      objectReference: {fileID: 21300000, guid: ffd3a07e9702a614284d1e5a4be9f532, type: 3}
+    - target: {fileID: -8237175580818081697, guid: 179f08d4816154296ae9d04ce1508a5f, type: 3}
+      propertyPath: lifePeriods_.Array.data[0].harvestDatas.Array.size
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: -8237175580818081697, guid: 179f08d4816154296ae9d04ce1508a5f, type: 3}
+      propertyPath: lifePeriods_.Array.data[0].harvestDatas.Array.data[0].max
+      value: 3
+      objectReference: {fileID: 0}
+    - target: {fileID: -8237175580818081697, guid: 179f08d4816154296ae9d04ce1508a5f, type: 3}
+      propertyPath: lifePeriods_.Array.data[0].harvestDatas.Array.data[0].min
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: -8237175580818081697, guid: 179f08d4816154296ae9d04ce1508a5f, type: 3}
+      propertyPath: lifePeriods_.Array.data[0].harvestDatas.Array.data[0].tool
+      value: 5
+      objectReference: {fileID: 0}
+    - target: {fileID: -8237175580818081697, guid: 179f08d4816154296ae9d04ce1508a5f, type: 3}
+      propertyPath: lifePeriods_.Array.data[0].harvestDatas.Array.data[0].effect
+      value: 4
+      objectReference: {fileID: 0}
+    - target: {fileID: -8237175580818081697, guid: 179f08d4816154296ae9d04ce1508a5f, type: 3}
+      propertyPath: lifePeriods_.Array.data[0].harvestDatas.Array.data[0].sprite
+      value: 
+      objectReference: {fileID: 21300000, guid: 7700e9e59e6f58e4598ea8f2e5a84cc1, type: 3}
+    - target: {fileID: -5653567603028394684, guid: 179f08d4816154296ae9d04ce1508a5f, type: 3}
+      propertyPath: item_name_
+      value: BigRock
+      objectReference: {fileID: 0}
+    - target: {fileID: -5653567603028394684, guid: 179f08d4816154296ae9d04ce1508a5f, type: 3}
+      propertyPath: lifePeriods_.Array.size
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: -5653567603028394684, guid: 179f08d4816154296ae9d04ce1508a5f, type: 3}
       propertyPath: harvestDatas_.Array.size
@@ -33,11 +77,43 @@ PrefabInstance:
       value: 2
       objectReference: {fileID: 0}
     - target: {fileID: -5653567603028394684, guid: 179f08d4816154296ae9d04ce1508a5f, type: 3}
+      propertyPath: lifePeriods_.Array.data[0].health
+      value: 3
+      objectReference: {fileID: 0}
+    - target: {fileID: -5653567603028394684, guid: 179f08d4816154296ae9d04ce1508a5f, type: 3}
+      propertyPath: lifePeriods_.Array.data[0].sprite
+      value: 
+      objectReference: {fileID: 21300000, guid: ffd3a07e9702a614284d1e5a4be9f532, type: 3}
+    - target: {fileID: -5653567603028394684, guid: 179f08d4816154296ae9d04ce1508a5f, type: 3}
       propertyPath: harvestDatas_.Array.data[0].effect
       value: 4
       objectReference: {fileID: 0}
     - target: {fileID: -5653567603028394684, guid: 179f08d4816154296ae9d04ce1508a5f, type: 3}
       propertyPath: harvestDatas_.Array.data[0].sprite
+      value: 
+      objectReference: {fileID: 21300000, guid: 7700e9e59e6f58e4598ea8f2e5a84cc1, type: 3}
+    - target: {fileID: -5653567603028394684, guid: 179f08d4816154296ae9d04ce1508a5f, type: 3}
+      propertyPath: lifePeriods_.Array.data[0].harvestDatas.Array.size
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: -5653567603028394684, guid: 179f08d4816154296ae9d04ce1508a5f, type: 3}
+      propertyPath: lifePeriods_.Array.data[0].harvestDatas.Array.data[0].max
+      value: 3
+      objectReference: {fileID: 0}
+    - target: {fileID: -5653567603028394684, guid: 179f08d4816154296ae9d04ce1508a5f, type: 3}
+      propertyPath: lifePeriods_.Array.data[0].harvestDatas.Array.data[0].min
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: -5653567603028394684, guid: 179f08d4816154296ae9d04ce1508a5f, type: 3}
+      propertyPath: lifePeriods_.Array.data[0].harvestDatas.Array.data[0].tool
+      value: 5
+      objectReference: {fileID: 0}
+    - target: {fileID: -5653567603028394684, guid: 179f08d4816154296ae9d04ce1508a5f, type: 3}
+      propertyPath: lifePeriods_.Array.data[0].harvestDatas.Array.data[0].effect
+      value: 4
+      objectReference: {fileID: 0}
+    - target: {fileID: -5653567603028394684, guid: 179f08d4816154296ae9d04ce1508a5f, type: 3}
+      propertyPath: lifePeriods_.Array.data[0].harvestDatas.Array.data[0].sprite
       value: 
       objectReference: {fileID: 21300000, guid: 7700e9e59e6f58e4598ea8f2e5a84cc1, type: 3}
     - target: {fileID: 3703912406486521318, guid: 179f08d4816154296ae9d04ce1508a5f, type: 3}

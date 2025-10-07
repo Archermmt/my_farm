@@ -16,6 +16,20 @@ public class Vector3Save {
     }
 }
 
+[System.Serializable]
+public class Vector2IntSave {
+    public int x, y;
+
+    public Vector2IntSave(Vector2Int coord) {
+        x = coord.x;
+        y = coord.y;
+    }
+
+    public Vector2Int ToVector2Int() {
+        return new Vector2Int(x, y);
+    }
+}
+
 public static class BaseUtils {
     public static Direction GetDirection(Vector3 pos, Vector3 anchor) {
         float diff_width = pos.x - anchor.x;

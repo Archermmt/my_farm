@@ -34,8 +34,8 @@ public class Container : MonoBehaviour {
     public void CopyFrom(Container other) {
         int amount = Math.Min(current_, other.current);
         for (int i = 0; i < amount; i++) {
-            if (other.GetSlot(i).current > 0) {
-                slots_[i].CopyFrom(other.GetSlot(i));
+            if (other.SlotAt(i).current > 0) {
+                slots_[i].CopyFrom(other.SlotAt(i));
             }
         }
     }
@@ -145,7 +145,7 @@ public class Container : MonoBehaviour {
         }
     }
 
-    public Slot GetSlot(int idx) {
+    public Slot SlotAt(int idx) {
         return slots_[idx];
     }
 

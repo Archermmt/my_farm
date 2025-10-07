@@ -20,6 +20,10 @@ public class FieldGrid {
         return new Vector3(position_.x + Settings.gridCellSize / 2, position_.y + Settings.gridCellSize / 2, position_.z);
     }
 
+    public Vector3 GetItemPos() {
+        return new Vector3(position_.x + Settings.gridCellSize / 2, position_.y, position_.z);
+    }
+
     public void AddTag(FieldTag tag, int duration = 0) {
         if (!fieldTags_.ContainsKey(tag)) {
             fieldTags_[tag] = duration;
@@ -125,4 +129,5 @@ public class FieldLayer : MonoBehaviour {
     public virtual void UpdateTime(TimeType time_type, TimeData time, int delta) { }
 
     public FieldTag fieldTag { get { return fieldTag_; } }
+    public List<FieldGrid> grids { get { return grids_; } }
 }

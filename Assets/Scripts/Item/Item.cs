@@ -36,6 +36,7 @@ public class Item : MonoBehaviour {
     private ItemData meta_;
     private HashSet<ItemStatus> statusSet_;
     private DateTime holdStart_;
+    private bool generated_ = false;
 
     protected virtual void Awake() {
         render_ = GetComponent<SpriteRenderer>();
@@ -189,12 +190,12 @@ public class Item : MonoBehaviour {
         return str;
     }
 
-    public void Freeze() {
-        freezed_ = true;
+    public void SetFreeze(bool freeze) {
+        freezed_ = freeze;
     }
 
-    public void Unfreeze() {
-        freezed_ = false;
+    public void SetGenerate(bool generate) {
+        generated_ = generate;
     }
 
     public ItemData meta { get { return meta_; } }
@@ -202,6 +203,7 @@ public class Item : MonoBehaviour {
     public SpriteRenderer render { get { return render_; } }
     public List<AnimationTag> animationTags { get { return animationTags_; } }
     protected virtual int holdLevelMax { get { return 1; } }
-    public bool freezed { get { return freezed_; } }
     public int days { get { return days_; } }
+    public bool freezed { get { return freezed_; } }
+    public bool generated { get { return generated_; } }
 }

@@ -16,6 +16,10 @@ PrefabInstance:
       propertyPath: 'nudgeTargets_.Array.data[0]'
       value: Player
       objectReference: {fileID: 0}
+    - target: {fileID: 792736639910810753, guid: 35de012629fa8487ab276ce8d8d301c4, type: 3}
+      propertyPath: m_SpriteTilingProperty.oldSize.y
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 2611815160969460626, guid: 35de012629fa8487ab276ce8d8d301c4, type: 3}
       propertyPath: m_Name
       value: Grass2
@@ -23,6 +27,10 @@ PrefabInstance:
     - target: {fileID: 3424636914233648278, guid: 35de012629fa8487ab276ce8d8d301c4, type: 3}
       propertyPath: item_name_
       value: Grass2
+      objectReference: {fileID: 0}
+    - target: {fileID: 3424636914233648278, guid: 35de012629fa8487ab276ce8d8d301c4, type: 3}
+      propertyPath: lifePeriods_.Array.size
+      value: 1
       objectReference: {fileID: 0}
     - target: {fileID: 3424636914233648278, guid: 35de012629fa8487ab276ce8d8d301c4, type: 3}
       propertyPath: harvestDatas_.Array.size
@@ -53,12 +61,32 @@ PrefabInstance:
       value: Weed
       objectReference: {fileID: 0}
     - target: {fileID: 3424636914233648278, guid: 35de012629fa8487ab276ce8d8d301c4, type: 3}
+      propertyPath: lifePeriods_.Array.data[0].health
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 3424636914233648278, guid: 35de012629fa8487ab276ce8d8d301c4, type: 3}
+      propertyPath: lifePeriods_.Array.data[0].sprite
+      value: 
+      objectReference: {fileID: 21300000, guid: e452dd2aa629f624390a9ba516a7c47e, type: 3}
+    - target: {fileID: 3424636914233648278, guid: 35de012629fa8487ab276ce8d8d301c4, type: 3}
       propertyPath: growthPeriods_.Array.data[0].sprite
       value: 
       objectReference: {fileID: 21300000, guid: e452dd2aa629f624390a9ba516a7c47e, type: 3}
     - target: {fileID: 3424636914233648278, guid: 35de012629fa8487ab276ce8d8d301c4, type: 3}
+      propertyPath: lifePeriods_.Array.data[0].statusList.Array.size
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 3424636914233648278, guid: 35de012629fa8487ab276ce8d8d301c4, type: 3}
       propertyPath: growthPeriods_.Array.data[0].statusList.Array.size
       value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 3424636914233648278, guid: 35de012629fa8487ab276ce8d8d301c4, type: 3}
+      propertyPath: lifePeriods_.Array.data[0].harvestDatas.Array.size
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 3424636914233648278, guid: 35de012629fa8487ab276ce8d8d301c4, type: 3}
+      propertyPath: 'lifePeriods_.Array.data[0].statusList.Array.data[0]'
+      value: 6
       objectReference: {fileID: 0}
     - target: {fileID: 3424636914233648278, guid: 35de012629fa8487ab276ce8d8d301c4, type: 3}
       propertyPath: growthPeriods_.Array.data[0].harvestTools.Array.size
@@ -72,6 +100,26 @@ PrefabInstance:
       propertyPath: 'growthPeriods_.Array.data[0].harvestTools.Array.data[0]'
       value: 3
       objectReference: {fileID: 0}
+    - target: {fileID: 3424636914233648278, guid: 35de012629fa8487ab276ce8d8d301c4, type: 3}
+      propertyPath: lifePeriods_.Array.data[0].harvestDatas.Array.data[0].max
+      value: 2
+      objectReference: {fileID: 0}
+    - target: {fileID: 3424636914233648278, guid: 35de012629fa8487ab276ce8d8d301c4, type: 3}
+      propertyPath: lifePeriods_.Array.data[0].harvestDatas.Array.data[0].min
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 3424636914233648278, guid: 35de012629fa8487ab276ce8d8d301c4, type: 3}
+      propertyPath: lifePeriods_.Array.data[0].harvestDatas.Array.data[0].tool
+      value: 3
+      objectReference: {fileID: 0}
+    - target: {fileID: 3424636914233648278, guid: 35de012629fa8487ab276ce8d8d301c4, type: 3}
+      propertyPath: lifePeriods_.Array.data[0].harvestDatas.Array.data[0].effect
+      value: 1
+      objectReference: {fileID: 0}
+    - target: {fileID: 3424636914233648278, guid: 35de012629fa8487ab276ce8d8d301c4, type: 3}
+      propertyPath: lifePeriods_.Array.data[0].harvestDatas.Array.data[0].sprite
+      value: 
+      objectReference: {fileID: 21300000, guid: 25925800440b0e84f9533a314ddca6b5, type: 3}
     - target: {fileID: 3640997128896635510, guid: 35de012629fa8487ab276ce8d8d301c4, type: 3}
       propertyPath: destroyDatas_.Array.size
       value: 1

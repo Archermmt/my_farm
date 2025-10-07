@@ -83,12 +83,8 @@ public class Clock : MonoBehaviour {
         time_.second += left;
     }
 
-    public void Freeze() {
-        freezed_ = true;
-    }
-
-    public void Unfreeze() {
-        freezed_ = false;
+    public void SetFreeze(bool freeze) {
+        freezed_ = freeze;
     }
 
     public TimeData time { get { return time_; } }

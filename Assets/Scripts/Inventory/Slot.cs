@@ -157,14 +157,14 @@ public class Slot : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndDragHand
   }
 
   public void OnPointerEnter(PointerEventData eventData) {
-    FieldManager.Instance.Freeze();
+    FieldManager.Instance.SetFreeze(true);
     if (current_ > 0) {
       DescribeItem(itemMeta_, current_);
     }
   }
 
   public void OnPointerExit(PointerEventData eventData) {
-    FieldManager.Instance.Unfreeze();
+    FieldManager.Instance.SetFreeze(false);
     describer_.SetActive(false);
   }
 

@@ -45,7 +45,7 @@ public class Player : Singleton<Player> {
         inventory_.AddItem(ItemManager.Instance.FindItem("Basket"));
         inventory_.AddItem(ItemManager.Instance.FindItem("Pickaxe"));
         inventory_.AddItem(ItemManager.Instance.FindItem("Axe"));
-        ItemManager.Instance.Freeze();
+        ItemManager.Instance.SetFreeze(true);
         UpdateAnimators(direction_, action_);
         EventHandler.UpdateHandsEvent += UpdateHands;
         EventHandler.UpdateInventoryEvent += UpdateInventory;
@@ -108,7 +108,7 @@ public class Player : Singleton<Player> {
                 direction_ = Direction.Down;
             else
                 direction_ = Direction.Up;
-            ItemManager.Instance.Unfreeze();
+            ItemManager.Instance.SetFreeze(false);
         }
         UpdateAnimators(direction_, action_);
         rigidBody_.MovePosition(rigidBody_.position + movement * speed * Time.deltaTime);
@@ -122,7 +122,7 @@ public class Player : Singleton<Player> {
                 int drop_amount = FieldManager.Instance.DropItem(carried_.Key, cursors);
                 carried_.Value.DecreaseAmount(drop_amount);
             } else if (action == Action.HoldItem && !carried_.Key.HasStatus(ItemStatus.Holding) && (carried_.Key.HasStatus(ItemStatus.GridUsable) || carried_.Key.HasStatus(ItemStatus.ItemUsable))) {
-                Freeze();
+                SetFreeze(true);
                 if (carried_.Key.meta.type == ItemType.Tool || carried_.Key.meta.type == ItemType.Seed) {
                     carried_.Key.Hold(direction_);
                     Action act = carried_.Key.meta.type == ItemType.Tool ? Action.HoldItem : Action.Idle;
@@ -136,7 +136,7 @@ public class Player : Singleton<Player> {
                 if (carried_.Key.meta.type == ItemType.Tool) {
                     StartCoroutine(UseToolRoutine(direction_));
                 } else {
-                    Unfreeze();
+                    SetFreeze(false);
                 }
                 foreach (KeyValuePair<ItemData, int> pair in item_amounts) {
                     if (pair.Value > 0) {
@@ -157,7 +157,7 @@ public class Player : Singleton<Player> {
         }
         yield return useToolPause_;
         UpdateAnimators(direction, Action.Idle);
-        Unfreeze();
+        SetFreeze(false);
     }
 
 
@@ -210,11 +210,11 @@ public class Player : Singleton<Player> {
                 foreach (AnimationTag tag in carried_.Key.animationTags) {
                     SwapAnimations(tag);
                 }
-                FieldManager.Instance.Unfreeze();
+                FieldManager.Instance.SetFreeze(false);
             } else {
                 handsRender_.sprite = null;
                 handsRender_.color = new Color(1f, 1f, 1f, 0f);
-                FieldManager.Instance.Freeze();
+                FieldManager.Instance.SetFreeze(true);
             }
         }
     }
@@ -234,12 +234,12 @@ public class Player : Singleton<Player> {
     private void ProcessInput() {
         if (Input.GetKeyDown(KeyCode.P)) {
             if (inventory_.backpackOpening) {
-                Unfreeze();
-                ItemManager.Instance.Unfreeze();
+                SetFreeze(false);
+                ItemManager.Instance.SetFreeze(false);
                 inventory_.CloseBackpack();
             } else {
-                Freeze();
-                ItemManager.Instance.Freeze();
+                SetFreeze(true);
+                ItemManager.Instance.SetFreeze(true);
                 inventory_.OpenBackpack();
             }
         }
@@ -262,14 +262,12 @@ public class Player : Singleton<Player> {
         return camera_.WorldToViewportPoint(transform.position);
     }
 
-    public void Freeze() {
-        freezed_ = true;
-        foreach (Animator animator in animators_) {
-            animator.SetInteger("action", (int)Action.Idle);
+    public void SetFreeze(bool freeze) {
+        freezed_ = freeze;
+        if (freezed_) {
+            foreach (Animator animator in animators_) {
+                animator.SetInteger("action", (int)Action.Idle);
+            }
         }
-    }
-
-    public void Unfreeze() {
-        freezed_ = false;
     }
 }

@@ -39,7 +39,7 @@ public class Seed : Pickable {
     public override Dictionary<ItemData, int> Apply(List<Cursor> cursors, int amount) {
         int crop_num = Math.Min(cursors.Count, amount);
         for (int i = 0; i < crop_num; i++) {
-            Item crop = ItemManager.Instance.CreateItem(cropName_, cursors[i].grid.GetCenter());
+            Item crop = ItemManager.Instance.CreateItem(cropName_, cursors[i].grid.GetItemPos());
             cursors[i].grid.AddItem(crop);
             AudioManager.Instance.AddSound("PlantSeed");
         }

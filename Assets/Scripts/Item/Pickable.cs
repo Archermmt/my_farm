@@ -42,7 +42,7 @@ public class Pickable : Item {
     protected virtual void OnTriggerExit2D(Collider2D collision) {
         if (trackTargets_.Contains(collision.tag) && target_ != null && target_.tag == collision.tag) {
             target_ = null;
-            Unfreeze();
+            SetFreeze(false);
         }
     }
 }

@@ -65,7 +65,7 @@ public class ItemManager : Singleton<ItemManager> {
 
     public void AddPickable(Pickable item, bool freeze = false) {
         if (freeze) {
-            item.Freeze();
+            item.SetFreeze(true);
         }
         if (!pickableItems_[currentScene_].Contains(item)) {
             pickableItems_[currentScene_].Add(item);
@@ -111,12 +111,10 @@ public class ItemManager : Singleton<ItemManager> {
                 item_holder = holders["Item"];
             }
         }
-        GameObject item_obj = Instantiate(prefab, new Vector3(world_pos.x, world_pos.y - Settings.gridCellSize / 2f, world_pos.z), Quaternion.identity, item_holder);
+        GameObject item_obj = Instantiate(prefab, new Vector3(world_pos.x, world_pos.y, world_pos.z), Quaternion.identity, item_holder);
         Item item = item_obj.GetComponent<Item>();
-        if (item == null) {
-            item = item_obj.transform.GetComponentInChildren<Item>();
-        }
         Assert.AreNotEqual(item, null, "Can not find item for " + item_data.name + "(" + item_data.type.ToString() + ") from " + prefab);
+        item.SetGenerate(true);
         if (item.meta == null) {
             item.SetItem(item_data);
         }
@@ -141,6 +139,9 @@ public class ItemManager : Singleton<ItemManager> {
         Transform parent = GameObject.FindGameObjectWithTag("Items").transform;
         foreach (Transform child in parent) {
             foreach (Item item in child.GetComponentsInChildren<Item>()) {
+                if (!item.generated) {
+                    continue;
+                }
                 itemSaves_[scene_name].Add(new ItemSave(item, child.name));
             }
         }
@@ -181,12 +182,8 @@ public class ItemManager : Singleton<ItemManager> {
         }
     }
 
-    public void Freeze() {
-        freezed_ = true;
-    }
-
-    public void Unfreeze() {
-        freezed_ = false;
+    public void SetFreeze(bool freeze) {
+        freezed_ = freeze;
     }
 
     public bool freezed { get { return freezed_; } }

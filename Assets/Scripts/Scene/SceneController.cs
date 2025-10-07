@@ -25,7 +25,7 @@ public class SceneController : Singleton<SceneController> {
 
     private IEnumerator LoadSceneRoutine(SceneName scene_name, Vector3 spawn_pos) {
         loading_ = true;
-        Player.Instance.Freeze();
+        Player.Instance.SetFreeze(true);
         if (currentScene_ != SceneName.StartScene) {
             EventHandler.CallBeforeSceneUnload(currentScene_);
             yield return StartCoroutine(FadeRoutine(1f));
@@ -38,7 +38,7 @@ public class SceneController : Singleton<SceneController> {
         currentScene_ = scene_name;
         EventHandler.CallAfterSceneLoad(scene_name);
         yield return StartCoroutine(FadeRoutine(0f));
-        Player.Instance.Unfreeze();
+        Player.Instance.SetFreeze(false);
         loading_ = false;
     }
 

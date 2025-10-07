@@ -75,6 +75,10 @@ public class Cursor : MonoBehaviour {
         return str;
     }
 
+    public Vector3 GetItemPos() {
+        return new Vector3(transform.position.x, transform.position.y - Settings.gridCellSize / 2f, transform.position.z);
+    }
+
     public CursorMode mode { get { return mode_; } }
 
     public FieldGrid grid { get { return meta_.grid; } }

@@ -62,9 +62,6 @@ PrefabInstance:
       addedObject: {fileID: 2517965316005954425}
     - targetCorrespondingSourceObject: {fileID: 5485029832335576484, guid: ae4353ece9de5492f8d09dcf0eadf52d, type: 3}
       insertIndex: -1
-      addedObject: {fileID: -5653567603028394684}
-    - targetCorrespondingSourceObject: {fileID: 5485029832335576484, guid: ae4353ece9de5492f8d09dcf0eadf52d, type: 3}
-      insertIndex: -1
       addedObject: {fileID: -8237175580818081697}
   m_SourcePrefab: {fileID: 100100000, guid: ae4353ece9de5492f8d09dcf0eadf52d, type: 3}
 --- !u!1 &9021632025865227106 stripped
@@ -118,19 +115,6 @@ BoxCollider2D:
   m_AutoTiling: 0
   m_Size: {x: 1, y: 1}
   m_EdgeRadius: 0
---- !u!114 &-5653567603028394684
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 9021632025865227106}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: c791de523eaaa41fcb6c652e5d16f616, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  harvestDatas_: []
 --- !u!114 &-8237175580818081697
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -145,4 +129,4 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   item_name_: 
   days_: 0
-  harvestTools: 
+  lifePeriods_: []

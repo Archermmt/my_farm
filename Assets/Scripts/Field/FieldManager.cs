@@ -3,6 +3,18 @@ using NUnit.Framework;
 using UnityEngine;
 using UnityEngine.Tilemaps;
 
+
+[System.Serializable]
+public class GridSave {
+    public FieldTag tag;
+    public Vector2IntSave coord;
+
+    public GridSave(FieldGrid grid, FieldTag tag) {
+        coord = new Vector2IntSave(grid.coord);
+        this.tag = tag;
+    }
+}
+
 public class FieldManager : Singleton<FieldManager> {
     private List<Cursor> fieldCursors_;
     private List<Cursor> maskCursors_;
@@ -11,6 +23,7 @@ public class FieldManager : Singleton<FieldManager> {
     private Dictionary<SceneName, FieldGrid[,]> fieldGrids_;
     private Dictionary<SceneName, Transform> layerHolders_;
     private Dictionary<SceneName, List<FieldLayer>> layers_;
+    private Dictionary<SceneName, List<GridSave>> gridSaves_;
     private SceneName currentScene_ = SceneName.StartScene;
     private bool freezed_;
 
@@ -23,6 +36,7 @@ public class FieldManager : Singleton<FieldManager> {
         fieldGrids_ = new Dictionary<SceneName, FieldGrid[,]>();
         layerHolders_ = new Dictionary<SceneName, Transform>();
         layers_ = new Dictionary<SceneName, List<FieldLayer>>();
+        gridSaves_ = new Dictionary<SceneName, List<GridSave>>();
         freezed_ = false;
     }
 
@@ -134,7 +148,7 @@ public class FieldManager : Singleton<FieldManager> {
 
     public int DropItem(Item item, List<Cursor> cursors) {
         foreach (Cursor cursor in cursors) {
-            Item new_item = ItemManager.Instance.CreateItem(item.meta, cursor.transform.position);
+            Item new_item = ItemManager.Instance.CreateItem(item.meta, cursor.GetItemPos());
             if (new_item is Pickable) {
                 ItemManager.Instance.AddPickable((Pickable)new_item, true);
             } else {
@@ -160,25 +174,35 @@ public class FieldManager : Singleton<FieldManager> {
 
 
     private void BeforeSceneUnload(SceneName scene_name) {
+        gridSaves_[scene_name] = new List<GridSave>();
+        foreach (FieldLayer layer in layers_[scene_name]) {
+            foreach (FieldGrid grid in layer.grids) {
+                gridSaves_[scene_name].Add(new GridSave(grid, layer.fieldTag));
+            }
+        }
     }
 
     private void AfterSceneLoad(SceneName scene_name) {
         currentScene_ = scene_name;
         ParseFields(scene_name);
-    }
-
-    public void Freeze() {
-        freezed_ = true;
-        foreach (Cursor cursor in fieldCursors_) {
-            cursor.SetMode(CursorMode.Mute);
-        }
-        foreach (Cursor cursor in maskCursors_) {
-            cursor.SetMode(CursorMode.Mute);
+        if (gridSaves_.ContainsKey(scene_name)) {
+            foreach (GridSave saved in gridSaves_[scene_name]) {
+                FieldLayer layer = GetLayer(saved.tag);
+                layer.AddGrid(GridAt(saved.coord.x, saved.coord.y));
+            }
         }
     }
 
-    public void Unfreeze() {
-        freezed_ = false;
+    public void SetFreeze(bool freeze) {
+        freezed_ = freeze;
+        if (freezed_) {
+            foreach (Cursor cursor in fieldCursors_) {
+                cursor.SetMode(CursorMode.Mute);
+            }
+            foreach (Cursor cursor in maskCursors_) {
+                cursor.SetMode(CursorMode.Mute);
+            }
+        }
     }
 
     private void ParseFields(SceneName scene_name) {

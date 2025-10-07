@@ -4,13 +4,14 @@ using UnityEngine;
 
 [RequireComponent(typeof(SpriteRenderer), typeof(BoxCollider2D))]
 public class Triggerable : MonoBehaviour {
-    [Header("Trigger.Fade")]
+    [Header("Fade")]
     [SerializeField] private List<string> fadeTargets_;
     [SerializeField] private float fadeInSecond_ = 0.25f;
     [SerializeField] private float fadeOutSecond_ = 0.35f;
     [SerializeField] private float fadeOutAlpha_ = 0.45f;
+    [SerializeField] private string fadeSound_ = "";
 
-    [Header("Trigger.Nudge")]
+    [Header("Nudge")]
     [SerializeField] private List<string> nudgeTargets_;
     [SerializeField] private float nudgePauseSecs_ = 0.04f;
     [SerializeField] private string nudgeSound_ = "";
@@ -89,6 +90,9 @@ public class Triggerable : MonoBehaviour {
     }
 
     private IEnumerator FadeInRoutine(Item item) {
+        if (fadeSound_.Length > 0) {
+            AudioManager.Instance.PlaySound(fadeSound_);
+        }
         float alpha = item.render.color.a;
         float distance = 1f - alpha;
         while (1f - alpha > 0.01f) {
@@ -100,6 +104,9 @@ public class Triggerable : MonoBehaviour {
     }
 
     private IEnumerator FadeOutRoutine(Item item) {
+        if (fadeSound_.Length > 0) {
+            AudioManager.Instance.PlaySound(fadeSound_);
+        }
         float alpha = item.render.color.a;
         float distance = alpha - fadeOutAlpha_;
         while (alpha - fadeOutAlpha_ > 0.01f) {
