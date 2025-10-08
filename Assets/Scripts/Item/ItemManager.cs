@@ -134,6 +134,10 @@ public class ItemManager : Singleton<ItemManager> {
         return CreateItem(FindItem(item_name), world_pos, holder, name);
     }
 
+    public Item CreateItem(Sprite item_sprite, Vector3 world_pos, Transform holder = null, string name = "") {
+        return CreateItem(FindItem(item_sprite), world_pos, holder, name);
+    }
+
     private void BeforeSceneUnload(SceneName scene_name) {
         itemSaves_[scene_name] = new List<ItemSave>();
         Transform parent = GameObject.FindGameObjectWithTag("Items").transform;

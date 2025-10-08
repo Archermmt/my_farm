@@ -121,7 +121,7 @@ public class Player : Singleton<Player> {
             if (action == Action.DropItem && carried_.Key.HasStatus(ItemStatus.Dropable)) {
                 int drop_amount = FieldManager.Instance.DropItem(carried_.Key, cursors);
                 carried_.Value.DecreaseAmount(drop_amount);
-            } else if (action == Action.HoldItem && !carried_.Key.HasStatus(ItemStatus.Holding) && (carried_.Key.HasStatus(ItemStatus.GridUsable) || carried_.Key.HasStatus(ItemStatus.ItemUsable))) {
+            } else if (action == Action.HoldItem && !carried_.Key.HasStatus(ItemStatus.Holding) && carried_.Key.HasStatus(ItemStatus.Usable)) {
                 SetFreeze(true);
                 if (carried_.Key.meta.type == ItemType.Tool || carried_.Key.meta.type == ItemType.Seed) {
                     carried_.Key.Hold(direction_);
@@ -221,7 +221,7 @@ public class Player : Singleton<Player> {
 
     private void UpdateInventory(string owner, ContainerType container_type, bool sort, bool deselect) {
         if (owner == transform.tag) {
-            inventory_.GetContainer(container_type).UpdateSlots(sort, deselect);
+            inventory_.UpdateContainer(container_type, sort, deselect);
         }
     }
 

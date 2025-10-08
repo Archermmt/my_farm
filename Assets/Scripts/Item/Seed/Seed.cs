@@ -17,7 +17,7 @@ public class Seed : Pickable {
         int hold_level = GetHoldLevel();
         if (hold_level == -1) {
             if (Plantable(start)) {
-                AddStatus(ItemStatus.GridUsable);
+                AddStatus(ItemStatus.Usable);
                 return new List<CursorMeta> { new CursorMeta(start.GetCenter(), start, null, CursorMode.ValidGrid) };
             }
             return base.GetCursorMetas(grids, start, pos, amount);
@@ -26,7 +26,7 @@ public class Seed : Pickable {
         List<FieldGrid> v_grids = hold_level == 0 ? new List<FieldGrid> { start } : grids;
         int use_count = GetUseCount();
         foreach (FieldGrid grid in v_grids) {
-            if (HasStatus(ItemStatus.GridUsable) && Plantable(grid)) {
+            if (Plantable(grid)) {
                 metas.Add(new CursorMeta(grid.GetCenter(), grid, null, CursorMode.ValidGrid));
             }
             if (metas.Count >= use_count || metas.Count >= amount) {
@@ -53,9 +53,8 @@ public class Seed : Pickable {
 
     protected override Vector2Int GetScopeRange() {
         int level = GetHoldLevel();
-        if (level <= 1) { return new Vector2Int(3, 1); }
-        if (level == 2) { return new Vector2Int(3, 3); }
-        if (level == 3) { return new Vector2Int(9, 3); }
+        if (level <= 0) { return new Vector2Int(3, 3); }
+        if (level == 1) { return new Vector2Int(9, 3); }
         return new Vector2Int(9, 9);
     }
 
@@ -65,5 +64,5 @@ public class Seed : Pickable {
         return range.x * range.y;
     }
 
-    protected override int holdLevelMax { get { return 4; } }
+    protected override int holdLevelMax { get { return 3; } }
 }

@@ -176,7 +176,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 3424636914233648278, guid: 35de012629fa8487ab276ce8d8d301c4, type: 3}
       propertyPath: 'lifePeriods_.Array.data[0].statusList.Array.data[0]'
-      value: 7
+      value: 4
       objectReference: {fileID: 0}
     - target: {fileID: 3424636914233648278, guid: 35de012629fa8487ab276ce8d8d301c4, type: 3}
       propertyPath: growthPeriods_.Array.data[0].harvestTools.Array.size

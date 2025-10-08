@@ -148,6 +148,14 @@ PrefabInstance:
       propertyPath: destroyDatas_.Array.data[0].effect
       value: 4
       objectReference: {fileID: 0}
+    - target: {fileID: 2517965316005954425, guid: 179f08d4816154296ae9d04ce1508a5f, type: 3}
+      propertyPath: m_Size.y
+      value: 0.38937873
+      objectReference: {fileID: 0}
+    - target: {fileID: 2517965316005954425, guid: 179f08d4816154296ae9d04ce1508a5f, type: 3}
+      propertyPath: m_Offset.y
+      value: 0.19468936
+      objectReference: {fileID: 0}
     - target: {fileID: 3703912406486521318, guid: 179f08d4816154296ae9d04ce1508a5f, type: 3}
       propertyPath: m_Sprite
       value: 

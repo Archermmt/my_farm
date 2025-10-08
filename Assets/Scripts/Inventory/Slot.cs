@@ -9,6 +9,7 @@ public class Slot : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndDragHand
   [SerializeField] private Image mask_;
   [SerializeField] private Image itemImg_;
   [SerializeField] private TextMeshProUGUI number_;
+  [SerializeField] private Sprite emptySprite_;
   [SerializeField] private int capacity_ = 99;
 
   [Header("Describer")]
@@ -19,11 +20,14 @@ public class Slot : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndDragHand
 
   private ItemData itemMeta_;
   private GameObject dragging_;
-  private Sprite emptySprite_;
   private ContainerType containerType_;
   private string owner_;
   private int current_ = 0;
   private bool selected_ = false;
+
+  private void Awake() {
+    describer_.SetActive(false);
+  }
 
   public void Setup(string owner, ContainerType container_type) {
     owner_ = owner;
@@ -54,10 +58,6 @@ public class Slot : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndDragHand
   }
 
   public void Swap(Slot other) {
-    string otherOwner = other.owner;
-    ContainerType otherHolderType = other.containerType;
-    other.Setup(owner_, containerType_);
-    Setup(otherOwner, otherHolderType);
     if (other.current == 0) {
       other.SetItem(itemMeta_, current_);
       Empty();
@@ -74,7 +74,6 @@ public class Slot : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndDragHand
   }
 
   public void CopyFrom(Slot other) {
-    Setup(other.owner, other.containerType);
     SetItem(other.itemMeta, other.current);
   }
 
@@ -96,7 +95,7 @@ public class Slot : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndDragHand
   }
 
   public void Select() {
-    if (current_ >= 0 && !selected_) {
+    if (current_ >= 0) {
       selected_ = true;
       highlight_.color = new Color(1, 1, 1, 1);
       EventHandler.CallUpdateHands(owner_, containerType_);
@@ -104,7 +103,7 @@ public class Slot : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndDragHand
   }
 
   public void Deselect() {
-    if (current_ >= 0 && selected_) {
+    if (current_ >= 0) {
       selected_ = false;
       highlight_.color = new Color(0, 0, 0, 0);
       EventHandler.CallUpdateHands(owner_, containerType_);
@@ -193,11 +192,6 @@ public class Slot : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndDragHand
     describe_.text = "[" + item_data.type.ToString() + "] " + item_data.description;
     detail_.text = "Price: " + item_data.price.ToString() + "/" + item_data.value.ToString() + "\n";
     describer_.SetActive(true);
-  }
-
-  private void Awake() {
-    emptySprite_ = itemImg_.sprite;
-    describer_.SetActive(false);
   }
 
   private void UpdateContainer(bool sort, bool deselect) {

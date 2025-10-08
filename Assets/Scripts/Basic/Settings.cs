@@ -58,11 +58,8 @@ public enum ToolType {
 
 public enum ItemStatus {
     Dropable,
-    GridUsable,
-    ItemUsable,
-    Unusable,
+    Usable,
     Holding,
-    Damageable,
     Nudgable,
     Fadable,
     None

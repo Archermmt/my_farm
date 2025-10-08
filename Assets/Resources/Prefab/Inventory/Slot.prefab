@@ -98,6 +98,7 @@ MonoBehaviour:
   mask_: {fileID: 127444357170800671}
   itemImg_: {fileID: 5959115830927617553}
   number_: {fileID: 5223541649254533357}
+  emptySprite_: {fileID: 21300000, guid: 89c46045b5f23d840b62099f6f1f6344, type: 3}
   capacity_: 99
   describer_: {fileID: 4749803556245509171}
   title_: {fileID: 7692227040455256382}

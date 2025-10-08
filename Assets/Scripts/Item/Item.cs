@@ -106,7 +106,9 @@ public class Item : MonoBehaviour {
     public virtual List<CursorMeta> GetCursorMetas(List<FieldGrid> grids, FieldGrid start, Vector3 pos, int amount) {
         ResetStatus();
         bool dropable = Dropable(start) && grids.Contains(start);
-        AddStatus(dropable ? ItemStatus.Dropable : ItemStatus.Unusable);
+        if (dropable) {
+            AddStatus(ItemStatus.Dropable);
+        }
         return new List<CursorMeta> { new CursorMeta(pos, start, null, dropable ? CursorMode.ValidPos : CursorMode.Invalid) };
     }
 
@@ -158,7 +160,7 @@ public class Item : MonoBehaviour {
     }
 
     protected virtual Vector2Int GetScopeRange() {
-        return new Vector2Int(5, 2);
+        return new Vector2Int(3, 3);
     }
 
     protected virtual bool Dropable(FieldGrid grid) {

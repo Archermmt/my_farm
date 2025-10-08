@@ -36,6 +36,8 @@ public class Container : MonoBehaviour {
         for (int i = 0; i < amount; i++) {
             if (other.SlotAt(i).current > 0) {
                 slots_[i].CopyFrom(other.SlotAt(i));
+            } else {
+                slots_[i].Empty();
             }
         }
     }
@@ -91,6 +93,24 @@ public class Container : MonoBehaviour {
     public Slot FindSlotToRemove(ItemData item_data, int amount = 1) {
         foreach (Slot slot in slots_) {
             if (slot.current >= amount && slot.itemMeta.name == item_data.name) {
+                return slot;
+            }
+        }
+        return null;
+    }
+
+    public Slot FindEmptySlot() {
+        foreach (Slot slot in slots_) {
+            if (slot.current == 0) {
+                return slot;
+            }
+        }
+        return null;
+    }
+
+    public Slot FindNonEmptySlot() {
+        foreach (Slot slot in slots_) {
+            if (slot.current > 0) {
                 return slot;
             }
         }

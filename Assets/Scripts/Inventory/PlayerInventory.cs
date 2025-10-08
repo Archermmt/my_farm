@@ -18,6 +18,14 @@ public class PlayerInventory : BaseInventory {
         return left;
     }
 
+    public void UpdateContainer(ContainerType container_type, bool sort, bool deselect) {
+        Container container = GetContainer(container_type);
+        container.UpdateSlots(sort, deselect);
+        if (container_type == ContainerType.Pocket || container_type == ContainerType.ToolBar) {
+            FillContainer(container_type);
+        }
+    }
+
     public void OpenBackpack() {
         if (!backpackOpening_) {
             GetContainer(ContainerType.ToolBar).Close();
@@ -28,6 +36,7 @@ public class PlayerInventory : BaseInventory {
             backpackOpening_ = true;
         }
     }
+
     public void CloseBackpack() {
         if (backpackOpening_) {
             GetContainer(ContainerType.ToolBar).Open();
@@ -36,6 +45,18 @@ public class PlayerInventory : BaseInventory {
             GetContainer(ContainerType.Backpack).Close();
             GetContainer(ContainerType.Backpack).transform.parent.gameObject.SetActive(false);
             backpackOpening_ = false;
+        }
+    }
+
+    private void FillContainer(ContainerType container_type) {
+        Container container = GetContainer(container_type);
+        Container backpack = GetContainer(ContainerType.Backpack);
+        Slot empty = container.FindEmptySlot();
+        Slot non_empty = backpack.FindNonEmptySlot();
+        while (empty != null && non_empty != null) {
+            empty.Swap(non_empty);
+            empty = container.FindEmptySlot();
+            non_empty = backpack.FindNonEmptySlot();
         }
     }
 

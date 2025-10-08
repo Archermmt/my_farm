@@ -1,39 +1,27 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
 
-[RequireComponent(typeof(Animator))]
-public class TreeTrunk : Plant {
+[RequireComponent(typeof(Animator), typeof(Triggerable))]
+public class TreeTrunk : TreeBase {
     [Header("TreeTrunk")]
-    [SerializeField] private TreeStump stump_;
+    [SerializeField] private Sprite stumpSprite_;
     [SerializeField] private int maturePeriod_;
-    [SerializeField] private float wobbleSecs_ = 0.5f;
-    [SerializeField] private float destroySecs_ = 1f;
+    private TreeBase stump_;
+    private Triggerable triggerable_;
     private BoxCollider2D collider_;
-    private Animator animator_;
-    private WaitForSeconds wobbleWait_;
-    private WaitForSeconds destroyWait_;
     private Vector2 matureSize_;
     private Vector2 matureOffset_;
-    private bool wobbling_;
 
     protected override void Awake() {
         collider_ = GetComponent<BoxCollider2D>();
-        animator_ = GetComponent<Animator>();
-        wobbleWait_ = new WaitForSeconds(wobbleSecs_);
-        destroyWait_ = new WaitForSeconds(destroySecs_);
+        triggerable_ = GetComponent<Triggerable>();
         matureSize_ = collider_.size;
         matureOffset_ = collider_.offset;
         base.Awake();
-        if (stump_ != null) {
-            stump_.SetFreeze(true);
-            stump_.gameObject.SetActive(false);
-        }
     }
 
-    protected override void OnTriggerEnter2D(Collider2D collision) {
-        base.OnTriggerEnter2D(collision);
-        if (stump_ != null && currentPeriod_ >= maturePeriod_) {
+    private void OnTriggerEnter2D(Collider2D collision) {
+        triggerable_.TriggerItemEnter(collision, this);
+        if (stump_ != null) {
             triggerable_.TriggerItemEnter(collision, stump_);
         } else if (triggerable_.Nudgable(collision, this) && !wobbling_) {
             Direction direction = transform.position.x > collision.transform.position.x ? Direction.Right : Direction.Left;
@@ -41,9 +29,9 @@ public class TreeTrunk : Plant {
         }
     }
 
-    protected override void OnTriggerExit2D(Collider2D collision) {
+    private void OnTriggerExit2D(Collider2D collision) {
         triggerable_.TriggerItemExit(collision, this);
-        if (stump_ != null && currentPeriod_ >= maturePeriod_) {
+        if (stump_ != null) {
             triggerable_.TriggerItemExit(collision, stump_);
         } else if (triggerable_.Nudgable(collision, this) && !wobbling_) {
             Direction direction = transform.position.x > collision.transform.position.x ? Direction.Right : Direction.Left;
@@ -54,9 +42,13 @@ public class TreeTrunk : Plant {
     public override void DestroyItem(FieldGrid grid) {
         if (currentPeriod_ >= maturePeriod_) {
             AudioManager.Instance.PlaySound("TreeFall");
-            StartCoroutine(DestroyRoutine(grid));
-        } else {
             base.DestroyItem(grid);
+            if (stump_ != null) {
+                stump_.SetFreeze(false);
+                grid.AddItem(stump_);
+            }
+        } else {
+            Destroy(gameObject);
         }
     }
 
@@ -65,43 +57,16 @@ public class TreeTrunk : Plant {
         if (currentPeriod_ >= maturePeriod_) {
             collider_.size = matureSize_;
             collider_.offset = matureOffset_;
-            if (stump_ != null) {
+            if (stumpSprite_ != null) {
+                stump_ = (TreeBase)ItemManager.Instance.CreateItem(stumpSprite_, transform.position, transform.parent, gameObject.name + "_Stump");
                 stump_.gameObject.SetActive(true);
-                stump_.transform.parent = transform.parent;
-                stump_.gameObject.name = gameObject.name + "_Stump";
+                stump_.SetFreeze(true);
                 stump_.SetGenerate(true);
                 stump_.Growth(0);
             }
         } else {
             collider_.size = render_.sprite.bounds.size;
-            collider_.offset = new Vector2(0, 0);
+            collider_.offset = new Vector2(0, collider_.size.y / 2);
         }
-    }
-
-    public override Dictionary<ItemData, int> ToolApply(FieldGrid grid, Tool tool, int hold_level) {
-        direction_ = tool.transform.position.x > transform.position.x ? Direction.Left : Direction.Right;
-        if (currentPeriod_ >= maturePeriod_ && !wobbling_) {
-            StartCoroutine(WobbleRoutine(direction_));
-        }
-        return base.ToolApply(grid, tool, hold_level);
-    }
-
-    private IEnumerator WobbleRoutine(Direction direction) {
-        wobbling_ = true;
-        animator_.SetTrigger("wobble");
-        animator_.SetInteger("direction", (int)direction);
-        yield return wobbleWait_;
-        wobbling_ = false;
-    }
-
-    private IEnumerator DestroyRoutine(FieldGrid grid) {
-        animator_.SetTrigger("destroy");
-        animator_.SetInteger("direction", (int)direction_);
-        yield return destroyWait_;
-        if (stump_ != null && currentPeriod_ >= maturePeriod_) {
-            stump_.SetFreeze(false);
-            grid.AddItem(stump_);
-        }
-        base.DestroyItem(grid);
     }
 }

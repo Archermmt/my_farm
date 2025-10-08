@@ -88,11 +88,11 @@ PrefabInstance:
     m_Modifications:
     - target: {fileID: 792736639910810753, guid: 35de012629fa8487ab276ce8d8d301c4, type: 3}
       propertyPath: m_Size.x
-      value: 2.8
+      value: 3
       objectReference: {fileID: 0}
     - target: {fileID: 792736639910810753, guid: 35de012629fa8487ab276ce8d8d301c4, type: 3}
       propertyPath: m_Size.y
-      value: 3.8
+      value: 5
       objectReference: {fileID: 0}
     - target: {fileID: 792736639910810753, guid: 35de012629fa8487ab276ce8d8d301c4, type: 3}
       propertyPath: m_Offset.x
@@ -100,7 +100,7 @@ PrefabInstance:
       objectReference: {fileID: 0}
     - target: {fileID: 792736639910810753, guid: 35de012629fa8487ab276ce8d8d301c4, type: 3}
       propertyPath: m_Offset.y
-      value: 4
+      value: 3.5
       objectReference: {fileID: 0}
     - target: {fileID: 792736639910810753, guid: 35de012629fa8487ab276ce8d8d301c4, type: 3}
       propertyPath: m_SpriteTilingProperty.oldSize.x
@@ -218,16 +218,17 @@ MonoBehaviour:
   - sprite: {fileID: 21300000, guid: 6cefe32f730a75046ab8e8e5434d336e, type: 3}
     day: 0
     health: 8
-    statusList: 07000000
+    statusList: 04000000
     harvestDatas:
     - sprite: {fileID: 21300000, guid: e26dc0d638731ec47abe9c4b3cae62ac, type: 3}
       tool: 6
       effect: 5
       min: 5
       max: 8
-  stump_: {fileID: 0}
-  maturePeriod_: -1
+  wobbleSecs_: 1
   destroySecs_: 1
+  stumpSprite_: {fileID: 0}
+  maturePeriod_: 0
 --- !u!4 &6085237849787886480 stripped
 Transform:
   m_CorrespondingSourceObject: {fileID: 4182700415199540569, guid: 35de012629fa8487ab276ce8d8d301c4, type: 3}

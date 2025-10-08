@@ -24,13 +24,12 @@ public class Harvestable : Item {
     [Header("Harvest")]
     [SerializeField] private List<LifePeriod> lifePeriods_;
     private List<ToolType> harvestTools_;
-    protected int currentPeriod_;
+    protected int currentPeriod_ = 0;
     protected int totalPeriod_;
 
     protected override void Awake() {
-        base.Awake();
-        currentPeriod_ = 0;
         totalPeriod_ = lifePeriods_.Count;
+        base.Awake();
     }
 
     public override void SetItem(ItemData item_data) {
@@ -87,7 +86,7 @@ public class Harvestable : Item {
         LifePeriod period = lifePeriods_[currentPeriod_];
         Vector3 effect_pos = GetEffectPos();
         foreach (HarvestData data in period.harvestDatas) {
-            if (data.effect == EffectType.None) {
+            if (data.effect == EffectType.None || data.tool != tool.toolType) {
                 continue;
             }
             EffectManager.Instance.AddEffect(new EffectMeta(data.effect, effect_pos, meta, 0, 0));

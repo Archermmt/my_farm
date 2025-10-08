@@ -116,6 +116,14 @@ PrefabInstance:
       propertyPath: lifePeriods_.Array.data[0].harvestDatas.Array.data[0].sprite
       value: 
       objectReference: {fileID: 21300000, guid: 7700e9e59e6f58e4598ea8f2e5a84cc1, type: 3}
+    - target: {fileID: 2517965316005954425, guid: 179f08d4816154296ae9d04ce1508a5f, type: 3}
+      propertyPath: m_Size.y
+      value: 0.54823613
+      objectReference: {fileID: 0}
+    - target: {fileID: 2517965316005954425, guid: 179f08d4816154296ae9d04ce1508a5f, type: 3}
+      propertyPath: m_Offset.y
+      value: 0.27411807
+      objectReference: {fileID: 0}
     - target: {fileID: 3703912406486521318, guid: 179f08d4816154296ae9d04ce1508a5f, type: 3}
       propertyPath: m_Sprite
       value: 
