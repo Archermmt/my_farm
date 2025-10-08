@@ -16,7 +16,7 @@ public class Seed : Pickable {
         ResetStatus();
         int hold_level = GetHoldLevel();
         if (hold_level == -1) {
-            if (Plantable(start)) {
+            if (grids.Contains(start) && Plantable(start)) {
                 AddStatus(ItemStatus.Usable);
                 return new List<CursorMeta> { new CursorMeta(start.GetCenter(), start, null, CursorMode.ValidGrid) };
             }
