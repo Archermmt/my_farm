@@ -1,12 +1,11 @@
+using System.Collections;
 using UnityEngine;
 
-[RequireComponent(typeof(Animator), typeof(Triggerable))]
 public class TreeTrunk : TreeBase {
     [Header("TreeTrunk")]
     [SerializeField] private Sprite stumpSprite_;
     [SerializeField] private int maturePeriod_;
     private TreeBase stump_;
-    private Triggerable triggerable_;
     private BoxCollider2D collider_;
     private Vector2 matureSize_;
     private Vector2 matureOffset_;
@@ -23,9 +22,6 @@ public class TreeTrunk : TreeBase {
         triggerable_.TriggerItemEnter(collision, this);
         if (stump_ != null) {
             triggerable_.TriggerItemEnter(collision, stump_);
-        } else if (triggerable_.Nudgable(collision, this) && !wobbling_) {
-            Direction direction = transform.position.x > collision.transform.position.x ? Direction.Right : Direction.Left;
-            StartCoroutine(WobbleRoutine(direction));
         }
     }
 
@@ -33,22 +29,6 @@ public class TreeTrunk : TreeBase {
         triggerable_.TriggerItemExit(collision, this);
         if (stump_ != null) {
             triggerable_.TriggerItemExit(collision, stump_);
-        } else if (triggerable_.Nudgable(collision, this) && !wobbling_) {
-            Direction direction = transform.position.x > collision.transform.position.x ? Direction.Right : Direction.Left;
-            StartCoroutine(WobbleRoutine(direction));
-        }
-    }
-
-    public override void DestroyItem(FieldGrid grid) {
-        if (currentPeriod_ >= maturePeriod_) {
-            AudioManager.Instance.PlaySound("TreeFall");
-            base.DestroyItem(grid);
-            if (stump_ != null) {
-                stump_.SetFreeze(false);
-                grid.AddItem(stump_);
-            }
-        } else {
-            Destroy(gameObject);
         }
     }
 
@@ -67,6 +47,28 @@ public class TreeTrunk : TreeBase {
         } else {
             collider_.size = render_.sprite.bounds.size;
             collider_.offset = new Vector2(0, collider_.size.y / 2);
+        }
+    }
+
+    protected override IEnumerator DestroyRoutine(FieldGrid grid) {
+        if (currentPeriod_ >= maturePeriod_) {
+            AudioManager.Instance.AddSound("TreeFall");
+            float angle = direction_ == Direction.Left ? 20 : -20;
+            float alpha = render_.color.a;
+            while (alpha > 0.01f) {
+                alpha = alpha - alpha / destrySec_ * Time.deltaTime;
+                transform.Rotate(0f, 0f, angle / destrySec_ * Time.deltaTime);
+                render_.color = new Color(1f, 1f, 1f, alpha);
+                yield return null;
+            }
+            render_.color = new Color(1f, 1f, 1f, 0);
+            Destroy(gameObject);
+            if (stump_ != null) {
+                stump_.SetFreeze(false);
+                grid.AddItem(stump_);
+            }
+        } else {
+            yield return base.DestroyRoutine(grid);
         }
     }
 }

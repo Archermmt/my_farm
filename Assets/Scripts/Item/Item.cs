@@ -1,4 +1,5 @@
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -28,6 +29,7 @@ public class Item : MonoBehaviour {
     [Header("Basic")]
     [SerializeField] private string item_name_;
     [SerializeField] protected int days_ = 0;
+    [SerializeField] protected float destrySec_ = 0.35f;
     protected int health_;
     protected bool freezed_;
     protected Direction direction_;
@@ -56,7 +58,7 @@ public class Item : MonoBehaviour {
     }
 
     public virtual void DestroyItem(FieldGrid grid) {
-        Destroy(gameObject);
+        StartCoroutine(DestroyRoutine(grid));
     }
 
     public virtual void Growth(int days = 1) {
@@ -200,10 +202,22 @@ public class Item : MonoBehaviour {
         generated_ = generate;
     }
 
+    protected virtual IEnumerator DestroyRoutine(FieldGrid grid) {
+        float alpha = render_.color.a;
+        while (alpha > 0.01f) {
+            alpha = alpha - alpha / destrySec_ * Time.deltaTime;
+            render_.color = new Color(1f, 1f, 1f, alpha);
+            yield return null;
+        }
+        render_.color = new Color(1f, 1f, 1f, 0);
+        Destroy(gameObject);
+    }
+
     public ItemData meta { get { return meta_; } }
     public Direction direction { get { return direction_; } }
     public SpriteRenderer render { get { return render_; } }
     public List<AnimationTag> animationTags { get { return animationTags_; } }
+    public HashSet<ItemStatus> statusSet { get { return statusSet_; } }
     protected virtual int holdLevelMax { get { return 1; } }
     public int days { get { return days_; } }
     public bool freezed { get { return freezed_; } }

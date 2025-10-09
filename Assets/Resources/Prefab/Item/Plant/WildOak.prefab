@@ -167,9 +167,6 @@ PrefabInstance:
       addedObject: {fileID: 6136501247695768860}
     m_AddedComponents:
     - targetCorrespondingSourceObject: {fileID: 2611815160969460626, guid: 35de012629fa8487ab276ce8d8d301c4, type: 3}
-      insertIndex: 3
-      addedObject: {fileID: -4155834131049670019}
-    - targetCorrespondingSourceObject: {fileID: 2611815160969460626, guid: 35de012629fa8487ab276ce8d8d301c4, type: 3}
       insertIndex: -1
       addedObject: {fileID: 5019800844998848310}
   m_SourcePrefab: {fileID: 100100000, guid: 35de012629fa8487ab276ce8d8d301c4, type: 3}
@@ -178,28 +175,6 @@ GameObject:
   m_CorrespondingSourceObject: {fileID: 2611815160969460626, guid: 35de012629fa8487ab276ce8d8d301c4, type: 3}
   m_PrefabInstance: {fileID: 7960380934598336201}
   m_PrefabAsset: {fileID: 0}
---- !u!95 &-4155834131049670019
-Animator:
-  serializedVersion: 7
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 5352524058440688987}
-  m_Enabled: 1
-  m_Avatar: {fileID: 0}
-  m_Controller: {fileID: 9100000, guid: 0a10b13481d644f429d292abf8fff114, type: 2}
-  m_CullingMode: 0
-  m_UpdateMode: 0
-  m_ApplyRootMotion: 0
-  m_LinearVelocityBlending: 0
-  m_StabilizeFeet: 0
-  m_AnimatePhysics: 0
-  m_WarningMessage: 
-  m_HasTransformHierarchy: 1
-  m_AllowConstantClipSamplingOptimization: 1
-  m_KeepAnimatorStateOnDisable: 0
-  m_WriteDefaultValuesOnDisable: 0
 --- !u!114 &5019800844998848310
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -214,6 +189,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   item_name_: WildOak
   days_: 0
+  destrySec_: 0.35
   lifePeriods_:
   - sprite: {fileID: 21300000, guid: 6cefe32f730a75046ab8e8e5434d336e, type: 3}
     day: 0
@@ -225,8 +201,8 @@ MonoBehaviour:
       effect: 5
       min: 5
       max: 8
-  wobbleSecs_: 1
-  destroySecs_: 1
+  wobbleSec_: 0.5
+  destroySec_: 0.5
   stumpSprite_: {fileID: 0}
   maturePeriod_: 0
 --- !u!4 &6085237849787886480 stripped

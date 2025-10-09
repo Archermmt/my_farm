@@ -63,10 +63,10 @@ PrefabInstance:
     m_AddedComponents:
     - targetCorrespondingSourceObject: {fileID: 5485029832335576484, guid: ae4353ece9de5492f8d09dcf0eadf52d, type: 3}
       insertIndex: -1
-      addedObject: {fileID: 250572142763935819}
+      addedObject: {fileID: -8905051703898797162}
     - targetCorrespondingSourceObject: {fileID: 5485029832335576484, guid: ae4353ece9de5492f8d09dcf0eadf52d, type: 3}
       insertIndex: -1
-      addedObject: {fileID: -8905051703898797162}
+      addedObject: {fileID: 3212290778905049440}
     - targetCorrespondingSourceObject: {fileID: 5485029832335576484, guid: ae4353ece9de5492f8d09dcf0eadf52d, type: 3}
       insertIndex: -1
       addedObject: {fileID: 6796582162330743488}
@@ -76,28 +76,6 @@ GameObject:
   m_CorrespondingSourceObject: {fileID: 5485029832335576484, guid: ae4353ece9de5492f8d09dcf0eadf52d, type: 3}
   m_PrefabInstance: {fileID: 8551701340957740810}
   m_PrefabAsset: {fileID: 0}
---- !u!95 &250572142763935819
-Animator:
-  serializedVersion: 7
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 4229727352118887086}
-  m_Enabled: 1
-  m_Avatar: {fileID: 0}
-  m_Controller: {fileID: 9100000, guid: b2b9b06ff2c85465e8adedfaddeaf673, type: 2}
-  m_CullingMode: 0
-  m_UpdateMode: 0
-  m_ApplyRootMotion: 0
-  m_LinearVelocityBlending: 0
-  m_StabilizeFeet: 0
-  m_AnimatePhysics: 0
-  m_WarningMessage: 
-  m_HasTransformHierarchy: 1
-  m_AllowConstantClipSamplingOptimization: 1
-  m_KeepAnimatorStateOnDisable: 0
-  m_WriteDefaultValuesOnDisable: 0
 --- !u!61 &-8905051703898797162
 BoxCollider2D:
   m_ObjectHideFlags: 0
@@ -144,6 +122,26 @@ BoxCollider2D:
   m_AutoTiling: 0
   m_Size: {x: 1, y: 0.3}
   m_EdgeRadius: 0
+--- !u!114 &3212290778905049440
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4229727352118887086}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 7c37cad098b464750a76a2ba07b54620, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  fadeTargets_: []
+  fadeInSec_: 0.25
+  fadeOutSec_: 0.35
+  fadeTarget_: 0.45
+  fadeSound_: 
+  nudgeTargets_: []
+  nudgeSec_: 0.04
+  nudgeSound_: 
 --- !u!114 &6796582162330743488
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -158,6 +156,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   item_name_: CanyonOakStump
   days_: 0
+  destrySec_: 0.35
   lifePeriods_:
   - sprite: {fileID: 7154603021615155856, guid: d241c496741a12d4290e12ba81dd6724, type: 3}
     day: 0
@@ -169,5 +168,5 @@ MonoBehaviour:
       effect: 5
       min: 3
       max: 6
-  wobbleSecs_: 0.5
-  destroySecs_: 0.5
+  wobbleSec_: 0.5
+  destroySec_: 0.5

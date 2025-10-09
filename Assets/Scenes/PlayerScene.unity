@@ -2263,7 +2263,7 @@ MonoBehaviour:
   runSpeed_: 5
   walkSpeed_: 3
   inventory_: {fileID: 248831787}
-  useToolPauseSecs_: 0.5
+  useTooleSec_: 0.5
 --- !u!210 &1103264479
 SortingGroup:
   m_ObjectHideFlags: 0
@@ -2607,7 +2607,7 @@ MonoBehaviour:
     audioClip: {fileID: 8300000, guid: a1245e3e236386448a3b1d2caf1730a7, type: 3}
     pitchMin: 0.9
     pitchMax: 1.1
-    volume: 0.344
+    volume: 0.506
     start: 0.3
     duration: 1
   - name: TreeFall
@@ -2682,6 +2682,16 @@ MonoBehaviour:
     duration: 1
   capacity_: 10
   maxSize_: 100
+  sceneSounds_: []
+  audioMixer_: {fileID: 0}
+  ambientAudio_: {fileID: 0}
+  musicAudio_: {fileID: 0}
+  musicSnapshot_: {fileID: 0}
+  ambientSnapshot_: {fileID: 0}
+  musicPlaySec_: 120
+  musicStartMinSec_: 20
+  musicStartMaxSec_: 40
+  musicTransitionSec_: 8
 --- !u!1 &1279967473
 GameObject:
   m_ObjectHideFlags: 0
@@ -2712,10 +2722,10 @@ Transform:
   m_ConstrainProportionsScale: 0
   m_Children:
   - {fileID: 359293843}
-  - {fileID: 2016962921}
   - {fileID: 437958434}
-  - {fileID: 1585565065}
+  - {fileID: 2016962921}
   - {fileID: 2130576412}
+  - {fileID: 1585565065}
   - {fileID: 1271739939}
   m_Father: {fileID: 0}
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}

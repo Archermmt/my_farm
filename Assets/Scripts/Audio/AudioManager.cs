@@ -2,27 +2,58 @@ using System.Collections;
 using System.Collections.Generic;
 using NUnit.Framework;
 using UnityEngine;
+using UnityEngine.Audio;
 using UnityEngine.Pool;
 
 public class AudioManager : Singleton<AudioManager> {
+    [Header("Sound.Basic")]
     [SerializeField] private SoundData[] sounds_;
     [SerializeField] private int capacity_ = 10;
     [SerializeField] private int maxSize_ = 100;
+
+    [Header("Sound.Scene")]
+    [SerializeField] private SceneSoundData[] sceneSounds_;
+    [SerializeField] private AudioMixer audioMixer_ = null;
+    [SerializeField] private AudioSource ambientAudio_ = null;
+    [SerializeField] private AudioSource musicAudio_ = null;
+    [SerializeField] private AudioMixerSnapshot musicSnapshot_ = null;
+    [SerializeField] private AudioMixerSnapshot ambientSnapshot_ = null;
+    [SerializeField] private float musicPlaySec_ = 120f;
+    [SerializeField] private float musicStartMinSec_ = 20f;
+    [SerializeField] private float musicStartMaxSec_ = 40f;
+    [SerializeField] private float musicTransitionSec_ = 8f;
+
     private ObjectPool<GameObject> pool_;
     private Dictionary<string, SoundData> soundsMap_;
+    private Dictionary<SceneName, SceneSoundData> sceneSoundsMap_;
     private Dictionary<string, Sound> soundObjs_;
     private List<string> soundQueque_;
+    private WaitForSeconds musicPlayWait_;
+    private Coroutine sceneSoundCoroutine;
     private int count_ = 0;
 
     protected override void Awake() {
         base.Awake();
         pool_ = new ObjectPool<GameObject>(CreateFunc, ActionOnGet, ActionOnRelease, ActionOnDestroy, true, capacity_, maxSize_);
         soundsMap_ = new Dictionary<string, SoundData>();
+        sceneSoundsMap_ = new Dictionary<SceneName, SceneSoundData>();
         soundObjs_ = new Dictionary<string, Sound>();
         soundQueque_ = new List<string>();
+        musicPlayWait_ = new WaitForSeconds(musicPlaySec_);
         foreach (SoundData sound in sounds_) {
             soundsMap_.Add(sound.name, sound);
         }
+        foreach (SceneSoundData sound in sceneSounds_) {
+            sceneSoundsMap_.Add(sound.scene, sound);
+        }
+    }
+
+    private void OnEnable() {
+        EventHandler.AfterSceneLoadEvent += AfterSceneLoad;
+    }
+
+    private void OnDisable() {
+        EventHandler.AfterSceneLoadEvent -= AfterSceneLoad;
     }
 
     public void PlaySound(string name) {
@@ -35,6 +66,44 @@ public class AudioManager : Singleton<AudioManager> {
         if (soundObjs_.ContainsKey(name) && soundObjs_[name].gameObject.activeInHierarchy && soundObjs_[name].gameObject.activeSelf && !soundObjs_[name].playing) {
             StartCoroutine(PlaySoundRoutine(soundObjs_[name], soundsMap_[name]));
         }
+    }
+
+    private void AfterSceneLoad(SceneName scene) {
+        /*
+        if (!sceneSoundsMap_.ContainsKey(scene)) {
+            return;
+        }
+        if (sceneSoundCoroutine != null) {
+            StopCoroutine(sceneSoundCoroutine);
+        }
+        sceneSoundCoroutine = StartCoroutine(PlaySceneSoundRoutine(sceneSoundsMap_[scene]));
+        */
+    }
+
+    private IEnumerator PlaySceneSoundRoutine(SceneSoundData scene_sound) {
+        SoundData music = soundsMap_[scene_sound.music];
+        SoundData ambient = soundsMap_[scene_sound.ambient];
+        PlayAmbient(ambient, 0);
+        yield return new WaitForSeconds(Random.Range(musicStartMinSec_, musicStartMaxSec_));
+        PlayMusic(music, musicTransitionSec_);
+        yield return musicPlayWait_;
+        PlayAmbient(ambient, musicTransitionSec_);
+    }
+
+    private void PlayAmbient(SoundData ambient, float transitionSecs) {
+        float ambient_volume = ambient.volume * 100f - 80f;
+        audioMixer_.SetFloat("AmbientVolume", ambient_volume);
+        ambientAudio_.clip = ambient.audioClip;
+        ambientAudio_.Play();
+        ambientSnapshot_.TransitionTo(transitionSecs);
+    }
+
+    private void PlayMusic(SoundData music, float transitionSecs) {
+        float music_volume = music.volume * 100f - 80f;
+        audioMixer_.SetFloat("MusicVolume", music_volume);
+        musicAudio_.clip = music.audioClip;
+        musicAudio_.Play();
+        musicSnapshot_.TransitionTo(transitionSecs);
     }
 
     public void TriggerSound(string name) {

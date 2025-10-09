@@ -86,9 +86,6 @@ PrefabInstance:
     m_AddedGameObjects: []
     m_AddedComponents:
     - targetCorrespondingSourceObject: {fileID: 2611815160969460626, guid: 35de012629fa8487ab276ce8d8d301c4, type: 3}
-      insertIndex: 3
-      addedObject: {fileID: 3095113132294767210}
-    - targetCorrespondingSourceObject: {fileID: 2611815160969460626, guid: 35de012629fa8487ab276ce8d8d301c4, type: 3}
       insertIndex: -1
       addedObject: {fileID: 4666270761855725282}
   m_SourcePrefab: {fileID: 100100000, guid: 35de012629fa8487ab276ce8d8d301c4, type: 3}
@@ -97,28 +94,6 @@ GameObject:
   m_CorrespondingSourceObject: {fileID: 2611815160969460626, guid: 35de012629fa8487ab276ce8d8d301c4, type: 3}
   m_PrefabInstance: {fileID: 8613171810699536503}
   m_PrefabAsset: {fileID: 0}
---- !u!95 &3095113132294767210
-Animator:
-  serializedVersion: 7
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 6032336601310761957}
-  m_Enabled: 1
-  m_Avatar: {fileID: 0}
-  m_Controller: {fileID: 9100000, guid: 0a10b13481d644f429d292abf8fff114, type: 2}
-  m_CullingMode: 0
-  m_UpdateMode: 0
-  m_ApplyRootMotion: 0
-  m_LinearVelocityBlending: 0
-  m_StabilizeFeet: 0
-  m_AnimatePhysics: 0
-  m_WarningMessage: 
-  m_HasTransformHierarchy: 1
-  m_AllowConstantClipSamplingOptimization: 1
-  m_KeepAnimatorStateOnDisable: 0
-  m_WriteDefaultValuesOnDisable: 0
 --- !u!114 &4666270761855725282
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -133,6 +108,7 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   item_name_: CanyonOak
   days_: 0
+  destrySec_: 0.35
   lifePeriods_:
   - sprite: {fileID: 5940278866164146339, guid: d241c496741a12d4290e12ba81dd6724, type: 3}
     day: 0
@@ -184,7 +160,7 @@ MonoBehaviour:
       effect: 6
       min: 4
       max: 8
-  wobbleSecs_: 0.5
-  destroySecs_: 1
+  wobbleSec_: 0.5
+  destroySec_: 0.5
   stumpSprite_: {fileID: 7154603021615155856, guid: d241c496741a12d4290e12ba81dd6724, type: 3}
   maturePeriod_: 4

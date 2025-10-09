@@ -1,4 +1,3 @@
-using System.Collections;
 using UnityEngine;
 
 [System.Serializable]
@@ -13,6 +12,13 @@ public class SoundData {
     public float volume = 1f;
     public float start = 0.3f;
     public float duration = 1f;
+}
+
+[System.Serializable]
+public class SceneSoundData {
+    public SceneName scene;
+    public string ambient;
+    public string music;
 }
 
 public class Sound : MonoBehaviour {

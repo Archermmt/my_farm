@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -6,48 +7,40 @@ using UnityEngine;
 public class Triggerable : MonoBehaviour {
     [Header("Fade")]
     [SerializeField] private List<string> fadeTargets_;
-    [SerializeField] private float fadeInSecond_ = 0.25f;
-    [SerializeField] private float fadeOutSecond_ = 0.35f;
-    [SerializeField] private float fadeOutAlpha_ = 0.45f;
+    [SerializeField] private float fadeInSec_ = 0.25f;
+    [SerializeField] private float fadeOutSec_ = 0.35f;
+    [SerializeField] private float fadeTarget_ = 0.45f;
     [SerializeField] private string fadeSound_ = "";
 
     [Header("Nudge")]
     [SerializeField] private List<string> nudgeTargets_;
-    [SerializeField] private float nudgePauseSecs_ = 0.04f;
+    [SerializeField] private float nudgeSec_ = 0.04f;
     [SerializeField] private string nudgeSound_ = "";
 
     private bool rotating_ = false;
-    private WaitForSeconds nudgePause_;
+    private WaitForSeconds nudgeWait_;
 
     private void Awake() {
-        nudgePause_ = new WaitForSeconds(nudgePauseSecs_);
+        nudgeWait_ = new WaitForSeconds(nudgeSec_);
     }
 
     public void TriggerItemEnter(Collider2D collision, Item item) {
         if (Nudgable(collision, item)) {
             if (!rotating_) {
-                if (transform.position.x < collision.transform.position.x) {
-                    StartCoroutine(Rotate(item, false));
-                } else {
-                    StartCoroutine(Rotate(item, true));
-                }
+                Rotate(item, transform.position.x >= collision.transform.position.x);
             }
         } else if (Fadable(collision, item)) {
-            StartCoroutine(FadeOutRoutine(item));
+            Fade(item, fadeTarget_, fadeOutSec_);
         }
     }
 
     public void TriggerItemExit(Collider2D collision, Item item) {
         if (Nudgable(collision, item)) {
             if (!rotating_) {
-                if (transform.position.x > collision.transform.position.x) {
-                    StartCoroutine(Rotate(item, false));
-                } else {
-                    StartCoroutine(Rotate(item, true));
-                }
+                Rotate(item, transform.position.x <= collision.transform.position.x);
             }
         } else if (Fadable(collision, item)) {
-            StartCoroutine(FadeInRoutine(item));
+            Fade(item, 1, fadeInSec_);
         }
     }
 
@@ -55,33 +48,37 @@ public class Triggerable : MonoBehaviour {
         return item.HasStatus(ItemStatus.Nudgable) && gameObject.activeSelf && gameObject.activeInHierarchy && nudgeTargets_ != null && nudgeTargets_.Contains(collision.tag);
     }
 
-    private IEnumerator Rotate(Item item, bool clock_wise) {
+    public void Rotate(Item item, bool clock_wise, float angle = 2) {
+        StartCoroutine(RotateRoutine(item, clock_wise, angle));
+    }
+
+    private IEnumerator RotateRoutine(Item item, bool clock_wise, float angle) {
         rotating_ = true;
         if (nudgeSound_.Length > 0) {
             AudioManager.Instance.PlaySound(nudgeSound_);
         }
         if (clock_wise) {
             for (int i = 0; i < 4; i++) {
-                item.transform.Rotate(0f, 0f, -2f);
-                yield return nudgePause_;
+                item.transform.Rotate(0f, 0f, -angle);
+                yield return nudgeWait_;
             }
             for (int i = 0; i < 5; i++) {
-                item.transform.Rotate(0f, 0f, 2f);
-                yield return nudgePause_;
+                item.transform.Rotate(0f, 0f, angle);
+                yield return nudgeWait_;
             }
-            item.transform.Rotate(0f, 0f, -2f);
+            item.transform.Rotate(0f, 0f, -angle);
         } else {
             for (int i = 0; i < 4; i++) {
-                item.transform.Rotate(0f, 0f, 2f);
-                yield return nudgePause_;
+                item.transform.Rotate(0f, 0f, angle);
+                yield return nudgeWait_;
             }
             for (int i = 0; i < 5; i++) {
-                item.transform.Rotate(0f, 0f, -2f);
-                yield return nudgePause_;
+                item.transform.Rotate(0f, 0f, -angle);
+                yield return nudgeWait_;
             }
-            item.transform.Rotate(0f, 0f, 2f);
+            item.transform.Rotate(0f, 0f, angle);
         }
-        yield return nudgePause_;
+        yield return nudgeWait_;
         rotating_ = false;
     }
 
@@ -89,32 +86,21 @@ public class Triggerable : MonoBehaviour {
         return item.HasStatus(ItemStatus.Fadable) && gameObject.activeSelf && gameObject.activeInHierarchy && fadeTargets_ != null && fadeTargets_.Contains(collision.tag);
     }
 
-    private IEnumerator FadeInRoutine(Item item) {
+    public void Fade(Item item, float target, float duration) {
+        StartCoroutine(FadeRoutine(item, target, duration));
+    }
+
+    private IEnumerator FadeRoutine(Item item, float target, float duration) {
         if (fadeSound_.Length > 0) {
             AudioManager.Instance.PlaySound(fadeSound_);
         }
         float alpha = item.render.color.a;
-        float distance = 1f - alpha;
-        while (1f - alpha > 0.01f) {
-            alpha = alpha + distance / fadeInSecond_ * Time.deltaTime;
+        float distance = target - alpha;
+        while (Math.Abs(target - alpha) > 0.01f) {
+            alpha = alpha + distance / duration * Time.deltaTime;
             item.render.color = new Color(1f, 1f, 1f, alpha);
             yield return null;
         }
-        item.render.color = new Color(1f, 1f, 1f, 1f);
+        item.render.color = new Color(1f, 1f, 1f, target);
     }
-
-    private IEnumerator FadeOutRoutine(Item item) {
-        if (fadeSound_.Length > 0) {
-            AudioManager.Instance.PlaySound(fadeSound_);
-        }
-        float alpha = item.render.color.a;
-        float distance = alpha - fadeOutAlpha_;
-        while (alpha - fadeOutAlpha_ > 0.01f) {
-            alpha = alpha - distance / fadeOutSecond_ * Time.deltaTime;
-            item.render.color = new Color(1f, 1f, 1f, alpha);
-            yield return null;
-        }
-        item.render.color = new Color(1f, 1f, 1f, fadeOutAlpha_);
-    }
-
 }

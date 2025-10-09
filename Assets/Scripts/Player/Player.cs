@@ -6,7 +6,7 @@ public class Player : Singleton<Player> {
     [SerializeField] private float runSpeed_ = 5f;
     [SerializeField] private float walkSpeed_ = 3f;
     [SerializeField] private PlayerInventory inventory_;
-    [SerializeField] private float useToolPauseSecs_ = 0.5f;
+    [SerializeField] private float useTooleSec_ = 0.5f;
     // basic
     private bool freezed_ = false;
     private Camera camera_;
@@ -22,13 +22,13 @@ public class Player : Singleton<Player> {
     private Action action_ = Action.Idle;
     private Animator[] animators_;
     private AnimationSwapper[] animationSwappers_;
-    private WaitForSeconds useToolPause_;
+    private WaitForSeconds useToolWait_;
 
     protected override void Awake() {
         base.Awake();
         rigidBody_ = GetComponent<Rigidbody2D>();
         animators_ = GetComponentsInChildren<Animator>();
-        useToolPause_ = new WaitForSeconds(useToolPauseSecs_);
+        useToolWait_ = new WaitForSeconds(useTooleSec_);
         inventory_.Setup(transform.tag);
         animationSwappers_ = GetComponentsInChildren<AnimationSwapper>();
         hands_ = transform.Find("Hands");
@@ -155,7 +155,7 @@ public class Player : Singleton<Player> {
         foreach (Animator animator in animators_) {
             animator.SetTrigger("useTool");
         }
-        yield return useToolPause_;
+        yield return useToolWait_;
         UpdateAnimators(direction, Action.Idle);
         SetFreeze(false);
     }
