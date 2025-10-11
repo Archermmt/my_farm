@@ -52,11 +52,15 @@ public class Container : MonoBehaviour {
             slot.SetItem(item_data, 0);
         }
         while (slot.GetSurplus(item_data) < left) {
-            slot.IncreaseAmount(slot.GetSurplus(item_data));
-            left -= slot.GetSurplus(item_data);
+            int surplus = slot.GetSurplus(item_data);
+            slot.IncreaseAmount(surplus);
+            left -= surplus;
             slot = FindSlotToAdd(item_data);
             if (slot == null) {
                 return left;
+            }
+            if (slot.current == 0) {
+                slot.SetItem(item_data, 0);
             }
         }
         slot.IncreaseAmount(left);
@@ -70,8 +74,9 @@ public class Container : MonoBehaviour {
         }
         int left = amount;
         while (slot.current < left) {
-            slot.DecreaseAmount(slot.current);
-            left -= slot.current;
+            int current = slot.current;
+            slot.DecreaseAmount(current);
+            left -= current;
             slot = FindSlotToRemove(item_data);
             if (slot == null) {
                 return left;

@@ -1,10 +1,7 @@
-public class EnvManager : Singleton<EnvManager> {
-    private Clock clock_;
+using UnityEngine;
 
-    protected override void Awake() {
-        base.Awake();
-        clock_ = transform.Find("Clock").GetComponent<Clock>();
-    }
+public class EnvManager : Singleton<EnvManager> {
+    [SerializeField] private Clock clock_;
 
     public void UpdateTime(TimeType time_type, int delta) {
         EventHandler.CallUpdateTime(time_type, clock_.time, delta);

@@ -20,7 +20,7 @@ public class AudioManager : Singleton<AudioManager> {
     [SerializeField] private AudioMixerSnapshot ambientSnapshot_ = null;
     [SerializeField] private float musicPlaySec_ = 20f;
     [SerializeField] private float musicStartSec_ = 10f;
-    [SerializeField] private int maxLoop_ = 20;
+    [SerializeField] private int maxLoop_ = -1;
 
     private ObjectPool<GameObject> pool_;
     private Dictionary<string, SoundData> soundsMap_;
@@ -80,13 +80,16 @@ public class AudioManager : Singleton<AudioManager> {
     private IEnumerator PlaySceneSoundRoutine(SceneSoundData scene_sound) {
         SoundData music = soundsMap_[scene_sound.music];
         SoundData ambient = soundsMap_[scene_sound.ambient];
-        for (int i = 0; i < maxLoop_; i++) {
-            Debug.Log("PlayAmbient start");
+        int cnt = 0;
+        while (true) {
             PlayAmbient(ambient, scene_sound.ambientTransitionSec);
             yield return new WaitForSeconds(Random.Range(0, musicStartSec_));
-            Debug.Log("PlayMusic start");
             PlayMusic(music, scene_sound.musicTransitionSec);
             yield return musicPlayWait_;
+            cnt += 1;
+            if (maxLoop_ > 0 && cnt >= maxLoop_) {
+                break;
+            }
         }
     }
 

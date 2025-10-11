@@ -121,7 +121,7 @@ public class Player : Singleton<Player> {
             if (action == Action.DropItem && carried_.Key.HasStatus(ItemStatus.Dropable)) {
                 int drop_amount = FieldManager.Instance.DropItem(carried_.Key, cursors);
                 carried_.Value.DecreaseAmount(drop_amount);
-            } else if (action == Action.HoldItem && !carried_.Key.HasStatus(ItemStatus.Holding) && carried_.Key.HasStatus(ItemStatus.Usable)) {
+            } else if (action == Action.HoldItem && !carried_.Key.HasStatus(ItemStatus.Holding)) {
                 SetFreeze(true);
                 if (carried_.Key.meta.type == ItemType.Tool || carried_.Key.meta.type == ItemType.Seed) {
                     carried_.Key.Hold(direction_);
@@ -242,6 +242,11 @@ public class Player : Singleton<Player> {
                 ItemManager.Instance.SetFreeze(true);
                 inventory_.OpenBackpack();
             }
+        } else if (Input.GetKeyDown(KeyCode.Escape)) {
+            if (carried_.Key != null && carried_.Key.HasStatus(ItemStatus.Holding)) {
+                carried_.Key.Unhold();
+                SetFreeze(false);
+            }
         }
 
     }
@@ -252,9 +257,10 @@ public class Player : Singleton<Player> {
         if (Input.GetKeyUp(KeyCode.T)) {
             EnvManager.Instance.UpdateTime(TimeType.Day, 5);
         } else if (Input.GetKeyDown(KeyCode.C)) {
-            ItemData item = ItemManager.Instance.FindItem("ParsnipSeed");
-            inventory_.AddItem(item, 10);
-            inventory_.RemoveItem(item, 10);
+            inventory_.AddItem(ItemManager.Instance.FindItem("Weed"), 100);
+            //ItemData item = ItemManager.Instance.FindItem("ParsnipSeed");
+            //inventory_.AddItem(item, 10);
+            //inventory_.RemoveItem(item, 10);
         }
     }
 

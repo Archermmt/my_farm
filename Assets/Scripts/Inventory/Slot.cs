@@ -41,6 +41,9 @@ public class Slot : MonoBehaviour, IBeginDragHandler, IDragHandler, IEndDragHand
     if (current_ == 0) {
       return capacity_;
     }
+    if (itemMeta_ == null) {
+      Debug.Log("SB case without itemMeta_!!");
+    }
     if (item_data == null) {
       return current_ < capacity_ ? capacity_ - current_ : 0;
     }

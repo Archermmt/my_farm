@@ -69,7 +69,9 @@ public class TreeTrunk : TreeBase {
             if (stump_ != null) {
                 stump_.SetFreeze(false);
                 stump_.SetGenerate(true);
-                stump_.transform.GetComponent<Renderer>().sortingOrder = render_.sortingOrder;
+                SpriteRenderer s_render = stump_.transform.GetComponent<SpriteRenderer>();
+                s_render.sortingOrder = render_.sortingOrder;
+                s_render.color = new Color(1f, 1f, 1f, 1);
                 stump_.transform.parent = transform.parent;
                 grid.AddItem(stump_);
             }

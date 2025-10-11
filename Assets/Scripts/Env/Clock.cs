@@ -1,11 +1,13 @@
 using System;
+using System.Collections.Generic;
+using TMPro;
 using UnityEngine;
 
 [Serializable]
 public class TimeData {
     public int year;
     public int month;
-    public int week;
+    public int weekDay;
     public int day;
     public int hour;
     public int minute;
@@ -14,13 +16,21 @@ public class TimeData {
 
 public class Clock : MonoBehaviour {
     [SerializeField] private TimeData time_;
+    [SerializeField] private TextMeshProUGUI year_;
+    [SerializeField] private TextMeshProUGUI month_;
+    [SerializeField] private TextMeshProUGUI day_;
+    [SerializeField] private TextMeshProUGUI hour_;
     [SerializeField] private float timeSpeepUp_ = 1 / 0.006f;
+    private List<string> monthNames_;
+    private List<string> weekDayNames_;
     private float gameTick_ = 0f;
     private float tickPerMinute_;
     private bool freezed_ = false;
 
     private void Awake() {
         tickPerMinute_ = 60 / timeSpeepUp_;
+        monthNames_ = new List<string> { "Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec" };
+        weekDayNames_ = new List<string> { "Sun", "Mon", "Tue", "Wed", "Thu", "Fri", "Sat" };
     }
 
     private void FixedUpdate() {
@@ -29,6 +39,23 @@ public class Clock : MonoBehaviour {
             if (gameTick_ >= tickPerMinute_) {
                 gameTick_ -= tickPerMinute_;
                 UpdateMinute();
+                year_.text = time_.year.ToString();
+                month_.text = monthNames_[time.month] + "." + season.ToString();
+                if (time_.day == 0) {
+                    day_.text = "1st";
+                } else if (time_.day == 1) {
+                    day_.text = "2nd";
+                } else if (time_.day == 3) {
+                    day_.text = "3rd";
+                } else {
+                    day_.text = time_.day + "th";
+                }
+                day_.text += "." + weekDayNames_[time_.weekDay];
+                if (time_.minute < 10) {
+                    hour_.text = time_.hour + ":0" + time_.minute;
+                } else {
+                    hour_.text = time_.hour + ":" + time_.minute;
+                }
             }
         }
     }
@@ -48,7 +75,7 @@ public class Clock : MonoBehaviour {
 
     public void UpdateDay(int delta = 1) {
         int left = delta;
-        time_.week = (time_.week + left) % 7;
+        time_.weekDay = (time_.weekDay + left) % 7;
         while (time_.day + left > 30) {
             UpdateMonth(1);
             left -= 30;
