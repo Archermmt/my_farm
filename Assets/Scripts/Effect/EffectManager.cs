@@ -1,4 +1,3 @@
-using System;
 using System.Collections.Generic;
 
 public class EffectManager : Singleton<EffectManager> {

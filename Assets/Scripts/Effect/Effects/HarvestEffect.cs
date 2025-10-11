@@ -2,6 +2,12 @@ using TMPro;
 using UnityEngine;
 using UnityEngine.UI;
 
+[System.Serializable]
+public class HarvestEffectMeta : EffectMeta {
+    public Sprite sprite;
+    public int amount;
+}
+
 public class HarvestEffect : Effect {
     [SerializeField] private Image itemImg_;
     [SerializeField] private TextMeshProUGUI amount_;
@@ -13,14 +19,15 @@ public class HarvestEffect : Effect {
         emptySprite_ = itemImg_.sprite;
     }
 
-    public override void StartEffect(EffectMeta data) {
+    public override void StartEffect(EffectMeta effect) {
+        HarvestEffectMeta meta = (HarvestEffectMeta)effect;
         gameObject.SetActive(true);
-        itemImg_.sprite = data.item.sprite;
-        amount_.text = "X " + data.amount;
+        itemImg_.sprite = meta.sprite;
+        amount_.text = "X " + meta.amount;
         animator_.SetTrigger("harvest");
     }
 
-    public override void EndEffect(EffectMeta data) {
+    public override void EndEffect(EffectMeta effect) {
         itemImg_.sprite = emptySprite_;
         amount_.text = "";
         gameObject.SetActive(false);

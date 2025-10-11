@@ -19,6 +19,8 @@ public class SceneSoundData {
     public SceneName scene;
     public string ambient;
     public string music;
+    public float musicTransitionSec = 0f;
+    public float ambientTransitionSec = 0f;
 }
 
 public class Sound : MonoBehaviour {

@@ -12,6 +12,10 @@ PrefabInstance:
       propertyPath: m_Sprite
       value: 
       objectReference: {fileID: -341119608263849502, guid: 5d22327a2a3d2a049a8a59a708d527fe, type: 3}
+    - target: {fileID: 165238595618001696, guid: ae4353ece9de5492f8d09dcf0eadf52d, type: 3}
+      propertyPath: m_SortingOrder
+      value: 1
+      objectReference: {fileID: 0}
     - target: {fileID: 5485029832335576484, guid: ae4353ece9de5492f8d09dcf0eadf52d, type: 3}
       propertyPath: m_Name
       value: BlueSpruceStump
@@ -156,7 +160,6 @@ MonoBehaviour:
   m_EditorClassIdentifier: 
   item_name_: BlueSpruceStump
   days_: 0
-  destrySec_: 0.35
   lifePeriods_:
   - sprite: {fileID: -341119608263849502, guid: 5d22327a2a3d2a049a8a59a708d527fe, type: 3}
     day: 0
@@ -168,5 +171,3 @@ MonoBehaviour:
       effect: 5
       min: 3
       max: 6
-  wobbleSec_: 0.5
-  destroySec_: 0.5

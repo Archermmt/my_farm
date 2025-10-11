@@ -29,7 +29,6 @@ public class Item : MonoBehaviour {
     [Header("Basic")]
     [SerializeField] private string item_name_;
     [SerializeField] protected int days_ = 0;
-    [SerializeField] protected float destrySec_ = 0.35f;
     protected int health_;
     protected bool freezed_;
     protected Direction direction_;
@@ -58,7 +57,13 @@ public class Item : MonoBehaviour {
     }
 
     public virtual void DestroyItem(FieldGrid grid) {
-        StartCoroutine(DestroyRoutine(grid));
+        DestroyEffectMeta eff_meta = new DestroyEffectMeta();
+        eff_meta.type = EffectType.Destroy;
+        eff_meta.sprite = meta.sprite;
+        eff_meta.position = GetEffectPos(EffectType.Destroy);
+        EffectManager.Instance.AddEffect(eff_meta);
+        Destroy(gameObject);
+        grid.RemoveItem(this);
     }
 
     public virtual void Growth(int days = 1) {
@@ -70,7 +75,10 @@ public class Item : MonoBehaviour {
         return new Vector3(pos.x, pos.y + Settings.gridCellSize / 2, pos.z);
     }
 
-    public virtual Vector3 GetEffectPos() {
+    public virtual Vector3 GetEffectPos(EffectType type) {
+        if (type == EffectType.Destroy) {
+            return transform.position;
+        }
         Vector3 pos = transform.position;
         return new Vector3(pos.x, pos.y + render_.sprite.bounds.size.y / 2, pos.z);
     }
@@ -200,17 +208,6 @@ public class Item : MonoBehaviour {
 
     public void SetGenerate(bool generate) {
         generated_ = generate;
-    }
-
-    protected virtual IEnumerator DestroyRoutine(FieldGrid grid) {
-        float alpha = render_.color.a;
-        while (alpha > 0.01f) {
-            alpha = alpha - alpha / destrySec_ * Time.deltaTime;
-            render_.color = new Color(1f, 1f, 1f, alpha);
-            yield return null;
-        }
-        render_.color = new Color(1f, 1f, 1f, 0);
-        Destroy(gameObject);
     }
 
     public ItemData meta { get { return meta_; } }

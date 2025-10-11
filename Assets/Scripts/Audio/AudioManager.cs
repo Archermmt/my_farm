@@ -18,10 +18,9 @@ public class AudioManager : Singleton<AudioManager> {
     [SerializeField] private AudioSource musicAudio_ = null;
     [SerializeField] private AudioMixerSnapshot musicSnapshot_ = null;
     [SerializeField] private AudioMixerSnapshot ambientSnapshot_ = null;
-    [SerializeField] private float musicPlaySec_ = 120f;
-    [SerializeField] private float musicStartMinSec_ = 20f;
-    [SerializeField] private float musicStartMaxSec_ = 40f;
-    [SerializeField] private float musicTransitionSec_ = 8f;
+    [SerializeField] private float musicPlaySec_ = 20f;
+    [SerializeField] private float musicStartSec_ = 10f;
+    [SerializeField] private int maxLoop_ = 20;
 
     private ObjectPool<GameObject> pool_;
     private Dictionary<string, SoundData> soundsMap_;
@@ -69,7 +68,6 @@ public class AudioManager : Singleton<AudioManager> {
     }
 
     private void AfterSceneLoad(SceneName scene) {
-        /*
         if (!sceneSoundsMap_.ContainsKey(scene)) {
             return;
         }
@@ -77,17 +75,19 @@ public class AudioManager : Singleton<AudioManager> {
             StopCoroutine(sceneSoundCoroutine);
         }
         sceneSoundCoroutine = StartCoroutine(PlaySceneSoundRoutine(sceneSoundsMap_[scene]));
-        */
     }
 
     private IEnumerator PlaySceneSoundRoutine(SceneSoundData scene_sound) {
         SoundData music = soundsMap_[scene_sound.music];
         SoundData ambient = soundsMap_[scene_sound.ambient];
-        PlayAmbient(ambient, 0);
-        yield return new WaitForSeconds(Random.Range(musicStartMinSec_, musicStartMaxSec_));
-        PlayMusic(music, musicTransitionSec_);
-        yield return musicPlayWait_;
-        PlayAmbient(ambient, musicTransitionSec_);
+        for (int i = 0; i < maxLoop_; i++) {
+            Debug.Log("PlayAmbient start");
+            PlayAmbient(ambient, scene_sound.ambientTransitionSec);
+            yield return new WaitForSeconds(Random.Range(0, musicStartSec_));
+            Debug.Log("PlayMusic start");
+            PlayMusic(music, scene_sound.musicTransitionSec);
+            yield return musicPlayWait_;
+        }
     }
 
     private void PlayAmbient(SoundData ambient, float transitionSecs) {

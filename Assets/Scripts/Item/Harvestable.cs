@@ -24,11 +24,13 @@ public class Harvestable : Item {
     [Header("Harvest")]
     [SerializeField] private List<LifePeriod> lifePeriods_;
     private List<ToolType> harvestTools_;
+    private HashSet<EffectType> ignoreEffects_;
     protected int currentPeriod_ = 0;
     protected int totalPeriod_;
 
     protected override void Awake() {
         totalPeriod_ = lifePeriods_.Count;
+        ignoreEffects_ = new HashSet<EffectType> { EffectType.None, EffectType.Harvest, EffectType.Destroy };
         base.Awake();
     }
 
@@ -84,12 +86,14 @@ public class Harvestable : Item {
     public override Dictionary<ItemData, int> ToolApply(FieldGrid grid, Tool tool, int hold_level) {
         health_ -= GetDamage(tool, hold_level);
         LifePeriod period = lifePeriods_[currentPeriod_];
-        Vector3 effect_pos = GetEffectPos();
         foreach (HarvestData data in period.harvestDatas) {
-            if (data.effect == EffectType.None || data.tool != tool.toolType) {
+            if (ignoreEffects_.Contains(data.effect) || data.tool != tool.toolType) {
                 continue;
             }
-            EffectManager.Instance.AddEffect(new EffectMeta(data.effect, effect_pos, meta, 0, 0));
+            EffectMeta meta = new EffectMeta();
+            meta.type = data.effect;
+            meta.position = GetEffectPos(data.effect);
+            EffectManager.Instance.AddEffect(meta);
         }
         if (health_ > 0) {
             return new Dictionary<ItemData, int>();
@@ -100,11 +104,15 @@ public class Harvestable : Item {
                 continue;
             }
             ItemData item_data = ItemManager.Instance.FindItem(data.sprite);
-            int amount = UnityEngine.Random.Range(data.min, data.max);
-            EffectManager.Instance.AddEffect(new EffectMeta(EffectType.Harvest, transform.position, item_data, amount, items.Count));
-            items.Add(item_data, amount);
+            HarvestEffectMeta meta = new HarvestEffectMeta();
+            meta.type = EffectType.Harvest;
+            meta.sprite = data.sprite;
+            meta.position = GetEffectPos(EffectType.Harvest);
+            meta.amount = UnityEngine.Random.Range(data.min, data.max);
+            meta.offset = items.Count;
+            EffectManager.Instance.AddEffect(meta);
+            items.Add(item_data, meta.amount);
         }
-        grid.RemoveItem(this);
         DestroyItem(grid);
         return items;
     }

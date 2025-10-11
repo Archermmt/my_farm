@@ -32,16 +32,24 @@ public class TreeTrunk : TreeBase {
         }
     }
 
+    public override Vector3 GetEffectPos(EffectType type) {
+        if (type == EffectType.TrunkChunk) {
+            return AlignGrid();
+        }
+        return base.GetEffectPos(type);
+    }
+
     protected override void UpdatePeriod() {
         base.UpdatePeriod();
         if (currentPeriod_ >= maturePeriod_) {
             collider_.size = matureSize_;
             collider_.offset = matureOffset_;
             if (stumpSprite_ != null) {
-                stump_ = (TreeBase)ItemManager.Instance.CreateItem(stumpSprite_, transform.position, transform.parent, gameObject.name + "_Stump");
+                stump_ = (TreeBase)ItemManager.Instance.CreateItem(stumpSprite_, transform.position, transform, gameObject.name + "_Stump");
                 stump_.gameObject.SetActive(true);
                 stump_.SetFreeze(true);
-                stump_.SetGenerate(true);
+                stump_.SetGenerate(false);
+                stump_.transform.GetComponent<Renderer>().sortingOrder = 0;
                 stump_.Growth(0);
             }
         } else {
@@ -50,25 +58,25 @@ public class TreeTrunk : TreeBase {
         }
     }
 
-    protected override IEnumerator DestroyRoutine(FieldGrid grid) {
+    public override void DestroyItem(FieldGrid grid) {
+        DestroyEffectMeta eff_meta = new DestroyEffectMeta();
+        eff_meta.type = EffectType.Destroy;
+        eff_meta.sprite = GetLifePeriod().sprite;
+        eff_meta.position = GetEffectPos(EffectType.Destroy);
         if (currentPeriod_ >= maturePeriod_) {
             AudioManager.Instance.AddSound("TreeFall");
-            float angle = direction_ == Direction.Left ? 20 : -20;
-            float alpha = render_.color.a;
-            while (alpha > 0.01f) {
-                alpha = alpha - alpha / destrySec_ * Time.deltaTime;
-                transform.Rotate(0f, 0f, angle / destrySec_ * Time.deltaTime);
-                render_.color = new Color(1f, 1f, 1f, alpha);
-                yield return null;
-            }
-            render_.color = new Color(1f, 1f, 1f, 0);
-            Destroy(gameObject);
+            eff_meta.rotate = direction_ == Direction.Left ? 90 : -90;
             if (stump_ != null) {
                 stump_.SetFreeze(false);
+                stump_.SetGenerate(true);
+                stump_.transform.GetComponent<Renderer>().sortingOrder = render_.sortingOrder;
+                stump_.transform.parent = transform.parent;
                 grid.AddItem(stump_);
             }
-        } else {
-            yield return base.DestroyRoutine(grid);
         }
+        EffectManager.Instance.AddEffect(eff_meta);
+        Destroy(gameObject);
+        grid.RemoveItem(this);
+
     }
 }

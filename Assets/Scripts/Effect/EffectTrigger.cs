@@ -12,35 +12,38 @@ public class EffectTrigger : MonoBehaviour {
     [SerializeField] private float effectEndSec_ = 2f;
     private string sound_ = "";
     private ObjectPool<GameObject> pool_;
-    private List<EffectMeta> effectQueque_;
+    //private List<EffectMeta> effectQueque_;
+    private List<KeyValuePair<EffectMeta, GameObject>> effectQueque_;
     private WaitForSeconds effectEndWait_;
     private int count_ = 0;
 
     private void Awake() {
         pool_ = new ObjectPool<GameObject>(CreateFunc, ActionOnGet, ActionOnRelease, ActionOnDestroy, true, capacity_, maxSize_);
-        effectQueque_ = new List<EffectMeta>();
+        effectQueque_ = new List<KeyValuePair<EffectMeta, GameObject>>();
         effectEndWait_ = new WaitForSeconds(effectEndSec_);
         sound_ = prefab_.GetComponent<Effect>().sound;
     }
 
     public void ClearEffects() {
-        effectQueque_ = new List<EffectMeta>();
+        effectQueque_ = new List<KeyValuePair<EffectMeta, GameObject>>();
     }
 
     public void AddEffect(EffectMeta effect) {
-        effectQueque_.Add(effect);
+        GameObject obj = GetObj(effect.position);
+        obj.GetComponent<Effect>().Setup(effect);
+        effectQueque_.Add(new KeyValuePair<EffectMeta, GameObject>(effect, obj));
     }
 
     public void TriggerEffects() {
         int cnt = 0;
-        foreach (EffectMeta effect in effectQueque_) {
-            StartCoroutine(TriggerRountine(effect));
+        foreach (KeyValuePair<EffectMeta, GameObject> pair in effectQueque_) {
+            StartCoroutine(TriggerRountine(pair.Key, pair.Value));
             cnt += 1;
         }
     }
 
-    private IEnumerator TriggerRountine(EffectMeta effect) {
-        GameObject obj = GetObj(effect.position);
+    private IEnumerator TriggerRountine(EffectMeta effect, GameObject obj) {
+        //GameObject obj = GetObj(effect.position);
         yield return new WaitForSeconds(effect.offset * effectStartSec_ + Random.Range(0.0f, effectStartSec_));
         obj.GetComponent<Effect>().StartEffect(effect);
         yield return effectEndWait_;
