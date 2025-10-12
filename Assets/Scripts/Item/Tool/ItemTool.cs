@@ -15,10 +15,12 @@ public class ItemTool : Tool {
         ResetStatus();
         int hold_level = GetHoldLevel();
         if (hold_level == -1) {
-            foreach (Item item in start.items) {
-                if (!item.freezed && item.ToolUsable(start, this, hold_level)) {
-                    AddStatus(ItemStatus.Usable);
-                    return new List<CursorMeta> { new CursorMeta(item.AlignGrid(), start, item, CursorMode.ValidPos) };
+            if (grids.Contains(start)) {
+                foreach (Item item in start.items) {
+                    if (!item.freezed && item.ToolUsable(start, this, hold_level)) {
+                        AddStatus(ItemStatus.Usable);
+                        return new List<CursorMeta> { new CursorMeta(item.AlignGrid(), start, item, CursorMode.ValidPos) };
+                    }
                 }
             }
             return new List<CursorMeta> { new CursorMeta(pos, start, null, CursorMode.Invalid) };

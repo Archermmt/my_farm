@@ -5,6 +5,7 @@ using UnityEngine;
 public class Player : Singleton<Player> {
     [SerializeField] private float runSpeed_ = 5f;
     [SerializeField] private float walkSpeed_ = 3f;
+    [SerializeField] private PlayerStatus status_;
     [SerializeField] private PlayerInventory inventory_;
     [SerializeField] private float useTooleSec_ = 0.5f;
     // basic
@@ -48,12 +49,14 @@ public class Player : Singleton<Player> {
         ItemManager.Instance.SetFreeze(true);
         UpdateAnimators(direction_, action_);
         EventHandler.UpdateHandsEvent += UpdateHands;
+        EventHandler.UpdateTimeEvent += UpdateTime;
         EventHandler.UpdateInventoryEvent += UpdateInventory;
         EventHandler.AddInventoryItemEvent += AddInventoryItem;
     }
 
     private void OnDisable() {
         EventHandler.UpdateHandsEvent -= UpdateHands;
+        EventHandler.UpdateTimeEvent -= UpdateTime;
         EventHandler.UpdateInventoryEvent -= UpdateInventory;
         EventHandler.AddInventoryItemEvent -= AddInventoryItem;
     }
@@ -130,7 +133,13 @@ public class Player : Singleton<Player> {
                 } else {
                     carried_.Key.Hold(Direction.Around);
                 }
+            } else if (action == Action.UseItem && carried_.Key.meta.type == ItemType.Food) {
+                Food food = (Food)carried_.Key;
+                carried_.Value.DecreaseAmount(1);
+                ChangeEnergy(food.RecoverEnergy());
+                SetFreeze(false);
             } else if (action == Action.UseItem && carried_.Key.HasStatus(ItemStatus.Holding)) {
+                int energy = carried_.Key.ConsumeEnergy(cursors);
                 Dictionary<ItemData, int> item_amounts = FieldManager.Instance.UseItem(carried_.Key, cursors, carried_.Value.current);
                 carried_.Key.Unhold();
                 if (carried_.Key.meta.type == ItemType.Tool) {
@@ -145,8 +154,28 @@ public class Player : Singleton<Player> {
                         inventory_.RemoveItem(pair.Key, -pair.Value);
                     }
                 }
+                ChangeEnergy(-energy);
             } else if (carried_.Key.HasStatus(ItemStatus.Holding)) {
                 UpdateAnimators(direction_, carried_.Key.meta.type == ItemType.Tool ? Action.HoldItem : Action.Idle);
+            }
+        }
+    }
+
+    private void ProcessInput() {
+        if (Input.GetKeyDown(KeyCode.P)) {
+            if (inventory_.backpackOpening) {
+                SetFreeze(false);
+                ItemManager.Instance.SetFreeze(false);
+                inventory_.CloseBackpack();
+            } else {
+                SetFreeze(true);
+                ItemManager.Instance.SetFreeze(true);
+                inventory_.OpenBackpack();
+            }
+        } else if (Input.GetKeyDown(KeyCode.Escape)) {
+            if (carried_.Key != null && carried_.Key.HasStatus(ItemStatus.Holding)) {
+                carried_.Key.Unhold();
+                SetFreeze(false);
             }
         }
     }
@@ -159,7 +188,6 @@ public class Player : Singleton<Player> {
         UpdateAnimators(direction, Action.Idle);
         SetFreeze(false);
     }
-
 
     private void UpdateAnimators(Direction direct, Action act) {
         foreach (Animator animator in animators_) {
@@ -231,36 +259,44 @@ public class Player : Singleton<Player> {
         }
     }
 
-    private void ProcessInput() {
-        if (Input.GetKeyDown(KeyCode.P)) {
-            if (inventory_.backpackOpening) {
-                SetFreeze(false);
-                ItemManager.Instance.SetFreeze(false);
-                inventory_.CloseBackpack();
-            } else {
-                SetFreeze(true);
-                ItemManager.Instance.SetFreeze(true);
-                inventory_.OpenBackpack();
-            }
-        } else if (Input.GetKeyDown(KeyCode.Escape)) {
+    private void ChangeEnergy(int delta) {
+        if (status_.ChangeEnergy(delta) <= 0) {
+            EnvManager.Instance.UpdateTime(TimeType.Day, 1);
             if (carried_.Key != null && carried_.Key.HasStatus(ItemStatus.Holding)) {
                 carried_.Key.Unhold();
-                SetFreeze(false);
             }
         }
+    }
 
+    private void ChangeHealth(int delta) {
+        if (status_.ChangeHealth(delta) <= 0) {
+            EnvManager.Instance.UpdateTime(TimeType.Day, 1);
+        }
+    }
+
+    private void UpdateTime(TimeType time_type, TimeData time, int delta) {
+        if (time_type == TimeType.Hour && time.hour == 23) {
+            EnvManager.Instance.UpdateTime(TimeType.Day, 1);
+        } else if (time_type == TimeType.Day) {
+            SceneController.Instance.LoadScene(SceneName.CabinScene, new Vector3(1f, -1f, 0));
+            EnvManager.Instance.SetTime(TimeType.Hour, 7);
+            EnvManager.Instance.SetTime(TimeType.Minute, 0);
+            carried_ = new KeyValuePair<Item, Slot>(null, null);
+            status_.Reset();
+        }
     }
 
     // TMINFO:debug only
     private void InputTest() {
         // pick item test
         if (Input.GetKeyUp(KeyCode.T)) {
-            EnvManager.Instance.UpdateTime(TimeType.Day, 5);
+            EnvManager.Instance.clock.UpdateDay(5);
         } else if (Input.GetKeyDown(KeyCode.C)) {
-            inventory_.AddItem(ItemManager.Instance.FindItem("Weed"), 100);
+            //inventory_.AddItem(ItemManager.Instance.FindItem("Weed"), 100);
             //ItemData item = ItemManager.Instance.FindItem("ParsnipSeed");
             //inventory_.AddItem(item, 10);
             //inventory_.RemoveItem(item, 10);
+            ChangeEnergy(-20);
         }
     }
 
@@ -271,9 +307,7 @@ public class Player : Singleton<Player> {
     public void SetFreeze(bool freeze) {
         freezed_ = freeze;
         if (freezed_) {
-            foreach (Animator animator in animators_) {
-                animator.SetInteger("action", (int)Action.Idle);
-            }
+            UpdateAnimators(direction_, Action.Idle);
         }
     }
 }

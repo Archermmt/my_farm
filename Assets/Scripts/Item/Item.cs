@@ -149,6 +149,10 @@ public class Item : MonoBehaviour {
         return Math.Min(Mathf.FloorToInt((float)diff.TotalSeconds), holdLevelMax);
     }
 
+    public virtual int ConsumeEnergy(List<Cursor> cursors) {
+        return 1;
+    }
+
     public void ResetStatus() {
         if (!HasStatus(ItemStatus.Holding)) {
             statusSet_ = new HashSet<ItemStatus>();

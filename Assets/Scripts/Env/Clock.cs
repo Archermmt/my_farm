@@ -60,11 +60,40 @@ public class Clock : MonoBehaviour {
         }
     }
 
+    public void SetTime(TimeType time_type, int value) {
+        switch (time_type) {
+            case TimeType.Year:
+                time_.year = value;
+                break;
+            case TimeType.Month:
+                time_.month = value;
+                break;
+            case TimeType.Day:
+                int delta = value - time_.day;
+                time_.weekDay = (time_.weekDay + delta) % 7;
+                time_.day = value;
+                break;
+            case TimeType.Hour:
+                time_.hour = value;
+                break;
+            case TimeType.Minute:
+                time_.minute = value;
+                break;
+            case TimeType.Second:
+                time_.second = value;
+                break;
+            default:
+                break;
+        }
+    }
+
     public void UpdateYear(int delta = 1) {
+        EventHandler.CallUpdateTime(TimeType.Year, time_, delta);
         time_.year += delta;
     }
 
     public void UpdateMonth(int delta = 1) {
+        EventHandler.CallUpdateTime(TimeType.Month, time_, delta);
         int left = delta;
         while (time_.month + left > 12) {
             UpdateYear(1);
@@ -74,6 +103,7 @@ public class Clock : MonoBehaviour {
     }
 
     public void UpdateDay(int delta = 1) {
+        EventHandler.CallUpdateTime(TimeType.Day, time_, delta);
         int left = delta;
         time_.weekDay = (time_.weekDay + left) % 7;
         while (time_.day + left > 30) {
@@ -84,6 +114,7 @@ public class Clock : MonoBehaviour {
     }
 
     public void UpdateHour(int delta = 1) {
+        EventHandler.CallUpdateTime(TimeType.Hour, time_, delta);
         int left = delta;
         while (time_.hour + left > 24) {
             UpdateDay(1);
@@ -93,6 +124,7 @@ public class Clock : MonoBehaviour {
     }
 
     public void UpdateMinute(int delta = 1) {
+        EventHandler.CallUpdateTime(TimeType.Minute, time_, delta);
         int left = delta;
         while (time_.minute + left > 60) {
             UpdateHour(1);

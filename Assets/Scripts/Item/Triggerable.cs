@@ -22,6 +22,8 @@ public class Triggerable : MonoBehaviour {
 
     private void Awake() {
         nudgeWait_ = new WaitForSeconds(nudgeSec_);
+        fadeTargets_ ??= new List<string>();
+        nudgeTargets_ ??= new List<string>();
     }
 
     public void TriggerItemEnter(Collider2D collision, Item item) {
@@ -45,7 +47,7 @@ public class Triggerable : MonoBehaviour {
     }
 
     public bool Nudgable(Collider2D collision, Item item) {
-        return item.HasStatus(ItemStatus.Nudgable) && gameObject.activeSelf && gameObject.activeInHierarchy && nudgeTargets_ != null && nudgeTargets_.Contains(collision.tag);
+        return item.HasStatus(ItemStatus.Nudgable) && BaseUtils.IsActive(this) && nudgeTargets_.Contains(collision.tag);
     }
 
     public void Rotate(Item item, bool clock_wise, float angle = 2) {
@@ -83,7 +85,7 @@ public class Triggerable : MonoBehaviour {
     }
 
     public bool Fadable(Collider2D collision, Item item) {
-        return item.HasStatus(ItemStatus.Fadable) && gameObject.activeSelf && gameObject.activeInHierarchy && fadeTargets_ != null && fadeTargets_.Contains(collision.tag);
+        return item.HasStatus(ItemStatus.Fadable) && BaseUtils.IsActive(this) && fadeTargets_.Contains(collision.tag);
     }
 
     public void Fade(Item item, float target, float duration) {

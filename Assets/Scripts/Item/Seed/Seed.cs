@@ -12,6 +12,10 @@ public class Seed : Pickable {
         }
     }
 
+    public override int ConsumeEnergy(List<Cursor> cursors) {
+        return Math.Max(cursors.Count / 9, 1);
+    }
+
     public override List<CursorMeta> GetCursorMetas(List<FieldGrid> grids, FieldGrid start, Vector3 pos, int amount) {
         ResetStatus();
         int hold_level = GetHoldLevel();

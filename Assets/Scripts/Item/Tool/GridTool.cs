@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using UnityEngine;
 
@@ -61,6 +62,10 @@ public class GridTool : Tool {
         if (GetHoldLevel() <= 0) { return 1; }
         Vector2Int range = GetScopeRange();
         return range.x * range.y;
+    }
+
+    protected override int EnergyUnit(int hold_level) {
+        return 9 * Math.Max(hold_level, 1);
     }
 
     protected virtual FieldTag fieldTag { get { return FieldTag.Basic; } }

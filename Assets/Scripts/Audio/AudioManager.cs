@@ -62,7 +62,7 @@ public class AudioManager : Singleton<AudioManager> {
             soundObjs_[name] = Instantiate(prefab, transform).GetComponent<Sound>();
             soundObjs_[name].name = "Play_" + name;
         }
-        if (soundObjs_.ContainsKey(name) && soundObjs_[name].gameObject.activeInHierarchy && soundObjs_[name].gameObject.activeSelf && !soundObjs_[name].playing) {
+        if (soundObjs_.ContainsKey(name) && BaseUtils.IsActive(soundObjs_[name]) && !soundObjs_[name].playing) {
             StartCoroutine(PlaySoundRoutine(soundObjs_[name], soundsMap_[name]));
         }
     }

@@ -39,6 +39,13 @@ public static class BaseUtils {
         }
         return diff_width < 0 ? Direction.Left : Direction.Right;
     }
+
+    public static bool IsActive(MonoBehaviour obj) {
+        if (obj == null) {
+            return false;
+        }
+        return obj.gameObject.activeSelf && obj.gameObject.activeInHierarchy;
+    }
 }
 
 public static class MouseUtils {

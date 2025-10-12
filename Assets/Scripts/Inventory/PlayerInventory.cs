@@ -1,5 +1,3 @@
-using UnityEngine;
-
 public class PlayerInventory : BaseInventory {
     private bool backpackOpening_ = false;
     public int AddItem(ItemData item_data, int amount = 1) {

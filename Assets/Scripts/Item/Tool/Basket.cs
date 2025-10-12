@@ -1,11 +1,15 @@
+using System;
 using System.Collections.Generic;
-using System.Numerics;
 using UnityEngine;
 
 public class Basket : ItemTool {
     protected override void Awake() {
         base.Awake();
         animationTags_ = new List<AnimationTag> { AnimationTag.Pick };
+    }
+
+    protected override int EnergyUnit(int hold_level) {
+        return 9 * Math.Max(hold_level, 1);
     }
 
     protected override int GetUseCount() {

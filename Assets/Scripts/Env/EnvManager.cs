@@ -4,7 +4,6 @@ public class EnvManager : Singleton<EnvManager> {
     [SerializeField] private Clock clock_;
 
     public void UpdateTime(TimeType time_type, int delta) {
-        EventHandler.CallUpdateTime(time_type, clock_.time, delta);
         switch (time_type) {
             case TimeType.Year:
                 clock_.UpdateYear(delta);
@@ -28,4 +27,10 @@ public class EnvManager : Singleton<EnvManager> {
                 break;
         }
     }
+
+    public void SetTime(TimeType time_type, int value) {
+        clock_.SetTime(time_type, value);
+    }
+
+    public Clock clock { get { return clock_; } }
 }
