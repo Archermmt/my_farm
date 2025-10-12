@@ -24,10 +24,9 @@ public class ItemManager : Singleton<ItemManager> {
     [SerializeField] private ItemData[] items_;
     private Dictionary<string, ItemData> itemsMap_;
     private Dictionary<Sprite, ItemData> itemSpritesMap_;
-    private Dictionary<SceneName, Dictionary<string, Transform>> itemHolders_;
-    private Dictionary<SceneName, List<Pickable>> pickableItems_;
+    private Dictionary<string, Transform> itemHolders_;
+    private List<Pickable> pickableItems_;
     private Dictionary<SceneName, List<ItemSave>> itemSaves_;
-    private SceneName currentScene_ = SceneName.StartScene;
     private bool freezed_ = false;
 
     protected override void Awake() {
@@ -40,8 +39,8 @@ public class ItemManager : Singleton<ItemManager> {
                 itemSpritesMap_.Add(item.sprite, item);
             }
         }
-        itemHolders_ = new Dictionary<SceneName, Dictionary<string, Transform>>();
-        pickableItems_ = new Dictionary<SceneName, List<Pickable>>();
+        itemHolders_ = new Dictionary<string, Transform>();
+        pickableItems_ = new List<Pickable>();
         itemSaves_ = new Dictionary<SceneName, List<ItemSave>>();
     }
 
@@ -67,14 +66,14 @@ public class ItemManager : Singleton<ItemManager> {
         if (freeze) {
             item.SetFreeze(true);
         }
-        if (!pickableItems_[currentScene_].Contains(item)) {
-            pickableItems_[currentScene_].Add(item);
+        if (!pickableItems_.Contains(item)) {
+            pickableItems_.Add(item);
         }
     }
 
     public void RemovePickable(Pickable item) {
-        if (pickableItems_[currentScene_].Contains(item)) {
-            pickableItems_[currentScene_].Remove(item);
+        if (pickableItems_.Contains(item)) {
+            pickableItems_.Remove(item);
         }
         Destroy(item.gameObject);
     }
@@ -102,13 +101,12 @@ public class ItemManager : Singleton<ItemManager> {
         Assert.AreNotEqual(prefab, null, "Can not find prefab for " + item_data.name + "(" + item_data.type.ToString() + ")");
         Transform item_holder = holder;
         if (item_holder == null) {
-            Dictionary<string, Transform> holders = itemHolders_[currentScene_];
-            if (holders.ContainsKey(item_data.name)) {
-                item_holder = holders[item_data.name];
-            } else if (holders.ContainsKey(item_data.type.ToString())) {
-                item_holder = holders[item_data.type.ToString()];
+            if (itemHolders_.ContainsKey(item_data.name)) {
+                item_holder = itemHolders_[item_data.name];
+            } else if (itemHolders_.ContainsKey(item_data.type.ToString())) {
+                item_holder = itemHolders_[item_data.type.ToString()];
             } else {
-                item_holder = holders["Item"];
+                item_holder = itemHolders_["Item"];
             }
         }
         GameObject item_obj = Instantiate(prefab, new Vector3(world_pos.x, world_pos.y, world_pos.z), Quaternion.identity, item_holder);
@@ -139,6 +137,7 @@ public class ItemManager : Singleton<ItemManager> {
     }
 
     private void BeforeSceneUnload(SceneName scene_name) {
+        SetFreeze(true);
         itemSaves_[scene_name] = new List<ItemSave>();
         Transform parent = GameObject.FindGameObjectWithTag("Items").transform;
         foreach (Transform child in parent) {
@@ -152,16 +151,16 @@ public class ItemManager : Singleton<ItemManager> {
     }
 
     private void AfterSceneLoad(SceneName scene_name) {
-        currentScene_ = scene_name;
         ParseHolders(scene_name);
         if (!itemSaves_.ContainsKey(scene_name)) {
             GenerateItems(scene_name);
         } else {
             foreach (ItemSave saved in itemSaves_[scene_name]) {
-                Item item = CreateItem(saved.item_name, saved.position.ToVector3(), itemHolders_[scene_name][saved.holder], saved.name);
+                Item item = CreateItem(saved.item_name, saved.position.ToVector3(), itemHolders_[saved.holder], saved.name);
                 item.Growth(saved.days);
             }
         }
+        SetFreeze(false);
     }
 
     private void ParseHolders(SceneName scene_name) {
@@ -173,8 +172,8 @@ public class ItemManager : Singleton<ItemManager> {
             }
             item_holders[child.name] = child;
         }
-        itemHolders_[scene_name] = item_holders;
-        pickableItems_[scene_name] = new List<Pickable>();
+        itemHolders_ = item_holders;
+        pickableItems_ = new List<Pickable>();
     }
 
     private void GenerateItems(SceneName scene_name) {

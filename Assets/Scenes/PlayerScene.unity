@@ -2301,19 +2301,10 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 7d4f886d85a4941acbb0543d282416d2, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  time_:
-    year: 2025
-    month: 0
-    weekDay: 0
-    day: 0
-    hour: 7
-    minute: 0
-    second: 0
   year_: {fileID: 1519974791}
   month_: {fileID: 1368233893}
   day_: {fileID: 1658871960}
   hour_: {fileID: 2020740881}
-  timeSpeepUp_: 166.66667
 --- !u!114 &634956689
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -2979,6 +2970,7 @@ MonoBehaviour:
   status_: {fileID: 1706905661}
   inventory_: {fileID: 248831787}
   useTooleSec_: 0.5
+  wakeUp_: 6
 --- !u!210 &1103264479
 SortingGroup:
   m_ObjectHideFlags: 0
@@ -4960,6 +4952,8 @@ MonoBehaviour:
   energyBar_: {fileID: 1718302202}
   moneyDes_: {fileID: 1608328246}
   money_: 500
+  healthMax_: 100
+  energyMax_: 100
 --- !u!1 &1718302200
 GameObject:
   m_ObjectHideFlags: 0
@@ -5521,6 +5515,59 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   clock_: {fileID: 634956688}
+  time_:
+    year: 2025
+    month: 0
+    weekDay: 0
+    day: 0
+    hour: 6
+    minute: 0
+    second: 0
+  speepUp_: 48
+  sunLightSchs_:
+  - season: 0
+    scenes: 0100000002000000
+    periods:
+    - hour: 5
+      intensity: 0.05
+    - hour: 6
+      intensity: 0.5
+    - hour: 7
+      intensity: 0.85
+    - hour: 8
+      intensity: 1
+    - hour: 17
+      intensity: 0.85
+    - hour: 18
+      intensity: 0.5
+    - hour: 19
+      intensity: 0.2
+    - hour: 20
+      intensity: 0.1
+    - hour: 21
+      intensity: 0.05
+  - season: 0
+    scenes: 03000000
+    periods:
+    - hour: 5
+      intensity: 0.05
+    - hour: 6
+      intensity: 0.4
+    - hour: 7
+      intensity: 0.7
+    - hour: 9
+      intensity: 1
+    - hour: 17
+      intensity: 0.7
+    - hour: 18
+      intensity: 0.3
+    - hour: 19
+      intensity: 0.2
+    - hour: 20
+      intensity: 0.1
+    - hour: 21
+      intensity: 0.05
+  sunLightSec_: 20
 --- !u!1 &2017099505
 GameObject:
   m_ObjectHideFlags: 0

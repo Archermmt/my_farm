@@ -8,6 +8,7 @@ public class Player : Singleton<Player> {
     [SerializeField] private PlayerStatus status_;
     [SerializeField] private PlayerInventory inventory_;
     [SerializeField] private float useTooleSec_ = 0.5f;
+    [SerializeField] private int wakeUp_ = 6;
     // basic
     private bool freezed_ = false;
     private Camera camera_;
@@ -52,6 +53,8 @@ public class Player : Singleton<Player> {
         EventHandler.UpdateTimeEvent += UpdateTime;
         EventHandler.UpdateInventoryEvent += UpdateInventory;
         EventHandler.AddInventoryItemEvent += AddInventoryItem;
+        EventHandler.BeforeSceneUnloadEvent += BeforeSceneUnload;
+        EventHandler.AfterSceneLoadEvent += AfterSceneLoad;
     }
 
     private void OnDisable() {
@@ -59,6 +62,8 @@ public class Player : Singleton<Player> {
         EventHandler.UpdateTimeEvent -= UpdateTime;
         EventHandler.UpdateInventoryEvent -= UpdateInventory;
         EventHandler.AddInventoryItemEvent -= AddInventoryItem;
+        EventHandler.BeforeSceneUnloadEvent -= BeforeSceneUnload;
+        EventHandler.AfterSceneLoadEvent -= AfterSceneLoad;
     }
 
     private void Update() {
@@ -168,15 +173,14 @@ public class Player : Singleton<Player> {
                 ItemManager.Instance.SetFreeze(false);
                 inventory_.CloseBackpack();
             } else {
+                FreeHands();
                 SetFreeze(true);
                 ItemManager.Instance.SetFreeze(true);
                 inventory_.OpenBackpack();
             }
         } else if (Input.GetKeyDown(KeyCode.Escape)) {
-            if (carried_.Key != null && carried_.Key.HasStatus(ItemStatus.Holding)) {
-                carried_.Key.Unhold();
-                SetFreeze(false);
-            }
+            FreeHands();
+            SetFreeze(false);
         }
     }
 
@@ -196,15 +200,34 @@ public class Player : Singleton<Player> {
         }
     }
 
-    private void SwapAnimations(AnimationTag animation_tag) {
-        foreach (AnimationSwapper swapper in animationSwappers_) {
-            swapper.Swap(animation_tag);
+    private void ChangeAnimations(List<AnimationTag> animation_tags, bool swap) {
+        foreach (AnimationTag tag in animation_tags) {
+            foreach (AnimationSwapper swapper in animationSwappers_) {
+                if (swap) {
+                    swapper.Swap(tag);
+                } else {
+                    swapper.Restore(tag);
+                }
+            }
         }
     }
 
-    private void RestoreAnimations(AnimationTag animation_tag) {
-        foreach (AnimationSwapper swapper in animationSwappers_) {
-            swapper.Restore(animation_tag);
+    private void ChangeEnergy(int delta) {
+        if (status_.ChangeEnergy(delta) <= 0) {
+            EnvManager.Instance.UpdateDay();
+            FreeHands();
+        }
+    }
+
+    private void ChangeHealth(int delta) {
+        if (status_.ChangeHealth(delta) <= 0) {
+            EnvManager.Instance.UpdateDay();
+        }
+    }
+
+    private void FreeHands() {
+        if (carried_.Key != null && carried_.Key.HasStatus(ItemStatus.Holding)) {
+            carried_.Key.Unhold();
         }
     }
 
@@ -213,9 +236,7 @@ public class Player : Singleton<Player> {
             if (carried_.Key != null) {
                 carried_.Key.gameObject.SetActive(false);
                 carried_.Key.transform.parent = hands_.Find("Cache");
-                foreach (AnimationTag tag in carried_.Key.animationTags) {
-                    RestoreAnimations(tag);
-                }
+                ChangeAnimations(carried_.Key.animationTags, false);
             }
             Slot slot = inventory_.GetContainer(container_type).FindSelectedSlot();
             if (!freezed_ && slot != null) {
@@ -235,9 +256,7 @@ public class Player : Singleton<Player> {
                     handsRender_.sprite = carried_.Key.meta.sprite;
                     handsRender_.color = new Color(1f, 1f, 1f, 1f);
                 }
-                foreach (AnimationTag tag in carried_.Key.animationTags) {
-                    SwapAnimations(tag);
-                }
+                ChangeAnimations(carried_.Key.animationTags, true);
                 FieldManager.Instance.SetFreeze(false);
             } else {
                 handsRender_.sprite = null;
@@ -259,38 +278,33 @@ public class Player : Singleton<Player> {
         }
     }
 
-    private void ChangeEnergy(int delta) {
-        if (status_.ChangeEnergy(delta) <= 0) {
-            EnvManager.Instance.UpdateTime(TimeType.Day, 1);
-            if (carried_.Key != null && carried_.Key.HasStatus(ItemStatus.Holding)) {
-                carried_.Key.Unhold();
-            }
-        }
-    }
-
-    private void ChangeHealth(int delta) {
-        if (status_.ChangeHealth(delta) <= 0) {
-            EnvManager.Instance.UpdateTime(TimeType.Day, 1);
-        }
-    }
-
     private void UpdateTime(TimeType time_type, TimeData time, int delta) {
         if (time_type == TimeType.Hour && time.hour == 23) {
-            EnvManager.Instance.UpdateTime(TimeType.Day, 1);
+            EnvManager.Instance.UpdateDay();
         } else if (time_type == TimeType.Day) {
             SceneController.Instance.LoadScene(SceneName.CabinScene, new Vector3(1f, -1f, 0));
-            EnvManager.Instance.SetTime(TimeType.Hour, 7);
+            EnvManager.Instance.SetTime(TimeType.Hour, wakeUp_);
             EnvManager.Instance.SetTime(TimeType.Minute, 0);
             carried_ = new KeyValuePair<Item, Slot>(null, null);
             status_.Reset();
         }
     }
 
+    private void BeforeSceneUnload(SceneName scene_name) {
+        FreeHands();
+        SetFreeze(true);
+    }
+
+    private void AfterSceneLoad(SceneName scene_name) {
+        SetFreeze(false);
+    }
+
     // TMINFO:debug only
     private void InputTest() {
         // pick item test
         if (Input.GetKeyUp(KeyCode.T)) {
-            EnvManager.Instance.clock.UpdateDay(5);
+            //EnvManager.Instance.UpdateDay(5);
+            EnvManager.Instance.UpdateMinute(40);
         } else if (Input.GetKeyDown(KeyCode.C)) {
             //inventory_.AddItem(ItemManager.Instance.FindItem("Weed"), 100);
             //ItemData item = ItemManager.Instance.FindItem("ParsnipSeed");

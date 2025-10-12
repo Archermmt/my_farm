@@ -6,6 +6,7 @@ TagManager:
   tags:
   - Items
   - Fields
+  - SunLight
   layers:
   - Default
   - TransparentFX

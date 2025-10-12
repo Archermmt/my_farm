@@ -18,24 +18,20 @@ public class GridSave {
 public class FieldManager : Singleton<FieldManager> {
     private List<Cursor> fieldCursors_;
     private List<Cursor> maskCursors_;
-    private Dictionary<SceneName, KeyValuePair<Vector3Int, Vector3Int>> scopes_;
-    private Dictionary<SceneName, Grid> grids_;
-    private Dictionary<SceneName, FieldGrid[,]> fieldGrids_;
-    private Dictionary<SceneName, Transform> layerHolders_;
-    private Dictionary<SceneName, List<FieldLayer>> layers_;
+    private Grid grid_;
+    private FieldGrid[,] fieldGrids_;
+    private KeyValuePair<Vector3Int, Vector3Int> scopes_;
+    private Transform layerHolder_;
+    private List<FieldLayer> layers_;
     private Dictionary<SceneName, List<GridSave>> gridSaves_;
-    private SceneName currentScene_ = SceneName.StartScene;
     private bool freezed_;
 
     protected override void Awake() {
         base.Awake();
         fieldCursors_ = new List<Cursor>();
         maskCursors_ = new List<Cursor>();
-        grids_ = new Dictionary<SceneName, Grid>();
-        scopes_ = new Dictionary<SceneName, KeyValuePair<Vector3Int, Vector3Int>>();
-        fieldGrids_ = new Dictionary<SceneName, FieldGrid[,]>();
-        layerHolders_ = new Dictionary<SceneName, Transform>();
-        layers_ = new Dictionary<SceneName, List<FieldLayer>>();
+        scopes_ = new KeyValuePair<Vector3Int, Vector3Int>();
+        layers_ = new List<FieldLayer>();
         gridSaves_ = new Dictionary<SceneName, List<GridSave>>();
         freezed_ = false;
     }
@@ -53,16 +49,15 @@ public class FieldManager : Singleton<FieldManager> {
     }
 
     public FieldGrid GridAt(int x, int y) {
-        FieldGrid[,] field_grids = fieldGrids_[currentScene_];
-        if (x >= field_grids.GetLength(0) || y >= field_grids.GetLength(1) || x < 0 || y < 0) {
+        if (x >= fieldGrids_.GetLength(0) || y >= fieldGrids_.GetLength(1) || x < 0 || y < 0) {
             return null;
         }
-        return field_grids[x, y];
+        return fieldGrids_[x, y];
     }
 
     public FieldGrid GetGrid(Vector3 world_pos) {
-        Vector3Int cell_pos = grids_[currentScene_].WorldToCell(world_pos);
-        Vector3Int start = scopes_[currentScene_].Key;
+        Vector3Int cell_pos = grid_.WorldToCell(world_pos);
+        Vector3Int start = scopes_.Key;
         return GridAt(cell_pos.x - start.x, cell_pos.y - start.y);
     }
 
@@ -90,8 +85,7 @@ public class FieldManager : Singleton<FieldManager> {
     }
 
     public FieldLayer GetLayer(FieldTag tag) {
-        List<FieldLayer> layers = layers_[currentScene_];
-        foreach (FieldLayer layer in layers) {
+        foreach (FieldLayer layer in layers_) {
             if (layer.fieldTag == tag) {
                 return layer;
             }
@@ -101,12 +95,12 @@ public class FieldManager : Singleton<FieldManager> {
             prefab = Resources.Load<GameObject>("Prefab/Field/Layer/FieldLayer");
         }
         Assert.AreNotEqual(prefab, null, "Can not find field prefab");
-        FieldLayer new_layer = Instantiate(prefab, layerHolders_[currentScene_]).GetComponent<FieldLayer>();
+        FieldLayer new_layer = Instantiate(prefab, layerHolder_).GetComponent<FieldLayer>();
         new_layer.SetTag(tag);
         new_layer.name = "Layer_" + tag.ToString();
         TilemapRenderer render = new_layer.transform.GetComponent<TilemapRenderer>();
-        render.sortingOrder += layers.Count;
-        layers.Add(new_layer);
+        render.sortingOrder += layers_.Count;
+        layers_.Add(new_layer);
         return new_layer;
     }
 
@@ -118,7 +112,7 @@ public class FieldManager : Singleton<FieldManager> {
         if (center == null) {
             return new List<Cursor>();
         }
-        (Vector3 min, Vector3 max) = item.GetScope(center, scopes_[currentScene_].Key, scopes_[currentScene_].Value, mouse_direct);
+        (Vector3 min, Vector3 max) = item.GetScope(center, scopes_.Key, scopes_.Value, mouse_direct);
         if (min == max && min == Vector3.zero) {
             return new List<Cursor>();
         }
@@ -174,8 +168,9 @@ public class FieldManager : Singleton<FieldManager> {
 
 
     private void BeforeSceneUnload(SceneName scene_name) {
+        SetFreeze(true);
         gridSaves_[scene_name] = new List<GridSave>();
-        foreach (FieldLayer layer in layers_[scene_name]) {
+        foreach (FieldLayer layer in layers_) {
             foreach (FieldGrid grid in layer.grids) {
                 gridSaves_[scene_name].Add(new GridSave(grid, layer.fieldTag));
             }
@@ -183,7 +178,6 @@ public class FieldManager : Singleton<FieldManager> {
     }
 
     private void AfterSceneLoad(SceneName scene_name) {
-        currentScene_ = scene_name;
         ParseFields(scene_name);
         if (gridSaves_.ContainsKey(scene_name)) {
             foreach (GridSave saved in gridSaves_[scene_name]) {
@@ -191,6 +185,7 @@ public class FieldManager : Singleton<FieldManager> {
                 layer.AddGrid(GridAt(saved.coord.x, saved.coord.y));
             }
         }
+        SetFreeze(false);
     }
 
     public void SetFreeze(bool freeze) {
@@ -207,18 +202,18 @@ public class FieldManager : Singleton<FieldManager> {
 
     private void ParseFields(SceneName scene_name) {
         Transform parent = GameObject.FindGameObjectWithTag("Fields").transform;
-        grids_[scene_name] = parent.GetComponent<Grid>();
-        layerHolders_[scene_name] = parent.Find("Layers").transform;
+        grid_ = parent.GetComponent<Grid>();
+        layerHolder_ = parent.Find("Layers").transform;
         Transform masks = parent.Find("Masks").transform;
         Tilemap basicMap = masks.Find("Basic").GetComponent<Tilemap>();
         basicMap.CompressBounds();
         Vector3Int start = basicMap.cellBounds.min;
         Vector3Int end = basicMap.cellBounds.max;
-        scopes_[scene_name] = new KeyValuePair<Vector3Int, Vector3Int>(start, end);
-        FieldGrid[,] field_grids = new FieldGrid[end.x - start.x, end.y - start.y];
+        scopes_ = new KeyValuePair<Vector3Int, Vector3Int>(start, end);
+        fieldGrids_ = new FieldGrid[end.x - start.x, end.y - start.y];
         foreach (Vector3Int pos in basicMap.cellBounds.allPositionsWithin) {
             Vector2Int coord = new Vector2Int(pos.x - start.x, pos.y - start.y);
-            field_grids[coord.x, coord.y] = new FieldGrid(pos, coord);
+            fieldGrids_[coord.x, coord.y] = new FieldGrid(pos, coord);
         }
         // set field tags
         foreach (Transform child in masks) {
@@ -228,11 +223,10 @@ public class FieldManager : Singleton<FieldManager> {
             foreach (Vector3Int pos in tilemap.cellBounds.allPositionsWithin) {
                 TileBase tile = tilemap.GetTile(pos);
                 if (tile != null) {
-                    field_grids[pos.x - start.x, pos.y - start.y].AddTag(layer.fieldTag);
+                    fieldGrids_[pos.x - start.x, pos.y - start.y].AddTag(layer.fieldTag);
                 }
             }
         }
-        fieldGrids_[scene_name] = field_grids;
         // add items
         Transform item_parent = GameObject.FindGameObjectWithTag("Items").transform;
         foreach (Item item in item_parent.GetComponentsInChildren<Item>()) {
@@ -243,7 +237,7 @@ public class FieldManager : Singleton<FieldManager> {
             }
         }
         // init field layers
-        layers_[scene_name] = new List<FieldLayer>();
+        layers_ = new List<FieldLayer>();
     }
 
     private List<FieldGrid> ExpandGrids(FieldGrid start, Vector3 min, Vector3 max, bool include_start = false) {
@@ -272,12 +266,12 @@ public class FieldManager : Singleton<FieldManager> {
     }
 
     private void UpdateTime(TimeType time_type, TimeData time, int delta) {
-        foreach (FieldGrid grid in fieldGrids_[currentScene_]) {
+        foreach (FieldGrid grid in fieldGrids_) {
             foreach (Item item in grid.items) {
                 item.UpdateTime(time_type, time, delta, grid);
             }
         }
-        foreach (FieldLayer layer in layers_[currentScene_]) {
+        foreach (FieldLayer layer in layers_) {
             layer.UpdateTime(time_type, time, delta);
         }
     }
