@@ -42,7 +42,7 @@ public class EnvManager : Singleton<EnvManager> {
     [Header("Time")]
     [SerializeField] private Clock clock_;
     [SerializeField] private TimeData time_;
-    [SerializeField] private float speepUp_ = 48f;
+    [SerializeField] private float speedUp_ = 48f;
 
     [Header("Light")]
     [SerializeField] private List<LightingSchedule> sunLightSchs_;
@@ -54,13 +54,10 @@ public class EnvManager : Singleton<EnvManager> {
     // light
     private Light2D sunLight_;
     private LightingSchedule sunLightSch_;
-    // scene
-    private SceneName currentScene_ = SceneName.StartScene;
 
     protected override void Awake() {
         base.Awake();
-        minuteTick_ = 60 / speepUp_;
-        sunLightSch_ = GetSunLightSch();
+        minuteTick_ = 60 / speedUp_;
     }
 
     private void OnEnable() {
@@ -75,6 +72,7 @@ public class EnvManager : Singleton<EnvManager> {
 
     private void Start() {
         clock_.ShowTime(time_);
+        sunLightSch_ = GetSunLightSch();
     }
 
     private void FixedUpdate() {
@@ -175,8 +173,9 @@ public class EnvManager : Singleton<EnvManager> {
     }
 
     private LightingSchedule GetSunLightSch() {
+        SceneName scene_name = SceneController.Instance.currentScene;
         foreach (LightingSchedule schedule in sunLightSchs_) {
-            if (schedule.season == time_.season && schedule.scenes.Contains(currentScene_)) {
+            if (schedule.season == time_.season && schedule.scenes.Contains(scene_name)) {
                 return schedule;
             }
         }
@@ -211,7 +210,6 @@ public class EnvManager : Singleton<EnvManager> {
     }
 
     private void AfterSceneLoad(SceneName scene_name) {
-        currentScene_ = scene_name;
         sunLightSch_ = GetSunLightSch();
         sunLight_ = GameObject.FindGameObjectWithTag("SunLight").GetComponent<Light2D>();
         sunLight_.intensity = GetIntensity(sunLightSch_);
@@ -223,5 +221,6 @@ public class EnvManager : Singleton<EnvManager> {
         freezed_ = freeze;
     }
 
-    public Clock clock { get { return clock_; } }
+    public TimeData time { get { return time_; } }
+    public float minuteTick { get { return minuteTick_; } }
 }

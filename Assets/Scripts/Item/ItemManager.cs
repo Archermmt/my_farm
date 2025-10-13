@@ -151,19 +151,18 @@ public class ItemManager : Singleton<ItemManager> {
     }
 
     private void AfterSceneLoad(SceneName scene_name) {
-        ParseHolders(scene_name);
+        ParseHolders();
         if (!itemSaves_.ContainsKey(scene_name)) {
-            GenerateItems(scene_name);
+            GenerateItems();
         } else {
             foreach (ItemSave saved in itemSaves_[scene_name]) {
                 Item item = CreateItem(saved.item_name, saved.position.ToVector3(), itemHolders_[saved.holder], saved.name);
                 item.Growth(saved.days);
             }
         }
-        SetFreeze(false);
     }
 
-    private void ParseHolders(SceneName scene_name) {
+    private void ParseHolders() {
         Transform parent = GameObject.FindGameObjectWithTag("Items").transform;
         Dictionary<string, Transform> item_holders = new Dictionary<string, Transform>();
         foreach (Transform child in parent) {
@@ -176,7 +175,7 @@ public class ItemManager : Singleton<ItemManager> {
         pickableItems_ = new List<Pickable>();
     }
 
-    private void GenerateItems(SceneName scene_name) {
+    private void GenerateItems() {
         Transform holder = GameObject.FindGameObjectWithTag("Items").transform.Find("Generator");
         if (holder != null && holder.gameObject.activeSelf) {
             foreach (Generator generator in holder.GetComponentsInChildren<Generator>()) {

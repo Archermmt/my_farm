@@ -6,13 +6,13 @@ using UnityEngine.Tilemaps;
 public class FieldGrid {
     private Vector3 position_;
     private Vector2Int coord_;
-    private Dictionary<FieldTag, int> fieldTags_;
+    private HashSet<FieldTag> fieldTags_;
     private List<Item> items_;
 
     public FieldGrid(Vector3 position, Vector2Int coord) {
         position_ = position;
         coord_ = coord;
-        fieldTags_ = new Dictionary<FieldTag, int>();
+        fieldTags_ = new HashSet<FieldTag>();
         items_ = new List<Item>();
     }
 
@@ -24,24 +24,16 @@ public class FieldGrid {
         return new Vector3(position_.x + Settings.gridCellSize / 2, position_.y, position_.z);
     }
 
-    public void AddTag(FieldTag tag, int duration = 0) {
-        if (!fieldTags_.ContainsKey(tag)) {
-            fieldTags_[tag] = duration;
-        }
-    }
-
-    public void IncreaseTag(FieldTag tag, int inc = 1) {
-        if (fieldTags_.ContainsKey(tag)) {
-            fieldTags_[tag] += inc;
-        }
+    public void AddTag(FieldTag tag) {
+        fieldTags_.Add(tag);
     }
 
     public bool HasTag(FieldTag tag) {
-        return fieldTags_.ContainsKey(tag);
+        return fieldTags_.Contains(tag);
     }
 
     public void RemoveTag(FieldTag tag) {
-        if (fieldTags_.ContainsKey(tag)) {
+        if (fieldTags_.Contains(tag)) {
             fieldTags_.Remove(tag);
         }
     }
@@ -58,6 +50,15 @@ public class FieldGrid {
         }
     }
 
+    public bool HasItemType(ItemType type) {
+        foreach (Item item in items_) {
+            if (item.meta.type == type) {
+                return true;
+            }
+        }
+        return false;
+    }
+
     public Vector3 position {
         get { return position_; }
     }
@@ -66,20 +67,12 @@ public class FieldGrid {
         get { return coord_; }
     }
 
-    public Dictionary<FieldTag, int> fieldTags {
-        get { return fieldTags_; }
-    }
-
-    public List<Item> items {
-        get { return items_; }
-    }
-
     public override string ToString() {
         string str = "Coord[" + coord_ + "] @ " + position_ + ":";
         if (fieldTags_ != null && fieldTags_.Count > 0) {
             str += " <" + fieldTags_.Count + " Tags>:";
-            foreach (KeyValuePair<FieldTag, int> pair in fieldTags_) {
-                str += pair.Key.ToString() + "|" + pair.Value.ToString() + ",";
+            foreach (FieldTag tag in fieldTags_) {
+                str += tag.ToString() + ",";
             }
         }
         if (items_ != null && items_.Count > 0) {
@@ -90,6 +83,9 @@ public class FieldGrid {
         }
         return str;
     }
+
+    public HashSet<FieldTag> fieldTags { get { return fieldTags_; } }
+    public List<Item> items { get { return items_; } }
 }
 
 [RequireComponent(typeof(Tilemap))]

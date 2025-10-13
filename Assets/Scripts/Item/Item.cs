@@ -75,7 +75,7 @@ public class Item : MonoBehaviour {
         return new Vector3(pos.x, pos.y + Settings.gridCellSize / 2, pos.z);
     }
 
-    public virtual Vector3 GetEffectPos(EffectType type) {
+    public virtual Vector3 GetEffectPos(EffectType type = EffectType.None) {
         if (type == EffectType.Destroy) {
             return transform.position;
         }

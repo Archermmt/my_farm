@@ -13,4 +13,7 @@ public class ScenePort : MonoBehaviour {
             SceneController.Instance.LoadScene(dstScene_, new Vector3(x, y, 0));
         }
     }
+
+    public SceneName dstScene { get { return dstScene_; } }
+    public Vector3 dstPos { get { return dstPos_; } }
 }

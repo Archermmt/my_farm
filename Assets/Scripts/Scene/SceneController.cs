@@ -49,4 +49,16 @@ public class SceneController : Singleton<SceneController> {
         }
         fadeCanvasGroup_.blocksRaycasts = false;
     }
+
+    public ScenePort FindPort(SceneName scene_name) {
+        Transform holder = GameObject.FindGameObjectWithTag("ScenePorts").transform;
+        foreach (ScenePort port in holder.GetComponentsInChildren<ScenePort>()) {
+            if (port.dstScene == scene_name) {
+                return port;
+            }
+        }
+        return null;
+    }
+
+    public SceneName currentScene { get { return currentScene_; } }
 }

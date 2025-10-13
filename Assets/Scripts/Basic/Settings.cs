@@ -71,6 +71,8 @@ public enum FieldTag {
     Dropable,
     Dug,
     Watered,
+    Obstacle,
+    Path,
 }
 
 public enum CursorMode {

@@ -2,6 +2,7 @@ using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 
+[RequireComponent(typeof(Rigidbody2D))]
 public class Player : Singleton<Player> {
     [SerializeField] private float runSpeed_ = 5f;
     [SerializeField] private float walkSpeed_ = 3f;

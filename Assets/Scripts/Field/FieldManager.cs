@@ -20,9 +20,10 @@ public class FieldManager : Singleton<FieldManager> {
     private List<Cursor> maskCursors_;
     private Grid grid_;
     private FieldGrid[,] fieldGrids_;
-    private KeyValuePair<Vector3Int, Vector3Int> scopes_;
+    private KeyValuePair<Vector3Int, Vector3Int> scope_;
     private Transform layerHolder_;
     private List<FieldLayer> layers_;
+    private HashSet<FieldTag> maskTags_;
     private Dictionary<SceneName, List<GridSave>> gridSaves_;
     private bool freezed_;
 
@@ -30,8 +31,9 @@ public class FieldManager : Singleton<FieldManager> {
         base.Awake();
         fieldCursors_ = new List<Cursor>();
         maskCursors_ = new List<Cursor>();
-        scopes_ = new KeyValuePair<Vector3Int, Vector3Int>();
+        scope_ = new KeyValuePair<Vector3Int, Vector3Int>();
         layers_ = new List<FieldLayer>();
+        maskTags_ = new HashSet<FieldTag>();
         gridSaves_ = new Dictionary<SceneName, List<GridSave>>();
         freezed_ = false;
     }
@@ -57,9 +59,20 @@ public class FieldManager : Singleton<FieldManager> {
 
     public FieldGrid GetGrid(Vector3 world_pos) {
         Vector3Int cell_pos = grid_.WorldToCell(world_pos);
-        Vector3Int start = scopes_.Key;
+        Vector3Int start = scope_.Key;
         return GridAt(cell_pos.x - start.x, cell_pos.y - start.y);
     }
+
+    public FieldGrid GetRandomGrid(FieldTag tag) {
+        foreach (FieldLayer layer in layers_) {
+            if (layer.fieldTag == tag) {
+                int idx = Random.Range(0, layer.grids.Count);
+                return layer.grids[idx];
+            }
+        }
+        return GridAt(Random.Range(0, fieldGrids_.GetLength(0)), Random.Range(0, fieldGrids_.GetLength(1)));
+    }
+
 
     public Cursor GetFieldCursor(int idx) {
         while (idx >= fieldCursors_.Count) {
@@ -112,7 +125,7 @@ public class FieldManager : Singleton<FieldManager> {
         if (center == null) {
             return new List<Cursor>();
         }
-        (Vector3 min, Vector3 max) = item.GetScope(center, scopes_.Key, scopes_.Value, mouse_direct);
+        (Vector3 min, Vector3 max) = item.GetScope(center, scope_.Key, scope_.Value, mouse_direct);
         if (min == max && min == Vector3.zero) {
             return new List<Cursor>();
         }
@@ -171,6 +184,9 @@ public class FieldManager : Singleton<FieldManager> {
         SetFreeze(true);
         gridSaves_[scene_name] = new List<GridSave>();
         foreach (FieldLayer layer in layers_) {
+            if (maskTags_.Contains(layer.fieldTag)) {
+                continue;
+            }
             foreach (FieldGrid grid in layer.grids) {
                 gridSaves_[scene_name].Add(new GridSave(grid, layer.fieldTag));
             }
@@ -178,7 +194,7 @@ public class FieldManager : Singleton<FieldManager> {
     }
 
     private void AfterSceneLoad(SceneName scene_name) {
-        ParseFields(scene_name);
+        ParseFields();
         if (gridSaves_.ContainsKey(scene_name)) {
             foreach (GridSave saved in gridSaves_[scene_name]) {
                 FieldLayer layer = GetLayer(saved.tag);
@@ -200,7 +216,7 @@ public class FieldManager : Singleton<FieldManager> {
         }
     }
 
-    private void ParseFields(SceneName scene_name) {
+    private void ParseFields() {
         Transform parent = GameObject.FindGameObjectWithTag("Fields").transform;
         grid_ = parent.GetComponent<Grid>();
         layerHolder_ = parent.Find("Layers").transform;
@@ -209,21 +225,26 @@ public class FieldManager : Singleton<FieldManager> {
         basicMap.CompressBounds();
         Vector3Int start = basicMap.cellBounds.min;
         Vector3Int end = basicMap.cellBounds.max;
-        scopes_ = new KeyValuePair<Vector3Int, Vector3Int>(start, end);
+        scope_ = new KeyValuePair<Vector3Int, Vector3Int>(start, end);
         fieldGrids_ = new FieldGrid[end.x - start.x, end.y - start.y];
         foreach (Vector3Int pos in basicMap.cellBounds.allPositionsWithin) {
             Vector2Int coord = new Vector2Int(pos.x - start.x, pos.y - start.y);
             fieldGrids_[coord.x, coord.y] = new FieldGrid(pos, coord);
         }
         // set field tags
+        layers_ = new List<FieldLayer>();
+        maskTags_ = new HashSet<FieldTag>();
         foreach (Transform child in masks) {
             Tilemap tilemap = child.GetComponent<Tilemap>();
             tilemap.CompressBounds();
             FieldLayer layer = child.GetComponent<FieldLayer>();
+            layers_.Add(layer);
+            maskTags_.Add(layer.fieldTag);
             foreach (Vector3Int pos in tilemap.cellBounds.allPositionsWithin) {
                 TileBase tile = tilemap.GetTile(pos);
                 if (tile != null) {
                     fieldGrids_[pos.x - start.x, pos.y - start.y].AddTag(layer.fieldTag);
+                    layer.AddGrid(fieldGrids_[pos.x - start.x, pos.y - start.y]);
                 }
             }
         }
@@ -236,8 +257,6 @@ public class FieldManager : Singleton<FieldManager> {
                 GetGrid(item.AlignGrid()).AddItem(item);
             }
         }
-        // init field layers
-        layers_ = new List<FieldLayer>();
     }
 
     private List<FieldGrid> ExpandGrids(FieldGrid start, Vector3 min, Vector3 max, bool include_start = false) {
@@ -275,4 +294,6 @@ public class FieldManager : Singleton<FieldManager> {
             layer.UpdateTime(time_type, time, delta);
         }
     }
+
+    public KeyValuePair<Vector3Int, Vector3Int> scope { get { return scope_; } }
 }
