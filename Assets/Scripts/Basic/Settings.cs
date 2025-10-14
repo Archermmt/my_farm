@@ -12,7 +12,9 @@ public enum Action {
     Run,
     DropItem,
     UseItem,
-    HoldItem
+    HoldItem,
+    DigGround,
+    RideHourse
 }
 
 public enum AnimationTag {
@@ -87,7 +89,8 @@ public enum Season {
     Spring,
     Summer,
     Autumn,
-    Winter
+    Winter,
+    Any
 }
 
 public enum TimeType {

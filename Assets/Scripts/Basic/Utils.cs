@@ -14,6 +14,27 @@ public class Vector3Save {
     public Vector3 ToVector3() {
         return new Vector3(x, y, z);
     }
+
+    public string UUID { get { return "Vector3Save." + x + "." + y + "." + z; } }
+}
+
+[System.Serializable]
+public class Vector3IntSave {
+    public int x, y, z;
+
+    public Vector3IntSave(Vector3 position) {
+        x = (int)position.x;
+        y = (int)position.y;
+        z = (int)position.z;
+    }
+
+    public Vector3IntSave(Vector3Save position) {
+        x = (int)position.x;
+        y = (int)position.y;
+        z = (int)position.z;
+    }
+
+    public string UUID { get { return "Vector3IntSave." + x + "." + y + "." + z; } }
 }
 
 [System.Serializable]
@@ -28,6 +49,7 @@ public class Vector2IntSave {
     public Vector2Int ToVector2Int() {
         return new Vector2Int(x, y);
     }
+    public string UUID { get { return "Vector2IntSave." + x + "." + y; } }
 }
 
 public static class BaseUtils {

@@ -47,7 +47,7 @@ public class EnvManager : Singleton<EnvManager> {
     [Header("Light")]
     [SerializeField] private List<LightingSchedule> sunLightSchs_;
     [SerializeField] private float sunLightSec_ = 20f;
-    private bool freezed_ = false;
+    private bool freezed_ = true;
     // time
     private float gameTick_ = 0f;
     private float minuteTick_;
@@ -61,12 +61,10 @@ public class EnvManager : Singleton<EnvManager> {
     }
 
     private void OnEnable() {
-        EventHandler.BeforeSceneUnloadEvent += BeforeSceneUnload;
         EventHandler.AfterSceneLoadEvent += AfterSceneLoad;
     }
 
     private void OnDisable() {
-        EventHandler.BeforeSceneUnloadEvent -= BeforeSceneUnload;
         EventHandler.AfterSceneLoadEvent -= AfterSceneLoad;
     }
 
@@ -92,44 +90,40 @@ public class EnvManager : Singleton<EnvManager> {
 
     public void UpdateMonth(int delta = 1) {
         EventHandler.CallUpdateTime(TimeType.Month, time_, delta);
-        int left = delta;
-        while (time_.month + left > 12) {
+        time_.month += delta;
+        while (time_.month >= 12) {
             UpdateYear(1);
-            left -= 12;
+            time_.month -= 12;
         }
-        time_.month += left;
         sunLightSch_ = GetSunLightSch();
     }
 
     public void UpdateDay(int delta = 1) {
         EventHandler.CallUpdateTime(TimeType.Day, time_, delta);
-        int left = delta;
-        time_.weekDay = (time_.weekDay + left) % 7;
-        while (time_.day + left > 30) {
+        time_.day += delta;
+        time_.weekDay = (time_.weekDay + delta) % 7;
+        while (time_.day >= 30) {
             UpdateMonth(1);
-            left -= 30;
+            time_.day -= 30;
         }
-        time_.day += left;
     }
 
     public void UpdateHour(int delta = 1) {
         EventHandler.CallUpdateTime(TimeType.Hour, time_, delta);
-        int left = delta;
-        while (time_.hour + left > 24) {
+        time_.hour += delta;
+        while (time_.hour >= 24) {
             UpdateDay(1);
-            left -= 24;
+            time_.hour -= 24;
         }
-        time_.hour += left;
         StartCoroutine(LightRoutine(sunLight_, sunLightSch_, sunLightSec_));
     }
 
     public void UpdateMinute(int delta = 1) {
-        int left = delta;
-        while (time_.minute + left > 60) {
+        time_.minute += delta;
+        while (time_.minute >= 60) {
             UpdateHour(1);
-            left -= 60;
+            time_.minute -= 60;
         }
-        time_.minute += left;
         if (time_.minute % 5 == 0) {
             EventHandler.CallUpdateTime(TimeType.Minute, time_, delta);
             clock_.ShowTime(time_);
@@ -137,12 +131,11 @@ public class EnvManager : Singleton<EnvManager> {
     }
 
     public void UpdateSecond(int delta = 1) {
-        int left = delta;
-        while (time_.second + left > 60) {
+        time_.second += delta;
+        while (time_.second >= 60) {
             UpdateMinute(1);
-            left -= 60;
+            time_.second -= 60;
         }
-        time_.second += left;
     }
 
     public void SetTime(TimeType time_type, int value) {
@@ -205,16 +198,13 @@ public class EnvManager : Singleton<EnvManager> {
         light.intensity = intensity;
     }
 
-    private void BeforeSceneUnload(SceneName scene_name) {
-        SetFreeze(true);
-    }
-
     private void AfterSceneLoad(SceneName scene_name) {
         sunLightSch_ = GetSunLightSch();
         sunLight_ = GameObject.FindGameObjectWithTag("SunLight").GetComponent<Light2D>();
         sunLight_.intensity = GetIntensity(sunLightSch_);
-        UpdateMinute(0);
-        SetFreeze(false);
+        if (!freezed_) {
+            UpdateMinute(0);
+        }
     }
 
     public void SetFreeze(bool freeze) {

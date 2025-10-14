@@ -305,7 +305,7 @@ public class Player : Singleton<Player> {
         // pick item test
         if (Input.GetKeyUp(KeyCode.T)) {
             //EnvManager.Instance.UpdateDay(5);
-            EnvManager.Instance.UpdateMinute(40);
+            EnvManager.Instance.UpdateMinute(20);
         } else if (Input.GetKeyDown(KeyCode.C)) {
             //inventory_.AddItem(ItemManager.Instance.FindItem("Weed"), 100);
             //ItemData item = ItemManager.Instance.FindItem("ParsnipSeed");

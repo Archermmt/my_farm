@@ -3517,6 +3517,59 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 25b76b5018f1f4a9789e4d4af9d33f60, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  startScene_: 3
+  startPos_: {x: 2, y: -1, z: 0}
+  eventList_:
+  - scene: 1
+    season: 0
+    fieldTag: 2
+    action: 0
+    hour: 7
+    minute: 30
+    durationMin: 20
+    durationMax: 40
+    weekDays: 
+    days: 
+  - scene: 1
+    season: 0
+    fieldTag: 1
+    action: 6
+    hour: 10
+    minute: 0
+    durationMin: 30
+    durationMax: 60
+    weekDays: fbfffffffaffffff
+    days: 
+  - scene: 1
+    season: 0
+    fieldTag: 2
+    action: 7
+    hour: 10
+    minute: 0
+    durationMin: 30
+    durationMax: 60
+    weekDays: 0500000006000000
+    days: 
+  - scene: 1
+    season: 0
+    fieldTag: 2
+    action: 0
+    hour: 16
+    minute: 0
+    durationMin: 20
+    durationMax: 40
+    weekDays: 
+    days: 
+  - scene: 3
+    season: 0
+    fieldTag: 2
+    action: 0
+    hour: 18
+    minute: 0
+    durationMin: 20
+    durationMax: 40
+    weekDays: 
+    days: 
   speed_: 3
   usePenalty: 1
   pathPenalty: 0

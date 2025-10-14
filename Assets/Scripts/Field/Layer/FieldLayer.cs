@@ -120,10 +120,19 @@ public class FieldGrid {
 public class LayerSave {
     public FieldTag fieldTag;
     public List<GridSave> grids;
+    public Dictionary<string, int> index;
 
     public LayerSave(FieldTag fieldTag, List<GridSave> grids) {
         this.fieldTag = fieldTag;
         this.grids = grids;
+        index = new Dictionary<string, int>();
+        for (int i = 0; i < grids.Count; i++) {
+            index[new Vector3IntSave(grids[i].position).UUID] = i;
+        }
+    }
+
+    public override string ToString() {
+        return "Layer(" + fieldTag + ") with " + grids.Count + " grids";
     }
 }
 

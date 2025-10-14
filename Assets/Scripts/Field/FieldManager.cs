@@ -53,16 +53,12 @@ public class FieldManager : Singleton<FieldManager> {
             return GridAt(cell_pos.x - start.x, cell_pos.y - start.y);
         }
         Vector3 pos = new Vector3(cell_pos.x, cell_pos.y, cell_pos.z);
-        foreach (GridSave saved in layerSaves_[scene][0].grids) {
-            if (saved.position.ToVector3() == pos) {
-                return FieldGrid.FromSavable(saved);
-            }
-        }
-        return null;
+        int idx = layerSaves_[scene][0].index[new Vector3IntSave(pos).UUID];
+        return FieldGrid.FromSavable(layerSaves_[scene][0].grids[idx]);
     }
 
-    public FieldGrid GetRandomGrid(SceneName scene, FieldTag tag) {
-        if (scene == SceneController.Instance.currentScene) {
+    public FieldGrid GetRandomGrid(FieldTag tag, SceneName scene = SceneName.CurrentScene) {
+        if (scene == SceneController.Instance.currentScene || scene == SceneName.CurrentScene) {
             foreach (FieldLayer layer in layers_) {
                 if (layer.fieldTag == tag) {
                     return GetRandomLayerGrid(layer);

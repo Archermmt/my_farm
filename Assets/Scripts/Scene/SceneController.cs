@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using NUnit;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
@@ -21,9 +22,11 @@ public class SceneController : Singleton<SceneController> {
 
     private IEnumerator Start() {
         // Load all scenes to save
+        EnvManager.Instance.SetFreeze(true);
         foreach (SceneName scene in scenes_) {
             yield return LoadSceneRoutine(scene, Player.Instance.transform.position, false);
         }
+        EnvManager.Instance.SetFreeze(false);
         fadeImage_.color = new Color(0f, 0f, 0f, 1f);
         fadeCanvasGroup_.alpha = 1f;
         yield return StartCoroutine(LoadSceneRoutine(startScene_, Player.Instance.transform.position));
