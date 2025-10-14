@@ -111,7 +111,7 @@ public enum EffectType {
 }
 
 public enum SceneName {
-    StartScene,
+    CurrentScene,
     FarmScene,
     FieldScene,
     CabinScene,

@@ -1,4 +1,5 @@
 using System.Collections;
+using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.SceneManagement;
 using UnityEngine.UI;
@@ -8,10 +9,21 @@ public class SceneController : Singleton<SceneController> {
     [SerializeField] private float fadeDuration_ = 1f;
     [SerializeField] private Image fadeImage_ = null;
     [SerializeField] private SceneName startScene_;
+    [SerializeField] private List<SceneName> scenes_;
     private bool loading_;
-    private SceneName currentScene_ = SceneName.StartScene;
+    private SceneName currentScene_ = SceneName.CurrentScene;
+    private Dictionary<string, ScenePortSave> scenePorts_;
+
+    protected override void Awake() {
+        base.Awake();
+        scenePorts_ = new Dictionary<string, ScenePortSave>();
+    }
 
     private IEnumerator Start() {
+        // Load all scenes to save
+        foreach (SceneName scene in scenes_) {
+            yield return LoadSceneRoutine(scene, Player.Instance.transform.position, false);
+        }
         fadeImage_.color = new Color(0f, 0f, 0f, 1f);
         fadeCanvasGroup_.alpha = 1f;
         yield return StartCoroutine(LoadSceneRoutine(startScene_, Player.Instance.transform.position));
@@ -23,11 +35,13 @@ public class SceneController : Singleton<SceneController> {
         }
     }
 
-    private IEnumerator LoadSceneRoutine(SceneName scene_name, Vector3 spawn_pos) {
+    private IEnumerator LoadSceneRoutine(SceneName scene_name, Vector3 spawn_pos, bool fade = true) {
         loading_ = true;
-        if (currentScene_ != SceneName.StartScene) {
+        if (currentScene_ != SceneName.CurrentScene) {
             EventHandler.CallBeforeSceneUnload(currentScene_);
-            yield return StartCoroutine(FadeRoutine(1f));
+            if (fade) {
+                yield return StartCoroutine(FadeRoutine(1f));
+            }
             yield return SceneManager.UnloadSceneAsync(SceneManager.GetActiveScene().buildIndex);
         }
         Player.Instance.transform.position = spawn_pos;
@@ -36,7 +50,17 @@ public class SceneController : Singleton<SceneController> {
         SceneManager.SetActiveScene(new_scene);
         currentScene_ = scene_name;
         EventHandler.CallAfterSceneLoad(scene_name);
-        yield return StartCoroutine(FadeRoutine(0f));
+        if (fade) {
+            yield return StartCoroutine(FadeRoutine(0f));
+        }
+        // add ports
+        Transform holder = GameObject.FindGameObjectWithTag("ScenePorts").transform;
+        foreach (ScenePort port in holder.GetComponentsInChildren<ScenePort>()) {
+            string mark = currentScene_ + "_" + port.dstScene;
+            if (!scenePorts_.ContainsKey(mark)) {
+                scenePorts_[mark] = port.ToSavable();
+            }
+        }
         loading_ = false;
     }
 
@@ -50,15 +74,14 @@ public class SceneController : Singleton<SceneController> {
         fadeCanvasGroup_.blocksRaycasts = false;
     }
 
-    public ScenePort FindPort(SceneName scene_name) {
-        Transform holder = GameObject.FindGameObjectWithTag("ScenePorts").transform;
-        foreach (ScenePort port in holder.GetComponentsInChildren<ScenePort>()) {
-            if (port.dstScene == scene_name) {
-                return port;
-            }
+    public ScenePortSave FindPort(SceneName src, SceneName dst) {
+        string mark = src + "_" + dst;
+        if (!scenePorts_.ContainsKey(mark)) {
+            return null;
         }
-        return null;
+        return scenePorts_[mark];
     }
 
     public SceneName currentScene { get { return currentScene_; } }
+    public SceneName startScene { get { return startScene_; } }
 }

@@ -4596,6 +4596,7 @@ MonoBehaviour:
   fadeDuration_: 1
   fadeImage_: {fileID: 53710400}
   startScene_: 1
+  scenes_: 0100000003000000
 --- !u!1 &1600143568
 GameObject:
   m_ObjectHideFlags: 0

@@ -3,6 +3,22 @@ using UnityEngine;
 using UnityEngine.Tilemaps;
 
 [System.Serializable]
+public class GridSave {
+    public Vector3Save position;
+    public Vector2IntSave coord;
+    public List<FieldTag> fieldTags;
+
+    public GridSave(Vector3 position, Vector2Int coord, HashSet<FieldTag> fieldTags) {
+        this.position = new Vector3Save(position);
+        this.coord = new Vector2IntSave(coord);
+        this.fieldTags = new List<FieldTag>();
+        foreach (FieldTag tag in fieldTags) {
+            this.fieldTags.Add(tag);
+        }
+    }
+}
+
+[System.Serializable]
 public class FieldGrid {
     private Vector3 position_;
     private Vector2Int coord_;
@@ -84,9 +100,33 @@ public class FieldGrid {
         return str;
     }
 
+    public GridSave ToSavable() {
+        return new GridSave(position_, coord_, fieldTags_);
+    }
+
+    public static FieldGrid FromSavable(GridSave saved) {
+        FieldGrid grid = new FieldGrid(saved.position.ToVector3(), saved.coord.ToVector2Int());
+        foreach (FieldTag tag in saved.fieldTags) {
+            grid.AddTag(tag);
+        }
+        return grid;
+    }
+
     public HashSet<FieldTag> fieldTags { get { return fieldTags_; } }
     public List<Item> items { get { return items_; } }
 }
+
+[System.Serializable]
+public class LayerSave {
+    public FieldTag fieldTag;
+    public List<GridSave> grids;
+
+    public LayerSave(FieldTag fieldTag, List<GridSave> grids) {
+        this.fieldTag = fieldTag;
+        this.grids = grids;
+    }
+}
+
 
 [RequireComponent(typeof(Tilemap))]
 public class FieldLayer : MonoBehaviour {
@@ -120,6 +160,14 @@ public class FieldLayer : MonoBehaviour {
         if (grids_.Contains(grid)) {
             grids_.Remove(grid);
         }
+    }
+
+    public LayerSave ToSavable() {
+        List<GridSave> grid_saves = new List<GridSave>();
+        foreach (FieldGrid grid in grids) {
+            grid_saves.Add(grid.ToSavable());
+        }
+        return new LayerSave(fieldTag_, grid_saves);
     }
 
     public virtual void UpdateTime(TimeType time_type, TimeData time, int delta) { }

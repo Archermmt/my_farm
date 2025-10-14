@@ -4,17 +4,6 @@ using UnityEngine;
 using UnityEngine.Tilemaps;
 
 
-[System.Serializable]
-public class GridSave {
-    public FieldTag tag;
-    public Vector2IntSave coord;
-
-    public GridSave(FieldGrid grid, FieldTag tag) {
-        coord = new Vector2IntSave(grid.coord);
-        this.tag = tag;
-    }
-}
-
 public class FieldManager : Singleton<FieldManager> {
     private List<Cursor> fieldCursors_;
     private List<Cursor> maskCursors_;
@@ -24,7 +13,7 @@ public class FieldManager : Singleton<FieldManager> {
     private Transform layerHolder_;
     private List<FieldLayer> layers_;
     private HashSet<FieldTag> maskTags_;
-    private Dictionary<SceneName, List<GridSave>> gridSaves_;
+    private Dictionary<SceneName, List<LayerSave>> layerSaves_;
     private bool freezed_;
 
     protected override void Awake() {
@@ -34,7 +23,7 @@ public class FieldManager : Singleton<FieldManager> {
         scope_ = new KeyValuePair<Vector3Int, Vector3Int>();
         layers_ = new List<FieldLayer>();
         maskTags_ = new HashSet<FieldTag>();
-        gridSaves_ = new Dictionary<SceneName, List<GridSave>>();
+        layerSaves_ = new Dictionary<SceneName, List<LayerSave>>();
         freezed_ = false;
     }
 
@@ -57,22 +46,47 @@ public class FieldManager : Singleton<FieldManager> {
         return fieldGrids_[x, y];
     }
 
-    public FieldGrid GetGrid(Vector3 world_pos) {
+    public FieldGrid GetGrid(Vector3 world_pos, SceneName scene = SceneName.CurrentScene) {
         Vector3Int cell_pos = grid_.WorldToCell(world_pos);
         Vector3Int start = scope_.Key;
-        return GridAt(cell_pos.x - start.x, cell_pos.y - start.y);
-    }
-
-    public FieldGrid GetRandomGrid(FieldTag tag) {
-        foreach (FieldLayer layer in layers_) {
-            if (layer.fieldTag == tag) {
-                int idx = Random.Range(0, layer.grids.Count);
-                return layer.grids[idx];
+        if (scene == SceneController.Instance.currentScene || scene == SceneName.CurrentScene) {
+            return GridAt(cell_pos.x - start.x, cell_pos.y - start.y);
+        }
+        Vector3 pos = new Vector3(cell_pos.x, cell_pos.y, cell_pos.z);
+        foreach (GridSave saved in layerSaves_[scene][0].grids) {
+            if (saved.position.ToVector3() == pos) {
+                return FieldGrid.FromSavable(saved);
             }
         }
-        return GridAt(Random.Range(0, fieldGrids_.GetLength(0)), Random.Range(0, fieldGrids_.GetLength(1)));
+        return null;
     }
 
+    public FieldGrid GetRandomGrid(SceneName scene, FieldTag tag) {
+        if (scene == SceneController.Instance.currentScene) {
+            foreach (FieldLayer layer in layers_) {
+                if (layer.fieldTag == tag) {
+                    return GetRandomLayerGrid(layer);
+                }
+            }
+            return GetRandomLayerGrid(layers_[0]);
+        }
+        foreach (LayerSave layer in layerSaves_[scene]) {
+            if (layer.fieldTag == tag) {
+                return GetRandomLayerGrid(layer);
+            }
+        }
+        return GetRandomLayerGrid(layerSaves_[scene][0]);
+    }
+
+    public FieldGrid GetRandomLayerGrid(FieldLayer layer) {
+        int idx = Random.Range(0, layer.grids.Count);
+        return layer.grids[idx];
+    }
+
+    public FieldGrid GetRandomLayerGrid(LayerSave layer) {
+        int idx = Random.Range(0, layer.grids.Count);
+        return FieldGrid.FromSavable(layer.grids[idx]);
+    }
 
     public Cursor GetFieldCursor(int idx) {
         while (idx >= fieldCursors_.Count) {
@@ -182,26 +196,32 @@ public class FieldManager : Singleton<FieldManager> {
 
     private void BeforeSceneUnload(SceneName scene_name) {
         SetFreeze(true);
-        gridSaves_[scene_name] = new List<GridSave>();
+        layerSaves_[scene_name] = new List<LayerSave>();
         foreach (FieldLayer layer in layers_) {
-            if (maskTags_.Contains(layer.fieldTag)) {
-                continue;
-            }
-            foreach (FieldGrid grid in layer.grids) {
-                gridSaves_[scene_name].Add(new GridSave(grid, layer.fieldTag));
-            }
+            layerSaves_[scene_name].Add(layer.ToSavable());
         }
     }
 
     private void AfterSceneLoad(SceneName scene_name) {
         ParseFields();
-        if (gridSaves_.ContainsKey(scene_name)) {
-            foreach (GridSave saved in gridSaves_[scene_name]) {
-                FieldLayer layer = GetLayer(saved.tag);
-                layer.AddGrid(GridAt(saved.coord.x, saved.coord.y));
+        if (layerSaves_.ContainsKey(scene_name)) {
+            foreach (LayerSave saved in layerSaves_[scene_name]) {
+                FieldLayer layer = GetLayer(saved.fieldTag);
+                foreach (GridSave grid in saved.grids) {
+                    layer.AddGrid(GridAt(grid.coord.x, grid.coord.y));
+                }
             }
         }
         SetFreeze(false);
+    }
+
+    public void ShowGrids(List<Vector3> points) {
+        for (int i = 0; i < points.Count; i++) {
+            GetMaskCursor(i).MoveTo(points[i], CursorMode.Mask);
+        }
+        for (int i = points.Count; i < maskCursors_.Count; i++) {
+            GetMaskCursor(i).SetMode(CursorMode.Mute);
+        }
     }
 
     public void SetFreeze(bool freeze) {
