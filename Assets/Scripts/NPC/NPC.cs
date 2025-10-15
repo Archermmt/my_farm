@@ -1,8 +1,8 @@
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using NUnit.Framework;
 using UnityEngine;
-using UnityEngine.Rendering;
 
 [Serializable]
 public class NPCEvent : IComparable<NPCEvent> {
@@ -14,6 +14,8 @@ public class NPCEvent : IComparable<NPCEvent> {
     public int minute;
     public int durationMin = 20;
     public int durationMax = 60;
+    public float actionStart = 10f;
+    public float actionDuration = 10f;
     public List<int> weekDays;
     public List<int> days;
     private HashSet<int> weekDaysInclude_;
@@ -189,6 +191,8 @@ public class NPC : MonoBehaviour {
     private int eventId_ = 0;
     private List<NPCEvent> schedule_;
     private NPCEvent currentEvent_;
+    private NPCEvent nextEvent_;
+    private bool acting_ = false;
     // path
     private Dictionary<SceneName, PathNode[,]> pathNodes_;
     private bool followPath_ = false;
@@ -217,12 +221,6 @@ public class NPC : MonoBehaviour {
         foreach (NPCEvent e in schedule_) {
             Debug.Log("Has event " + e);
         }
-        /*
-        UpdateEvent();
-        Debug.Log("[TMINFO] start with event " + currentEvent_);
-        MoveTo(currentEvent_.scene, currentEvent_.fieldTag, currentEvent_.time);
-        ShowPath();
-        */
     }
 
     private void Update() {
@@ -232,6 +230,10 @@ public class NPC : MonoBehaviour {
     private void FixedUpdate() {
         if (!freezed_) {
             ProcessMovement();
+            if (currentEvent_ != null && currentEvent_.start && !acting_) {
+                Debug.Log("[TMINFO] start action with " + currentEvent_);
+                StartCoroutine(ActionRoutine());
+            }
         }
     }
 
@@ -340,11 +342,14 @@ public class NPC : MonoBehaviour {
             if (schedule_[i].time <= current_time) {
                 continue;
             }
-            updated = currentEvent_ == null || eventId_ != i;
+            updated = nextEvent_ == null || eventId_ != i;
             eventId_ = i;
             break;
         }
-        currentEvent_ = schedule_[eventId_];
+        nextEvent_ = schedule_[eventId_];
+        if (updated) {
+            nextEvent_.SetStart(false);
+        }
         return updated;
     }
 
@@ -471,6 +476,7 @@ public class NPC : MonoBehaviour {
         if (!followPath_) {
             return;
         }
+        currentEvent_ = null;
         NPCStep next_step = path_.Peek();
         if (next_step.scene != current_scene || currentStep_.scene != current_scene) {
             if ((next_step.minute - current_minute) <= 0.01f) {
@@ -500,17 +506,28 @@ public class NPC : MonoBehaviour {
         if (path_.Count == 0) {
             followPath_ = false;
             collider_.enabled = true;
-            if (currentEvent_ != null) {
+            UpdateAnimator(direction_, Action.Idle);
+            if (nextEvent_ != null) {
+                currentEvent_ = nextEvent_;
                 currentEvent_.SetStart(true);
+                Debug.Log("[TMINFO] should start the event " + currentEvent_);
             }
         }
     }
 
     private void UpdateAnimator(Direction direct, Action act) {
-        /*
         animator_.SetInteger("direction", (int)direct);
         animator_.SetInteger("action", (int)act);
-        */
+    }
+
+    private IEnumerator ActionRoutine() {
+        acting_ = true;
+        yield return new WaitForSeconds(UnityEngine.Random.Range(0.0f, currentEvent_.actionStart));
+        int direction = UnityEngine.Random.Range(0, 4);
+        UpdateAnimator((Direction)direction, currentEvent_.action);
+        yield return new WaitForSeconds(currentEvent_.actionDuration);
+        acting_ = false;
+        UpdateAnimator((Direction)direction, Action.Idle);
     }
 
     // Debug only
@@ -528,8 +545,8 @@ public class NPC : MonoBehaviour {
 
     private void UpdateTime(TimeType time_type, TimeData time, int delta) {
         if (time_type == TimeType.Minute && time.minute % 10 == 0 && UpdateEvent()) {
-            Debug.Log("[TMINFO] should update the event " + currentEvent_);
-            MoveTo(currentEvent_.scene, currentEvent_.fieldTag, currentEvent_.time);
+            Debug.Log("[TMINFO] update event " + nextEvent_ + " @ " + time.hour + ":" + time.minute);
+            MoveTo(nextEvent_.scene, nextEvent_.fieldTag, nextEvent_.time);
             ShowPath();
         } else if (time_type == TimeType.Day) {
             MakeSchedule();

@@ -3522,12 +3522,26 @@ MonoBehaviour:
   eventList_:
   - scene: 1
     season: 0
-    fieldTag: 2
-    action: 0
+    fieldTag: 7
+    action: 9
     hour: 7
     minute: 30
-    durationMin: 20
-    durationMax: 40
+    durationMin: 40
+    durationMax: 60
+    actionStart: 20
+    actionDuration: 6
+    weekDays: 
+    days: 
+  - scene: 1
+    season: 0
+    fieldTag: 1
+    action: 8
+    hour: 9
+    minute: 0
+    durationMin: 30
+    durationMax: 60
+    actionStart: 20
+    actionDuration: 6
     weekDays: 
     days: 
   - scene: 1
@@ -3536,28 +3550,46 @@ MonoBehaviour:
     action: 6
     hour: 10
     minute: 0
-    durationMin: 30
+    durationMin: 40
     durationMax: 60
+    actionStart: 20
+    actionDuration: 10
     weekDays: fbfffffffaffffff
     days: 
   - scene: 1
     season: 0
-    fieldTag: 2
+    fieldTag: 7
     action: 7
     hour: 10
     minute: 0
-    durationMin: 30
+    durationMin: 40
     durationMax: 60
+    actionStart: 30
+    actionDuration: 10
     weekDays: 0500000006000000
     days: 
   - scene: 1
     season: 0
+    fieldTag: 1
+    action: 8
+    hour: 15
+    minute: 0
+    durationMin: 40
+    durationMax: 60
+    actionStart: 20
+    actionDuration: 10
+    weekDays: 
+    days: 
+  - scene: 3
+    season: 0
     fieldTag: 2
-    action: 0
-    hour: 16
+    action: 9
+    hour: 18
     minute: 0
     durationMin: 20
     durationMax: 40
+    actionStart: 20
+    actionDuration: 6
     weekDays: 
     days: 
   - scene: 3
@@ -3568,6 +3600,8 @@ MonoBehaviour:
     minute: 0
     durationMin: 20
     durationMax: 40
+    actionStart: 10
+    actionDuration: 20
     weekDays: 
     days: 
   speed_: 3
@@ -3584,10 +3618,10 @@ Animator:
   m_GameObject: {fileID: 1275247382}
   m_Enabled: 1
   m_Avatar: {fileID: 0}
-  m_Controller: {fileID: 0}
+  m_Controller: {fileID: 9100000, guid: 39ba73b81e8ab42d29cd6f5e292521ad, type: 2}
   m_CullingMode: 0
   m_UpdateMode: 0
-  m_ApplyRootMotion: 0
+  m_ApplyRootMotion: 1
   m_LinearVelocityBlending: 0
   m_StabilizeFeet: 0
   m_AnimatePhysics: 0

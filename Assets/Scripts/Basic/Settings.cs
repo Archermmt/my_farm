@@ -14,7 +14,9 @@ public enum Action {
     UseItem,
     HoldItem,
     DigGround,
-    RideHourse
+    RideHourse,
+    Smoke,
+    Wander
 }
 
 public enum AnimationTag {
@@ -75,6 +77,7 @@ public enum FieldTag {
     Watered,
     Obstacle,
     Path,
+    NPC,
 }
 
 public enum CursorMode {

@@ -83,12 +83,13 @@ public class EnvManager : Singleton<EnvManager> {
         }
     }
 
-    public void UpdateYear(int delta = 1) {
+    public TimeData UpdateYear(int delta = 1) {
         EventHandler.CallUpdateTime(TimeType.Year, time_, delta);
         time_.year += delta;
+        return time_;
     }
 
-    public void UpdateMonth(int delta = 1) {
+    public TimeData UpdateMonth(int delta = 1) {
         EventHandler.CallUpdateTime(TimeType.Month, time_, delta);
         time_.month += delta;
         while (time_.month >= 12) {
@@ -96,9 +97,10 @@ public class EnvManager : Singleton<EnvManager> {
             time_.month -= 12;
         }
         sunLightSch_ = GetSunLightSch();
+        return time_;
     }
 
-    public void UpdateDay(int delta = 1) {
+    public TimeData UpdateDay(int delta = 1) {
         EventHandler.CallUpdateTime(TimeType.Day, time_, delta);
         time_.day += delta;
         time_.weekDay = (time_.weekDay + delta) % 7;
@@ -106,9 +108,10 @@ public class EnvManager : Singleton<EnvManager> {
             UpdateMonth(1);
             time_.day -= 30;
         }
+        return time_;
     }
 
-    public void UpdateHour(int delta = 1) {
+    public TimeData UpdateHour(int delta = 1) {
         EventHandler.CallUpdateTime(TimeType.Hour, time_, delta);
         time_.hour += delta;
         while (time_.hour >= 24) {
@@ -116,9 +119,10 @@ public class EnvManager : Singleton<EnvManager> {
             time_.hour -= 24;
         }
         StartCoroutine(LightRoutine(sunLight_, sunLightSch_, sunLightSec_));
+        return time_;
     }
 
-    public void UpdateMinute(int delta = 1) {
+    public TimeData UpdateMinute(int delta = 1) {
         time_.minute += delta;
         while (time_.minute >= 60) {
             UpdateHour(1);
@@ -128,14 +132,16 @@ public class EnvManager : Singleton<EnvManager> {
             EventHandler.CallUpdateTime(TimeType.Minute, time_, delta);
             clock_.ShowTime(time_);
         }
+        return time_;
     }
 
-    public void UpdateSecond(int delta = 1) {
+    public TimeData UpdateSecond(int delta = 1) {
         time_.second += delta;
         while (time_.second >= 60) {
             UpdateMinute(1);
             time_.second -= 60;
         }
+        return time_;
     }
 
     public void SetTime(TimeType time_type, int value) {
@@ -212,5 +218,6 @@ public class EnvManager : Singleton<EnvManager> {
     }
 
     public TimeData time { get { return time_; } }
+    public Clock clock { get { return clock_; } }
     public float minuteTick { get { return minuteTick_; } }
 }
