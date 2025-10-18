@@ -280,7 +280,7 @@ public class Player : Singleton<Player> {
     }
 
     private void UpdateTime(TimeType time_type, TimeData time, int delta) {
-        if (time_type == TimeType.Hour && time.hour == 23) {
+        if (time_type == TimeType.Hour && time.hour >= 23) {
             EnvManager.Instance.UpdateDay();
         } else if (time_type == TimeType.Day) {
             SceneController.Instance.LoadScene(SceneName.CabinScene, new Vector3(1f, -1f, 0));

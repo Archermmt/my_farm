@@ -1,5 +1,4 @@
 using System;
-using System.Collections;
 using System.Collections.Generic;
 using NUnit.Framework;
 using UnityEngine;
@@ -14,26 +13,18 @@ public class NPCEvent : IComparable<NPCEvent> {
     public int minute;
     public int durationMin = 20;
     public int durationMax = 60;
-    public float actionStart = 10f;
-    public float actionDuration = 10f;
+    public int actionStart = 10;
+    public int actionDuration = 10;
     public List<int> weekDays;
     public List<int> days;
+    private int duration_;
     private HashSet<int> weekDaysInclude_;
     private HashSet<int> weekDaysExclude_;
     private HashSet<int> daysInclude_;
     private HashSet<int> daysExclude_;
-    private bool start_ = false;
 
     public int CompareTo(NPCEvent other) {
         return time.CompareTo(other.time);
-    }
-
-    public void Delay(int delta) {
-        minute += delta;
-        while (minute >= 60) {
-            minute -= 60;
-            hour += 1;
-        }
     }
 
     public void Setup() {
@@ -59,6 +50,27 @@ public class NPCEvent : IComparable<NPCEvent> {
                 }
             }
         }
+        duration_ = UnityEngine.Random.Range(durationMin, durationMax);
+    }
+
+    public static NPCEvent Clone(NPCEvent other, int delta = 0) {
+        NPCEvent clone_event = new NPCEvent();
+        clone_event.scene = other.scene;
+        clone_event.season = other.season;
+        clone_event.fieldTag = other.fieldTag;
+        clone_event.action = other.action;
+        clone_event.hour = other.hour;
+        clone_event.minute = other.minute + delta;
+        while (clone_event.minute >= 60) {
+            clone_event.minute -= 60;
+            clone_event.hour += 1;
+        }
+        clone_event.durationMin = other.durationMin;
+        clone_event.durationMax = other.durationMax;
+        clone_event.weekDays = other.weekDays;
+        clone_event.days = other.days;
+        clone_event.Setup();
+        return clone_event;
     }
 
     public bool Validate(TimeData time) {
@@ -80,25 +92,6 @@ public class NPCEvent : IComparable<NPCEvent> {
         return true;
     }
 
-    public void SetStart(bool start) {
-        start_ = start;
-    }
-
-    public static NPCEvent Clone(NPCEvent other) {
-        NPCEvent clone_event = new NPCEvent();
-        clone_event.scene = other.scene;
-        clone_event.season = other.season;
-        clone_event.fieldTag = other.fieldTag;
-        clone_event.action = other.action;
-        clone_event.hour = other.hour;
-        clone_event.minute = other.minute;
-        clone_event.durationMin = other.durationMin;
-        clone_event.durationMax = other.durationMax;
-        clone_event.weekDays = other.weekDays;
-        clone_event.days = other.days;
-        clone_event.Setup();
-        return clone_event;
-    }
 
     public override string ToString() {
         string str = action + " in " + scene + "(" + fieldTag + ") @ " + hour + ":" + minute;
@@ -117,24 +110,23 @@ public class NPCEvent : IComparable<NPCEvent> {
         return str;
     }
 
-    public int duration { get { return UnityEngine.Random.Range(durationMin, durationMax); } }
+    public int duration { get { return duration_; } }
     public int time { get { return hour * 60 + minute; } }
-    public bool start { get { return start_; } }
 }
 
 public class NPCStep {
     public SceneName scene;
     public Vector3 pos;
-    public float minute;
+    public float time;
 
-    public NPCStep(SceneName scene, Vector3 pos, float minute) {
+    public NPCStep(SceneName scene, Vector3 pos, float time) {
         this.scene = scene;
         this.pos = pos;
-        this.minute = minute;
+        this.time = time;
     }
 
     public override string ToString() {
-        string str = pos + "(" + scene + ") @ " + (int)minute / 60 + ":" + minute % 60;
+        string str = pos + "(" + scene + ") @ " + (int)time / 60 + ":" + time % 60;
         return str;
     }
 }
@@ -176,7 +168,8 @@ public class NPC : MonoBehaviour {
     [SerializeField] private Vector3 startPos_;
     [SerializeField] private List<NPCEvent> eventList_;
     [Header("Movement")]
-    [SerializeField] private float speed_ = 3f;
+    //[SerializeField] private float runSpeed_ = 5f;
+    [SerializeField] private float walkSpeed_ = 3f;
     [SerializeField] private bool usePenalty = true;
     [UnityEngine.Range(0, 20)]
     [SerializeField] private int pathPenalty = 0;
@@ -192,6 +185,7 @@ public class NPC : MonoBehaviour {
     private List<NPCEvent> schedule_;
     private NPCEvent currentEvent_;
     private NPCEvent nextEvent_;
+    private int actionStart_ = -1;
     private bool acting_ = false;
     // path
     private Dictionary<SceneName, PathNode[,]> pathNodes_;
@@ -218,9 +212,6 @@ public class NPC : MonoBehaviour {
         TimeData time = EnvManager.Instance.time;
         ChangeStep(new NPCStep(startScene_, startPos_, time.hour * 60 + time.minute));
         MakeSchedule();
-        foreach (NPCEvent e in schedule_) {
-            Debug.Log("Has event " + e);
-        }
     }
 
     private void Update() {
@@ -230,10 +221,6 @@ public class NPC : MonoBehaviour {
     private void FixedUpdate() {
         if (!freezed_) {
             ProcessMovement();
-            if (currentEvent_ != null && currentEvent_.start && !acting_) {
-                Debug.Log("[TMINFO] start action with " + currentEvent_);
-                StartCoroutine(ActionRoutine());
-            }
         }
     }
 
@@ -321,15 +308,11 @@ public class NPC : MonoBehaviour {
             NPCEvent last = schedule_[schedule_.Count - 1];
             int duration = last.duration;
             while (last.time + duration + last.durationMin < next_time) {
-                NPCEvent next = NPCEvent.Clone(last);
-                next.Delay(duration);
+                NPCEvent next = NPCEvent.Clone(last, duration);
                 schedule_.Add(next);
                 last = schedule_[schedule_.Count - 1];
                 duration = last.duration;
             }
-        }
-        foreach (NPCEvent e in schedule_) {
-            e.SetStart(false);
         }
     }
 
@@ -347,15 +330,12 @@ public class NPC : MonoBehaviour {
             break;
         }
         nextEvent_ = schedule_[eventId_];
-        if (updated) {
-            nextEvent_.SetStart(false);
-        }
         return updated;
     }
 
     private float GetMoveTime(Vector3 src, Vector3 dst) {
         float distance = Vector3.Distance(src, dst);
-        float delta = distance * EnvManager.Instance.minuteTick / speed_;
+        float delta = distance * EnvManager.Instance.minuteTick / walkSpeed_;
         return delta;
     }
 
@@ -368,8 +348,10 @@ public class NPC : MonoBehaviour {
         HashSet<PathNode> visited = new HashSet<PathNode>();
         bool path_found = false;
         // find path
-        while (frontier.Count > 0) {
-            frontier.Sort();
+        for (int step = 0; step < 1500; step++) {
+            if (frontier.Count == 0) {
+                break;
+            }
             PathNode node = frontier[0];
             frontier.RemoveAt(0);
             visited.Add(node);
@@ -387,12 +369,12 @@ public class NPC : MonoBehaviour {
                         continue;
                     }
                     float cost = node.gCost + Vector2Int.Distance(node.coord, neighbour.coord) + (usePenalty ? neighbour.penalty : 0);
-                    bool recorded = frontier.Contains(neighbour);
-                    if (cost < neighbour.gCost || !recorded) {
+                    bool in_frontier = frontier.Contains(neighbour);
+                    if (cost < neighbour.gCost || !in_frontier) {
                         neighbour.gCost = cost;
                         neighbour.hCost = Vector2Int.Distance(node.coord, dst_node.coord);
                         neighbour.parent = node;
-                        if (!recorded) {
+                        if (!in_frontier) {
                             frontier.Add(neighbour);
                         }
                     }
@@ -455,31 +437,35 @@ public class NPC : MonoBehaviour {
         BuildNodes(scene_name);
         SetFreeze(false);
         ChangeStep(currentStep_);
-        ShowPath(scene_name);
     }
 
     public void ProcessMovement() {
+        if (path_.Count == 0) {
+            return;
+        }
         TimeData time = EnvManager.Instance.time;
         SceneName current_scene = SceneController.Instance.currentScene;
-        float current_minute = time.hour * 60 + time.minute;
-        if (!followPath_ && path_.Count > 0) {
+        float current_time = time.hour * 60 + time.minute;
+        if (!followPath_) {
             NPCStep first_step = path_.Peek();
-            while (first_step != null && current_minute >= first_step.minute) {
+            while (first_step != null && current_time >= first_step.time) {
                 ChangeStep(first_step);
                 first_step = path_.Count > 0 ? path_.Pop() : null;
             }
             if (first_step == null) {
                 return;
             }
-            followPath_ = (first_step.minute - current_minute) < 1f;
+            followPath_ = (first_step.time - current_time) < 1f;
         }
         if (!followPath_) {
             return;
         }
+        actionStart_ = -1;
+        acting_ = false;
         currentEvent_ = null;
         NPCStep next_step = path_.Peek();
         if (next_step.scene != current_scene || currentStep_.scene != current_scene) {
-            if ((next_step.minute - current_minute) <= 0.01f) {
+            if ((next_step.time - current_time) <= 0.01f) {
                 ChangeStep(path_.Pop());
             }
         } else {
@@ -499,7 +485,7 @@ public class NPC : MonoBehaviour {
                     direction_ = Direction.Down;
                 else
                     direction_ = Direction.Up;
-                rigidBody_.MovePosition(rigidBody_.position + movement * speed_ * Time.deltaTime);
+                rigidBody_.MovePosition(rigidBody_.position + movement * walkSpeed_ * Time.deltaTime);
                 UpdateAnimator(direction_, Action.Walk);
             }
         }
@@ -509,8 +495,7 @@ public class NPC : MonoBehaviour {
             UpdateAnimator(direction_, Action.Idle);
             if (nextEvent_ != null) {
                 currentEvent_ = nextEvent_;
-                currentEvent_.SetStart(true);
-                Debug.Log("[TMINFO] should start the event " + currentEvent_);
+                actionStart_ = currentEvent_.time + UnityEngine.Random.Range(0, currentEvent_.actionStart);
             }
         }
     }
@@ -520,40 +505,43 @@ public class NPC : MonoBehaviour {
         animator_.SetInteger("action", (int)act);
     }
 
-    private IEnumerator ActionRoutine() {
-        acting_ = true;
-        yield return new WaitForSeconds(UnityEngine.Random.Range(0.0f, currentEvent_.actionStart));
-        int direction = UnityEngine.Random.Range(0, 4);
-        UpdateAnimator((Direction)direction, currentEvent_.action);
-        yield return new WaitForSeconds(currentEvent_.actionDuration);
-        acting_ = false;
-        UpdateAnimator((Direction)direction, Action.Idle);
-    }
-
     // Debug only
     private void InputTest() {
         // pick item test
         if (Input.GetKeyUp(KeyCode.N)) {
-            TimeData time = EnvManager.Instance.time;
-            SceneName current_scene = SceneController.Instance.currentScene;
-            int minute = time.hour * 60 + time.minute + 20;
-            MoveTo(SceneName.FarmScene, FieldTag.Diggable, minute);
-            //MoveTo(SceneName.CabinScene, FieldTag.Dropable,  minute);
-            ShowPath(current_scene);
+            ShowStatue();
         }
     }
 
     private void UpdateTime(TimeType time_type, TimeData time, int delta) {
-        if (time_type == TimeType.Minute && time.minute % 10 == 0 && UpdateEvent()) {
-            Debug.Log("[TMINFO] update event " + nextEvent_ + " @ " + time.hour + ":" + time.minute);
-            MoveTo(nextEvent_.scene, nextEvent_.fieldTag, nextEvent_.time);
-            ShowPath();
+        if (time_type == TimeType.Minute) {
+            if (time.minute % 20 == 0 && UpdateEvent()) {
+                MoveTo(nextEvent_.scene, nextEvent_.fieldTag, nextEvent_.time);
+            }
+            if (currentEvent_ == null || actionStart_ < 0) {
+                return;
+            }
+            int current = time.hour * 60 + time.minute;
+            float next_time = path_.Count > 0 ? path_.Peek().time : currentEvent_.time + currentEvent_.duration;
+            if (acting_ && current >= (actionStart_ + currentEvent_.actionDuration)) {
+                acting_ = false;
+                collider_.enabled = true;
+                int direction = UnityEngine.Random.Range(2, 4);
+                UpdateAnimator((Direction)direction, Action.Idle);
+                actionStart_ += currentEvent_.actionDuration + UnityEngine.Random.Range(0, currentEvent_.actionStart);
+            } else if (!acting_ && current >= actionStart_ && (current + currentEvent_.actionDuration + 1) < next_time) {
+                actionStart_ = current;
+                acting_ = true;
+                collider_.enabled = false;
+                int direction = UnityEngine.Random.Range(2, 4);
+                UpdateAnimator((Direction)direction, currentEvent_.action);
+            }
         } else if (time_type == TimeType.Day) {
             MakeSchedule();
         }
     }
 
-    private void ShowPath(SceneName scene = SceneName.CurrentScene) {
+    private void ShowStatue(SceneName scene = SceneName.CurrentScene) {
         if (scene == SceneName.CurrentScene) {
             scene = SceneController.Instance.currentScene;
         }
@@ -564,6 +552,15 @@ public class NPC : MonoBehaviour {
             }
         }
         FieldManager.Instance.ShowGrids(points);
+        if (nextEvent_ != null) {
+            Debug.Log("nextEvent_ " + nextEvent_);
+        }
+        if (currentEvent_ != null) {
+            Debug.Log("CurrentEvent " + currentEvent_);
+            if (actionStart_ > 0) {
+                Debug.Log("action " + currentEvent_.action + " @ " + actionStart_ / 60 + ":" + actionStart_ % 60);
+            }
+        }
     }
 
     public void SetFreeze(bool freeze) {

@@ -3528,8 +3528,8 @@ MonoBehaviour:
     minute: 30
     durationMin: 40
     durationMax: 60
-    actionStart: 20
-    actionDuration: 6
+    actionStart: 5
+    actionDuration: 12
     weekDays: 
     days: 
   - scene: 1
@@ -3540,8 +3540,8 @@ MonoBehaviour:
     minute: 0
     durationMin: 30
     durationMax: 60
-    actionStart: 20
-    actionDuration: 6
+    actionStart: 5
+    actionDuration: 10
     weekDays: 
     days: 
   - scene: 1
@@ -3552,7 +3552,7 @@ MonoBehaviour:
     minute: 0
     durationMin: 40
     durationMax: 60
-    actionStart: 20
+    actionStart: 5
     actionDuration: 10
     weekDays: fbfffffffaffffff
     days: 
@@ -3564,8 +3564,8 @@ MonoBehaviour:
     minute: 0
     durationMin: 40
     durationMax: 60
-    actionStart: 30
-    actionDuration: 10
+    actionStart: 10
+    actionDuration: 15
     weekDays: 0500000006000000
     days: 
   - scene: 1
@@ -3576,7 +3576,7 @@ MonoBehaviour:
     minute: 0
     durationMin: 40
     durationMax: 60
-    actionStart: 20
+    actionStart: 5
     actionDuration: 10
     weekDays: 
     days: 
@@ -3584,12 +3584,12 @@ MonoBehaviour:
     season: 0
     fieldTag: 2
     action: 9
-    hour: 18
+    hour: 17
     minute: 0
     durationMin: 20
     durationMax: 40
-    actionStart: 20
-    actionDuration: 6
+    actionStart: 5
+    actionDuration: 10
     weekDays: 
     days: 
   - scene: 3
@@ -3601,10 +3601,10 @@ MonoBehaviour:
     durationMin: 20
     durationMax: 40
     actionStart: 10
-    actionDuration: 20
+    actionDuration: 10
     weekDays: 
     days: 
-  speed_: 3
+  walkSpeed_: 3
   usePenalty: 1
   pathPenalty: 0
   defaultPenalty: 5
@@ -5845,7 +5845,7 @@ MonoBehaviour:
     hour: 6
     minute: 0
     second: 0
-  speedUp_: 48
+  speedUp_: 60
   sunLightSchs_:
   - season: 0
     scenes: 0100000002000000
@@ -6437,6 +6437,6 @@ SceneRoots:
   m_Roots:
   - {fileID: 1098975078}
   - {fileID: 1103264476}
+  - {fileID: 1615839104}
   - {fileID: 229329501}
   - {fileID: 1279967474}
-  - {fileID: 1615839104}

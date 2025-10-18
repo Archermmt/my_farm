@@ -28,7 +28,7 @@ public class AudioManager : Singleton<AudioManager> {
     private Dictionary<string, Sound> soundObjs_;
     private List<string> soundQueque_;
     private WaitForSeconds musicPlayWait_;
-    private Coroutine sceneSoundCoroutine;
+    private Coroutine sceneSoundCoroutine_;
     private int count_ = 0;
 
     protected override void Awake() {
@@ -71,10 +71,10 @@ public class AudioManager : Singleton<AudioManager> {
         if (!sceneSoundsMap_.ContainsKey(scene)) {
             return;
         }
-        if (sceneSoundCoroutine != null) {
-            StopCoroutine(sceneSoundCoroutine);
+        if (sceneSoundCoroutine_ != null) {
+            StopCoroutine(sceneSoundCoroutine_);
         }
-        sceneSoundCoroutine = StartCoroutine(PlaySceneSoundRoutine(sceneSoundsMap_[scene]));
+        sceneSoundCoroutine_ = StartCoroutine(PlaySceneSoundRoutine(sceneSoundsMap_[scene]));
     }
 
     private IEnumerator PlaySceneSoundRoutine(SceneSoundData scene_sound) {

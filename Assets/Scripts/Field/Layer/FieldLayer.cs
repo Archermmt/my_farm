@@ -94,6 +94,9 @@ public class FieldGrid {
         if (items_ != null && items_.Count > 0) {
             str += " <" + items_.Count + " Items>:";
             foreach (Item item in items_) {
+                if (item == null) {
+                    continue;
+                }
                 str += item.ToString() + " @ " + item.transform.position + ",";
             }
         }
