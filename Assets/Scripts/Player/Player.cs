@@ -21,6 +21,7 @@ public class Player : Singleton<Player> {
     private SpriteRenderer handsRender_;
     private KeyValuePair<Item, Slot> carried_;
     private Dictionary<string, Item> carriedCache_;
+    private bool usingItem_ = false;
     // animation
     private Action action_ = Action.Idle;
     private Animator[] animators_;
@@ -68,7 +69,7 @@ public class Player : Singleton<Player> {
     }
 
     private void Update() {
-        if (carried_.Key != null && !ItemManager.Instance.freezed) {
+        if (carried_.Key != null && !ItemManager.Instance.freezed && !usingItem_) {
             Action action = Action.Idle;
             if (Input.GetMouseButtonDown(0)) {
                 action = Action.DropItem;
@@ -147,10 +148,10 @@ public class Player : Singleton<Player> {
             } else if (action == Action.UseItem && carried_.Key.HasStatus(ItemStatus.Holding)) {
                 int energy = carried_.Key.ConsumeEnergy(cursors);
                 Dictionary<ItemData, int> item_amounts = FieldManager.Instance.UseItem(carried_.Key, cursors, carried_.Value.current);
-                carried_.Key.Unhold();
                 if (carried_.Key.meta.type == ItemType.Tool) {
                     StartCoroutine(UseToolRoutine(direction_));
                 } else {
+                    carried_.Key.Unhold();
                     SetFreeze(false);
                 }
                 foreach (KeyValuePair<ItemData, int> pair in item_amounts) {
@@ -186,12 +187,15 @@ public class Player : Singleton<Player> {
     }
 
     private IEnumerator UseToolRoutine(Direction direction) {
+        usingItem_ = true;
         foreach (Animator animator in animators_) {
             animator.SetTrigger("useTool");
         }
         yield return useToolWait_;
         UpdateAnimators(direction, Action.Idle);
+        carried_.Key.Unhold();
         SetFreeze(false);
+        usingItem_ = false;
     }
 
     private void UpdateAnimators(Direction direct, Action act) {
@@ -285,7 +289,7 @@ public class Player : Singleton<Player> {
         } else if (time_type == TimeType.Day) {
             SceneController.Instance.LoadScene(SceneName.CabinScene, new Vector3(1f, -1f, 0));
             EnvManager.Instance.SetTime(TimeType.Hour, wakeUp_);
-            EnvManager.Instance.SetTime(TimeType.Minute, 0);
+            EnvManager.Instance.UpdateMinute(0);
             carried_ = new KeyValuePair<Item, Slot>(null, null);
             status_.Reset();
         }
