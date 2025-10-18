@@ -17,7 +17,7 @@ public class Pickable : Item {
         collider_.radius = trackRadius_;
     }
 
-    private void FixedUpdate() {
+    private void Update() {
         if (target_ == null || ItemManager.Instance.freezed || freezed_) {
             return;
         }

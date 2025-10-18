@@ -280,7 +280,7 @@ public class Player : Singleton<Player> {
     }
 
     private void UpdateTime(TimeType time_type, TimeData time, int delta) {
-        if (time_type == TimeType.Hour && time.hour >= 23) {
+        if (time_type == TimeType.Hour && time.hour + delta >= 23) {
             EnvManager.Instance.UpdateDay();
         } else if (time_type == TimeType.Day) {
             SceneController.Instance.LoadScene(SceneName.CabinScene, new Vector3(1f, -1f, 0));
@@ -307,12 +307,6 @@ public class Player : Singleton<Player> {
             //EnvManager.Instance.UpdateDay(5);
             TimeData time = EnvManager.Instance.UpdateMinute(20);
             EnvManager.Instance.clock.ShowTime(time);
-        } else if (Input.GetKeyDown(KeyCode.C)) {
-            //inventory_.AddItem(ItemManager.Instance.FindItem("Weed"), 100);
-            //ItemData item = ItemManager.Instance.FindItem("ParsnipSeed");
-            //inventory_.AddItem(item, 10);
-            //inventory_.RemoveItem(item, 10);
-            ChangeEnergy(-20);
         }
     }
 

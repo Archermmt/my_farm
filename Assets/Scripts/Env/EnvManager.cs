@@ -1,7 +1,6 @@
 using System;
 using System.Collections;
 using System.Collections.Generic;
-using System.Linq;
 using UnityEngine;
 using UnityEngine.Rendering.Universal;
 
@@ -25,35 +24,15 @@ public class TimeData {
     }
 }
 
-[Serializable]
-public class LightingPeriod {
-    public int hour;
-    public float intensity;
-}
-
-[Serializable]
-public class LightingSchedule {
-    public Season season;
-    public List<SceneName> scenes;
-    public List<LightingPeriod> periods;
-}
-
 public class EnvManager : Singleton<EnvManager> {
     [Header("Time")]
     [SerializeField] private Clock clock_;
     [SerializeField] private TimeData time_;
     [SerializeField] private float speedUp_ = 48f;
-
-    [Header("Light")]
-    [SerializeField] private List<LightingSchedule> sunLightSchs_;
-    [SerializeField] private float sunLightSec_ = 20f;
     private bool freezed_ = true;
     // time
     private float gameTick_ = 0f;
     private float minuteTick_;
-    // light
-    private Light2D sunLight_;
-    private LightingSchedule sunLightSch_;
 
     protected override void Awake() {
         base.Awake();
@@ -70,10 +49,9 @@ public class EnvManager : Singleton<EnvManager> {
 
     private void Start() {
         clock_.ShowTime(time_);
-        sunLightSch_ = GetSunLightSch();
     }
 
-    private void FixedUpdate() {
+    private void Update() {
         if (!freezed_) {
             gameTick_ += Time.deltaTime;
             if (gameTick_ >= minuteTick_) {
@@ -96,7 +74,6 @@ public class EnvManager : Singleton<EnvManager> {
             UpdateYear(1);
             time_.month -= 12;
         }
-        sunLightSch_ = GetSunLightSch();
         return time_;
     }
 
@@ -118,7 +95,6 @@ public class EnvManager : Singleton<EnvManager> {
             UpdateDay(1);
             time_.hour -= 24;
         }
-        StartCoroutine(LightRoutine(sunLight_, sunLightSch_, sunLightSec_));
         return time_;
     }
 
@@ -171,43 +147,7 @@ public class EnvManager : Singleton<EnvManager> {
         }
     }
 
-    private LightingSchedule GetSunLightSch() {
-        SceneName scene_name = SceneController.Instance.currentScene;
-        foreach (LightingSchedule schedule in sunLightSchs_) {
-            if (schedule.season == time_.season && schedule.scenes.Contains(scene_name)) {
-                return schedule;
-            }
-        }
-        return sunLightSchs_[0];
-    }
-
-    private float GetIntensity(LightingSchedule sch) {
-        float intensity = sch.periods[sch.periods.Count - 1].intensity;
-        for (int i = 1; i < sch.periods.Count; i++) {
-            if (sch.periods[i - 1].hour < time_.hour && sch.periods[i].hour >= time_.hour) {
-                int diff_hour = sch.periods[i].hour - sch.periods[i - 1].hour;
-                float diff_intensity = sch.periods[i].intensity - sch.periods[i - 1].intensity;
-                intensity = sch.periods[i - 1].intensity + diff_intensity * (time_.hour - sch.periods[i - 1].hour) / diff_hour;
-                break;
-            }
-        }
-        return intensity;
-    }
-
-    private IEnumerator LightRoutine(Light2D light, LightingSchedule sch, float duration) {
-        float intensity = GetIntensity(sch);
-        float distance = intensity - light.intensity;
-        while (Math.Abs(intensity - light.intensity) > 0.01f) {
-            light.intensity = light.intensity + distance / duration * Time.deltaTime;
-            yield return null;
-        }
-        light.intensity = intensity;
-    }
-
     private void AfterSceneLoad(SceneName scene_name) {
-        sunLightSch_ = GetSunLightSch();
-        sunLight_ = GameObject.FindGameObjectWithTag("SunLight").GetComponent<Light2D>();
-        sunLight_.intensity = GetIntensity(sunLightSch_);
         if (!freezed_) {
             UpdateMinute(0);
         }
